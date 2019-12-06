@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using VideoPlayer.Entities;
 
@@ -154,6 +155,7 @@ namespace VideoPlayer.UserControls
         public MediaPlayerUserControl()
         {
             InitializeComponent();
+            mediaElementBackground.Background = new SolidColorBrush(Color.FromRgb(16, 16, 16));
 
             progressTimer = new DispatcherTimer();
             progressTimer.Interval = TimeSpan.FromMilliseconds(1000);
@@ -228,12 +230,12 @@ namespace VideoPlayer.UserControls
             progressTimer.Start();
         }
 
-        private void sliderProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void SliderProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             ShowTime();
         }
 
-        private void buttonMuteUnmute_Click(object sender, RoutedEventArgs e)
+        private void ButtonMuteUnmute_Click(object sender, RoutedEventArgs e)
         {
             MuteToggle();
         }

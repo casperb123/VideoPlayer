@@ -7,21 +7,22 @@
              mc:Ignorable="d"
              d:DesignHeight="535"
              d:DesignWidth="800">
-    <Grid Margin="10">
+    <Grid Margin="0,0,0,10">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <MediaElement x:Name="player"
-                      Grid.Row="0"
+        <Grid x:Name="mediaElementBackground">
+            <MediaElement x:Name="player"
                       LoadedBehavior="Manual"
                       UnloadedBehavior="Manual"
                       ScrubbingEnabled="True"
                       Volume="1"
                       MediaEnded="Player_MediaEnded"
                       MediaOpened="Player_MediaOpened" />
+        </Grid>
 
         <StackPanel HorizontalAlignment="Center"
                     Grid.Row="2"
@@ -51,11 +52,12 @@
                 Width="50"
                 Height="30"
                 Grid.Row="2"
-                Margin="0,10,0,0"
+                Margin="0,10,10,0"
                 HorizontalAlignment="Right"
-                Click="buttonMuteUnmute_Click"/>
+                Click="ButtonMuteUnmute_Click"/>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1"
+              Margin="10,5,10,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="150" />
@@ -71,7 +73,8 @@
             <Slider x:Name="sliderProgress"
                     Grid.Column="0"
                     Grid.Row="1"
-                    ValueChanged="sliderProgress_ValueChanged"
+                    IsMoveToPointEnabled="True"
+                    ValueChanged="SliderProgress_ValueChanged"
                     PreviewMouseLeftButtonDown="SliderProgress_PreviewMouseLeftButtonDown"
                     PreviewMouseLeftButtonUp="SliderProgress_PreviewMouseLeftButtonUp" />
 
@@ -84,6 +87,7 @@
                     Grid.Row="1"
                     Minimum="0"
                     Maximum="1"
+                    IsMoveToPointEnabled="True"
                     Value="{Binding ElementName=player, Path=Volume, Mode=TwoWay}"
                     PreviewMouseLeftButtonDown="SliderVolume_PreviewMouseLeftButtonDown"
                     PreviewMouseLeftButtonUp="SliderVolume_PreviewMouseLeftButtonUp"
