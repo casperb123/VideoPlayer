@@ -16,6 +16,8 @@ namespace VideoPlayer.UserControls
     public partial class MediaPlayerUserControl : UserControl
     {
         private TimeSpan position;
+        private double oldVolume;
+
         private DispatcherTimer progressTimer;
 
         public bool IsPlaying
@@ -127,6 +129,28 @@ namespace VideoPlayer.UserControls
             textBlockDuration.Text = "0:00 / 0:00";
         }
 
+        private void MuteToggle()
+        {
+            if (player.Volume > 0)
+            {
+                oldVolume = player.Volume;
+                player.Volume = 0;
+                buttonMuteUnmute.Content = "Unmute";
+            }
+            else if (oldVolume == 0)
+            {
+                player.Volume = 1;
+                oldVolume = player.Volume;
+                buttonMuteUnmute.Content = "Mute";
+            }
+            else
+            {
+                player.Volume = oldVolume;
+                oldVolume = player.Volume;
+                buttonMuteUnmute.Content = "Mute";
+            }
+        }
+
         public MediaPlayerUserControl()
         {
             InitializeComponent();
@@ -207,6 +231,36 @@ namespace VideoPlayer.UserControls
         private void sliderProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             ShowTime();
+        }
+
+        private void buttonMuteUnmute_Click(object sender, RoutedEventArgs e)
+        {
+            MuteToggle();
+        }
+
+        private void SliderVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (sliderVolume.Value == 0)
+            {
+                buttonMuteUnmute.Content = "Unmute";
+            }
+            else
+            {
+                buttonMuteUnmute.Content = "Mute";
+            }
+        }
+
+        private void SliderVolume_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            oldVolume = sliderVolume.Value;
+        }
+
+        private void SliderVolume_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (sliderVolume.Value > 0)
+            {
+                oldVolume = sliderVolume.Value;
+            }
         }
     }
 }
