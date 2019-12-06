@@ -51,6 +51,39 @@ namespace VideoPlayer.UserControls
             }
         }
 
+        public bool IsPaused
+        {
+            get
+            {
+                switch (GetMediaState(player))
+                {
+                    case MediaState.Manual:
+                        return false;
+                    case MediaState.Play:
+                        return false;
+                    case MediaState.Close:
+                        return false;
+                    case MediaState.Pause:
+                        return true;
+                    case MediaState.Stop:
+                        return false;
+                    default:
+                        return false;
+                }
+            }
+            set
+            {
+                if (value)
+                {
+                    Pause();
+                }
+                else
+                {
+                    Play();
+                }
+            }
+        }
+
         private MediaState GetMediaState(MediaElement mediaElement)
         {
             FieldInfo hlp = typeof(MediaElement).GetField("_helper", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -71,16 +104,27 @@ namespace VideoPlayer.UserControls
 
         private void Play()
         {
-            progressTimer.Start();
             player.Play();
             buttonPlayPause.Content = "Pause";
         }
 
         private void Pause()
         {
-            progressTimer.Stop();
             player.Pause();
             buttonPlayPause.Content = "Play";
+        }
+
+        private void Stop()
+        {
+            player.Close();
+
+            buttonPlayPause.IsEnabled = false;
+            buttonPlayPause.Content = "Play";
+            buttonOpenStop.Content = "Open";
+
+            progressTimer.Stop();
+            sliderProgress.Value = 0;
+            textBlockDuration.Text = "0:00 / 0:00";
         }
 
         public MediaPlayerUserControl()
@@ -90,7 +134,6 @@ namespace VideoPlayer.UserControls
             progressTimer = new DispatcherTimer();
             progressTimer.Interval = TimeSpan.FromMilliseconds(1000);
             progressTimer.Tick += ProgressTimer_Tick;
-            progressTimer.Start();
         }
 
         private void ProgressTimer_Tick(object sender, EventArgs e)
@@ -98,19 +141,26 @@ namespace VideoPlayer.UserControls
             sliderProgress.Value = player.Position.TotalSeconds;
         }
 
-        private void ButtonOpen_Click(object sender, RoutedEventArgs e)
+        private void ButtonOpenStop_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            if (IsPlaying || IsPaused)
             {
-                Title = "Select video file",
-                DefaultExt = ".avi",
-                Filter = "Media Files|*.mpg;*.avi;*.wma;*.mov;*.wav;*.mp2;*.mp3;*.mp4|All Files|*.*"
-            };
-            openFileDialog.ShowDialog();
+                Stop();
+            }
+            else
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Title = "Select video file",
+                    DefaultExt = ".avi",
+                    Filter = "Media Files|*.mpg;*.avi;*.wma;*.mov;*.wav;*.mp2;*.mp3;*.mp4|All Files|*.*"
+                };
+                openFileDialog.ShowDialog();
 
-            Media video = new Media(openFileDialog.FileName);
-            player.Source = video.Uri;
-            Play();
+                Media video = new Media(openFileDialog.FileName);
+                player.Source = video.Uri;
+                Play();
+            }
         }
 
         public void ButtonPlayPause_Click(object sender, RoutedEventArgs e)
@@ -123,9 +173,7 @@ namespace VideoPlayer.UserControls
 
         private void Player_MediaEnded(object sender, RoutedEventArgs e)
         {
-            Pause();
-            buttonPlayPause.IsEnabled = false;
-            buttonOpen.IsEnabled = true;
+            Stop();
         }
 
         private void Player_MediaOpened(object sender, RoutedEventArgs e)
@@ -137,7 +185,9 @@ namespace VideoPlayer.UserControls
             sliderProgress.Maximum = position.TotalSeconds;
 
             buttonPlayPause.IsEnabled = true;
-            buttonOpen.IsEnabled = false;
+            buttonOpenStop.Content = "Stop";
+
+            progressTimer.Start();
         }
 
         private void SliderProgress_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

@@ -6,8 +6,9 @@
         xmlns:local="clr-namespace:VideoPlayer"
         mc:Ignorable="d"
         Title="Video Player"
-        MinHeight="560"
+        MinHeight="568"
         Width="800"
+        MinWidth="800"
         SizeToContent="Height"
         KeyDown="Window_KeyDown">
     <Grid>

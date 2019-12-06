@@ -40,11 +40,11 @@
                     Height="30"
                     IsEnabled="False"
                     Click="ButtonPlayPause_Click" />
-            <Button x:Name="buttonOpen"
+            <Button x:Name="buttonOpenStop"
                     Content="Open"
                     Width="50"
                     Height="30"
-                    Click="ButtonOpen_Click" />
+                    Click="ButtonOpenStop_Click" />
         </StackPanel>
 
         <Grid Grid.Row="1"
