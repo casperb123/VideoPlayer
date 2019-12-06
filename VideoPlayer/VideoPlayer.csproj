@@ -4,11 +4,8 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <UseWPF>true</UseWPF>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="FFME.Windows" Version="4.2.320" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\VideoPlayer.Entities\VideoPlayer.Entities.csproj" />
