@@ -40,11 +40,17 @@
                     Height="30"
                     IsEnabled="False"
                     Click="ButtonPlayPause_Click" />
-            <Button x:Name="buttonOpenStop"
+            <Button x:Name="buttonStop"
+                    Content="Stop"
+                    Width="50"
+                    Height="30"
+                    IsEnabled="False"
+                    Click="ButtonStop_Click" />
+            <Button x:Name="buttonOpen"
                     Content="Open"
                     Width="50"
                     Height="30"
-                    Click="ButtonOpenStop_Click" />
+                    Click="ButtonOpen_Click" />
         </StackPanel>
 
         <Button x:Name="buttonMuteUnmute"

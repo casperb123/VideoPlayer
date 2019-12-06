@@ -123,7 +123,7 @@ namespace VideoPlayer.UserControls
 
             buttonPlayPause.IsEnabled = false;
             buttonPlayPause.Content = "Play";
-            buttonOpenStop.Content = "Open";
+            buttonStop.IsEnabled = false;
 
             progressTimer.Stop();
             sliderProgress.Value = 0;
@@ -167,26 +167,19 @@ namespace VideoPlayer.UserControls
             sliderProgress.Value = player.Position.TotalSeconds;
         }
 
-        private void ButtonOpenStop_Click(object sender, RoutedEventArgs e)
+        private void ButtonOpen_Click(object sender, RoutedEventArgs e)
         {
-            if (IsPlaying || IsPaused)
+            OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Stop();
-            }
-            else
-            {
-                OpenFileDialog openFileDialog = new OpenFileDialog
-                {
-                    Title = "Select video file",
-                    DefaultExt = ".avi",
-                    Filter = "Media Files|*.mpg;*.avi;*.wma;*.mov;*.wav;*.mp2;*.mp3;*.mp4|All Files|*.*"
-                };
-                openFileDialog.ShowDialog();
+                Title = "Select video file",
+                DefaultExt = ".avi",
+                Filter = "Media Files|*.mpg;*.avi;*.wma;*.mov;*.wav;*.mp2;*.mp3;*.mp4|All Files|*.*"
+            };
+            openFileDialog.ShowDialog();
 
-                Media video = new Media(openFileDialog.FileName);
-                player.Source = video.Uri;
-                Play();
-            }
+            Media video = new Media(openFileDialog.FileName);
+            player.Source = video.Uri;
+            Play();
         }
 
         public void ButtonPlayPause_Click(object sender, RoutedEventArgs e)
@@ -211,7 +204,7 @@ namespace VideoPlayer.UserControls
             sliderProgress.Maximum = position.TotalSeconds;
 
             buttonPlayPause.IsEnabled = true;
-            buttonOpenStop.Content = "Stop";
+            buttonStop.IsEnabled = true;
 
             progressTimer.Start();
         }
@@ -263,6 +256,11 @@ namespace VideoPlayer.UserControls
             {
                 oldVolume = sliderVolume.Value;
             }
+        }
+
+        private void ButtonStop_Click(object sender, RoutedEventArgs e)
+        {
+            Stop();
         }
     }
 }
