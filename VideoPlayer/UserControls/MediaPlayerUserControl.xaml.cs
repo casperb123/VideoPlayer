@@ -4,8 +4,10 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using VideoPlayer.Entities;
 
@@ -16,6 +18,13 @@ namespace VideoPlayer.UserControls
     /// </summary>
     public partial class MediaPlayerUserControl : UserControl
     {
+        private readonly Image playImage;
+        private readonly Image pauseImage;
+        private readonly Image stopImage;
+        private readonly Image openImage;
+        private readonly Image mutedImage;
+        private readonly Image unmutedImage;
+
         private TimeSpan position;
         private double oldVolume;
 
@@ -107,14 +116,16 @@ namespace VideoPlayer.UserControls
 
         private void Play()
         {
+            progressTimer.Start();
             player.Play();
-            buttonPlayPause.Content = "Pause";
+            imagePlayPause.Source = pauseImage.Source;
         }
 
         private void Pause()
         {
+            progressTimer.Stop();
             player.Pause();
-            buttonPlayPause.Content = "Play";
+            imagePlayPause.Source = playImage.Source;
         }
 
         private void Stop()
@@ -122,7 +133,7 @@ namespace VideoPlayer.UserControls
             player.Close();
 
             buttonPlayPause.IsEnabled = false;
-            buttonPlayPause.Content = "Play";
+            //buttonPlayPause.Content = "Play";
             buttonStop.IsEnabled = false;
 
             progressTimer.Stop();
@@ -135,20 +146,20 @@ namespace VideoPlayer.UserControls
             if (player.Volume > 0)
             {
                 oldVolume = player.Volume;
-                player.Volume = 0;
-                buttonMuteUnmute.Content = "Unmute";
+                sliderVolume.Value = 0;
+                imageMuteUnmute.Source = mutedImage.Source;
             }
             else if (oldVolume == 0)
             {
-                player.Volume = 1;
+                sliderVolume.Value = 1;
                 oldVolume = player.Volume;
-                buttonMuteUnmute.Content = "Mute";
+                imageMuteUnmute.Source = unmutedImage.Source;
             }
             else
             {
-                player.Volume = oldVolume;
+                sliderVolume.Value = oldVolume;
                 oldVolume = player.Volume;
-                buttonMuteUnmute.Content = "Mute";
+                imageMuteUnmute.Source = unmutedImage.Source;
             }
         }
 
@@ -156,6 +167,55 @@ namespace VideoPlayer.UserControls
         {
             InitializeComponent();
             mediaElementBackground.Background = new SolidColorBrush(Color.FromRgb(16, 16, 16));
+
+            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
+            string resourcesPath = $@"{Path.GetFullPath(Path.Combine(runningPath, @"..\..\..\"))}Resources";
+
+            if (!Directory.Exists(resourcesPath))
+            {
+                resourcesPath = $@"{runningPath}\Resources";
+            }
+
+            playImage = new Image
+            {
+                Width = buttonPlayPause.Width,
+                Source = new BitmapImage(new Uri($@"{resourcesPath}\play.png"))
+            };
+
+            pauseImage = new Image
+            {
+                Width = buttonPlayPause.Width,
+                Source = new BitmapImage(new Uri($@"{resourcesPath}\pause.png"))
+            };
+
+            stopImage = new Image
+            {
+                Width = buttonStop.Width,
+                Source = new BitmapImage(new Uri($@"{resourcesPath}\stop.png"))
+            };
+
+            openImage = new Image
+            {
+                Width = buttonOpen.Width,
+                Source = new BitmapImage(new Uri($@"{resourcesPath}\open.png"))
+            };
+
+            mutedImage = new Image
+            {
+                Width = buttonMuteUnmute.Width,
+                Source = new BitmapImage(new Uri($@"{resourcesPath}\muted.png"))
+            };
+
+            unmutedImage = new Image
+            {
+                Width = buttonMuteUnmute.Width,
+                Source = new BitmapImage(new Uri($@"{resourcesPath}\unmuted.png"))
+            };
+
+            imagePlayPause.Source = playImage.Source;
+            imageStop.Source = stopImage.Source;
+            imageOpen.Source = openImage.Source;
+            imageMuteUnmute.Source = unmutedImage.Source;
 
             progressTimer = new DispatcherTimer();
             progressTimer.Interval = TimeSpan.FromMilliseconds(1000);
@@ -165,6 +225,19 @@ namespace VideoPlayer.UserControls
         private void ProgressTimer_Tick(object sender, EventArgs e)
         {
             sliderProgress.Value = player.Position.TotalSeconds;
+        }
+
+        private void ButtonPlayPause_Click(object sender, RoutedEventArgs e)
+        {
+            if (player.Source != null)
+            {
+                IsPlaying = !IsPlaying;
+            }
+        }
+
+        private void ButtonStop_Click(object sender, RoutedEventArgs e)
+        {
+            Stop();
         }
 
         private void ButtonOpen_Click(object sender, RoutedEventArgs e)
@@ -180,14 +253,6 @@ namespace VideoPlayer.UserControls
             Media video = new Media(openFileDialog.FileName);
             player.Source = video.Uri;
             Play();
-        }
-
-        public void ButtonPlayPause_Click(object sender, RoutedEventArgs e)
-        {
-            if (player.Source != null)
-            {
-                IsPlaying = !IsPlaying;
-            }
         }
 
         private void Player_MediaEnded(object sender, RoutedEventArgs e)
@@ -228,20 +293,19 @@ namespace VideoPlayer.UserControls
             ShowTime();
         }
 
-        private void ButtonMuteUnmute_Click(object sender, RoutedEventArgs e)
-        {
-            MuteToggle();
-        }
-
         private void SliderVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            if (!IsLoaded) return;
+
+            player.Volume = sliderVolume.Value;
+
             if (sliderVolume.Value == 0)
             {
-                buttonMuteUnmute.Content = "Unmute";
+                imageMuteUnmute.Source = mutedImage.Source;
             }
             else
             {
-                buttonMuteUnmute.Content = "Mute";
+                imageMuteUnmute.Source = unmutedImage.Source;
             }
         }
 
@@ -258,9 +322,9 @@ namespace VideoPlayer.UserControls
             }
         }
 
-        private void ButtonStop_Click(object sender, RoutedEventArgs e)
+        private void ButtonMuteUnmute_Click(object sender, RoutedEventArgs e)
         {
-            Stop();
+            MuteToggle();
         }
     }
 }

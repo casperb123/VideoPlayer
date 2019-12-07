@@ -14,6 +14,21 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
+        <Grid.Resources>
+            <Style TargetType="{x:Type Button}">
+                <Setter Property="Margin"
+                            Value="5,10,5,0" />
+                <Setter Property="Background"
+                        Value="Transparent"/>
+                <Setter Property="BorderThickness"
+                        Value="0"/>
+                <Setter Property="Width"
+                        Value="40"/>
+                <Setter Property="Height"
+                        Value="40"/>
+            </Style>
+        </Grid.Resources>
+
         <Grid x:Name="mediaElementBackground">
             <MediaElement x:Name="player"
                       LoadedBehavior="Manual"
@@ -27,40 +42,38 @@
         <StackPanel HorizontalAlignment="Center"
                     Grid.Row="2"
                     Orientation="Horizontal">
-            <StackPanel.Resources>
-                <Style TargetType="{x:Type Button}">
-                    <Setter Property="Margin"
-                            Value="5,10,5,0" />
-                </Style>
-            </StackPanel.Resources>
 
             <Button x:Name="buttonPlayPause"
-                    Content="Play"
-                    Width="50"
-                    Height="30"
                     IsEnabled="False"
-                    Click="ButtonPlayPause_Click" />
+                    Click="ButtonPlayPause_Click">
+                <Image x:Name="imagePlayPause"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"
+                       RenderOptions.EdgeMode="Aliased" />
+            </Button>
             <Button x:Name="buttonStop"
-                    Content="Stop"
-                    Width="50"
-                    Height="30"
                     IsEnabled="False"
-                    Click="ButtonStop_Click" />
+                    Click="ButtonStop_Click">
+                <Image x:Name="imageStop"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"
+                       RenderOptions.EdgeMode="Aliased" />
+            </Button>
             <Button x:Name="buttonOpen"
-                    Content="Open"
-                    Width="50"
-                    Height="30"
-                    Click="ButtonOpen_Click" />
+                    Click="ButtonOpen_Click">
+                <Image x:Name="imageOpen"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"
+                       RenderOptions.EdgeMode="Aliased" />
+            </Button>
         </StackPanel>
 
         <Button x:Name="buttonMuteUnmute"
-                Content="Mute"
-                Width="50"
-                Height="30"
                 Grid.Row="2"
                 Margin="0,10,10,0"
                 HorizontalAlignment="Right"
-                Click="ButtonMuteUnmute_Click"/>
+                Click="ButtonMuteUnmute_Click">
+            <Image x:Name="imageMuteUnmute"
+                   RenderOptions.BitmapScalingMode="NearestNeighbor"
+                   RenderOptions.EdgeMode="Aliased" />
+        </Button>
 
         <Grid Grid.Row="1"
               Margin="10,5,10,0">
@@ -93,8 +106,8 @@
                     Grid.Row="1"
                     Minimum="0"
                     Maximum="1"
+                    Value="1"
                     IsMoveToPointEnabled="True"
-                    Value="{Binding ElementName=player, Path=Volume, Mode=TwoWay}"
                     PreviewMouseLeftButtonDown="SliderVolume_PreviewMouseLeftButtonDown"
                     PreviewMouseLeftButtonUp="SliderVolume_PreviewMouseLeftButtonUp"
                     ValueChanged="SliderVolume_ValueChanged"/>
