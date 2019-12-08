@@ -19,11 +19,22 @@ namespace VideoPlayer.UserControls
     public partial class MediaPlayerUserControl : UserControl
     {
         private readonly Image playImage;
+        private readonly Image playImageDisabled;
+
         private readonly Image pauseImage;
+        private readonly Image pauseImageDisabled;
+
         private readonly Image stopImage;
+        private readonly Image stopImageDisabled;
+
         private readonly Image openImage;
+        private readonly Image openImageDisabled;
+
         private readonly Image mutedImage;
+        private readonly Image mutedImageDisabled;
+
         private readonly Image unmutedImage;
+        private readonly Image unmutedImageDisabled;
 
         private TimeSpan position;
         private double oldVolume;
@@ -114,6 +125,46 @@ namespace VideoPlayer.UserControls
             }
         }
 
+        private void DisablePlayPause()
+        {
+            buttonPlayPause.IsEnabled = false;
+
+            if (imagePlayPause.Source == playImage.Source)
+            {
+                imagePlayPause.Source = playImageDisabled.Source;
+            }
+            else if (imagePlayPause.Source == pauseImage.Source)
+            {
+                imagePlayPause.Source = pauseImageDisabled.Source;
+            }
+        }
+
+        private void EnablePlayPause()
+        {
+            buttonPlayPause.IsEnabled = true;
+
+            if (imagePlayPause.Source == playImageDisabled.Source)
+            {
+                imagePlayPause.Source = playImage.Source;
+            }
+            else if (imagePlayPause.Source == pauseImageDisabled.Source)
+            {
+                imagePlayPause.Source = pauseImage.Source;
+            }
+        }
+
+        private void DisableStop()
+        {
+            buttonStop.IsEnabled = false;
+            imageStop.Source = stopImageDisabled.Source;
+        }
+
+        private void EnableStop()
+        {
+            buttonStop.IsEnabled = true;
+            imageStop.Source = stopImage.Source;
+        }
+
         public void Open(string filePath)
         {
             if (player.NaturalDuration.HasTimeSpan)
@@ -144,8 +195,8 @@ namespace VideoPlayer.UserControls
         {
             player.Close();
 
-            buttonPlayPause.IsEnabled = false;
-            buttonStop.IsEnabled = false;
+            DisablePlayPause();
+            DisableStop();
 
             progressTimer.Stop();
             sliderProgress.Value = 0;
@@ -196,11 +247,21 @@ namespace VideoPlayer.UserControls
                 Width = buttonPlayPause.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\play.png"))
             };
+            playImageDisabled = new Image
+            {
+                Width = buttonPlayPause.Width,
+                Source = new BitmapImage(new Uri($@"{resourcesPath}\play-disabled.png"))
+            };
 
             pauseImage = new Image
             {
                 Width = buttonPlayPause.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\pause.png"))
+            };
+            pauseImageDisabled = new Image
+            {
+                Width = buttonPlayPause.Width,
+                Source = new BitmapImage(new Uri($@"{resourcesPath}\pause-disabled.png"))
             };
 
             stopImage = new Image
@@ -208,11 +269,21 @@ namespace VideoPlayer.UserControls
                 Width = buttonStop.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\stop.png"))
             };
+            stopImageDisabled = new Image
+            {
+                Width = buttonStop.Width,
+                Source = new BitmapImage(new Uri($@"{resourcesPath}\stop-disabled.png"))
+            };
 
             openImage = new Image
             {
                 Width = buttonOpen.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\open.png"))
+            };
+            openImageDisabled = new Image
+            {
+                Width = buttonOpen.Width,
+                Source = new BitmapImage(new Uri($@"{resourcesPath}\open-disabled.png"))
             };
 
             mutedImage = new Image
@@ -220,15 +291,25 @@ namespace VideoPlayer.UserControls
                 Width = buttonMuteUnmute.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\muted.png"))
             };
+            mutedImageDisabled = new Image
+            {
+                Width = buttonMuteUnmute.Width,
+                Source = new BitmapImage(new Uri($@"{resourcesPath}\muted-disabled.png"))
+            };
 
             unmutedImage = new Image
             {
                 Width = buttonMuteUnmute.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\unmuted.png"))
             };
+            unmutedImageDisabled = new Image
+            {
+                Width = buttonMuteUnmute.Width,
+                Source = new BitmapImage(new Uri($@"{resourcesPath}\unmuted-disabled.png"))
+            };
 
-            imagePlayPause.Source = playImage.Source;
-            imageStop.Source = stopImage.Source;
+            imagePlayPause.Source = playImageDisabled.Source;
+            imageStop.Source = stopImageDisabled.Source;
             imageOpen.Source = openImage.Source;
             imageMuteUnmute.Source = unmutedImage.Source;
 
@@ -283,8 +364,8 @@ namespace VideoPlayer.UserControls
             sliderProgress.Minimum = 0;
             sliderProgress.Maximum = position.TotalSeconds;
 
-            buttonPlayPause.IsEnabled = true;
-            buttonStop.IsEnabled = true;
+            EnablePlayPause();
+            EnableStop();
 
             progressTimer.Start();
         }

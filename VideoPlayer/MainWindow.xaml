@@ -12,6 +12,7 @@
         SizeToContent="Height"
         KeyDown="Window_KeyDown">
     <Grid>
-        <UserControl x:Name="masterUserControl" />
+        <UserControl x:Name="masterUserControl"
+                     Margin="0,0,0,10"/>
     </Grid>
 </Window>
