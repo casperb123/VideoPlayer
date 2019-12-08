@@ -114,26 +114,37 @@ namespace VideoPlayer.UserControls
             }
         }
 
-        private void Play()
+        public void Open(string filePath)
+        {
+            if (player.NaturalDuration.HasTimeSpan)
+            {
+                Stop();
+            }
+
+            Media video = new Media(filePath);
+            player.Source = video.Uri;
+            Play();
+        }
+
+        public void Play()
         {
             progressTimer.Start();
             player.Play();
             imagePlayPause.Source = pauseImage.Source;
         }
 
-        private void Pause()
+        public void Pause()
         {
             progressTimer.Stop();
             player.Pause();
             imagePlayPause.Source = playImage.Source;
         }
 
-        private void Stop()
+        public void Stop()
         {
             player.Close();
 
             buttonPlayPause.IsEnabled = false;
-            //buttonPlayPause.Content = "Play";
             buttonStop.IsEnabled = false;
 
             progressTimer.Stop();
@@ -141,13 +152,15 @@ namespace VideoPlayer.UserControls
             textBlockDuration.Text = "0:00 / 0:00";
         }
 
-        private void MuteToggle()
+        public bool MuteToggle()
         {
             if (player.Volume > 0)
             {
                 oldVolume = player.Volume;
                 sliderVolume.Value = 0;
                 imageMuteUnmute.Source = mutedImage.Source;
+
+                return true;
             }
             else if (oldVolume == 0)
             {
@@ -161,6 +174,8 @@ namespace VideoPlayer.UserControls
                 oldVolume = player.Volume;
                 imageMuteUnmute.Source = unmutedImage.Source;
             }
+
+            return false;
         }
 
         public MediaPlayerUserControl()
@@ -248,11 +263,11 @@ namespace VideoPlayer.UserControls
                 DefaultExt = ".avi",
                 Filter = "Media Files|*.mpg;*.avi;*.wma;*.mov;*.wav;*.mp2;*.mp3;*.mp4|All Files|*.*"
             };
-            openFileDialog.ShowDialog();
 
-            Media video = new Media(openFileDialog.FileName);
-            player.Source = video.Uri;
-            Play();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                Open(openFileDialog.FileName);
+            }
         }
 
         private void Player_MediaEnded(object sender, RoutedEventArgs e)
