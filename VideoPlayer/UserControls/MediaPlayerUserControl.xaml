@@ -4,9 +4,23 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:VideoPlayer.UserControls"
+             xmlns:commands="clr-namespace:VideoPlayer.Commands"
              mc:Ignorable="d"
              d:DesignHeight="535"
-             d:DesignWidth="800">
+             d:DesignWidth="800"
+             KeyDown="UserControl_KeyDown">
+
+    <UserControl.CommandBindings>
+        <CommandBinding Command="{x:Static commands:UICommands.PlayPauseCmd}"
+                        CanExecute="PlayPauseCanExecute"
+                        Executed="PlayPauseExecuted" />
+    </UserControl.CommandBindings>
+
+    <UserControl.InputBindings>
+        <KeyBinding Command="{x:Static commands:UICommands.PlayPauseCmd}"
+                    Key="Space" />
+    </UserControl.InputBindings>
+
     <UserControl.Resources>
         <Style x:Key="ImageButton"
                TargetType="Button">

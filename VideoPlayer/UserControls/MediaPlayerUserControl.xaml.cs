@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using VideoPlayer.Commands;
 using VideoPlayer.Entities;
 
 namespace VideoPlayer.UserControls
@@ -232,6 +233,9 @@ namespace VideoPlayer.UserControls
         public MediaPlayerUserControl()
         {
             InitializeComponent();
+            Focusable = true;
+            Loaded += (s, e) => Keyboard.Focus(this);
+
             mediaElementBackground.Background = new SolidColorBrush(Color.FromRgb(16, 16, 16));
 
             string runningPath = AppDomain.CurrentDomain.BaseDirectory;
@@ -323,7 +327,13 @@ namespace VideoPlayer.UserControls
             sliderProgress.Value = player.Position.TotalSeconds;
         }
 
-        private void ButtonPlayPause_Click(object sender, RoutedEventArgs e)
+        private void PlayPauseCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+            e.Handled = true;
+        }
+
+        private void PlayPauseExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             if (player.Source != null)
             {
@@ -331,9 +341,16 @@ namespace VideoPlayer.UserControls
             }
         }
 
+        private void ButtonPlayPause_Click(object sender, RoutedEventArgs e)
+        {
+            UICommands.PlayPauseCmd.Execute(null, buttonPlayPause);
+            Focus();
+        }
+
         private void ButtonStop_Click(object sender, RoutedEventArgs e)
         {
             Stop();
+            Focus();
         }
 
         private void ButtonOpen_Click(object sender, RoutedEventArgs e)
@@ -349,6 +366,8 @@ namespace VideoPlayer.UserControls
             {
                 Open(openFileDialog.FileName);
             }
+
+            Focus();
         }
 
         private void Player_MediaEnded(object sender, RoutedEventArgs e)
@@ -421,6 +440,27 @@ namespace VideoPlayer.UserControls
         private void ButtonMuteUnmute_Click(object sender, RoutedEventArgs e)
         {
             MuteToggle();
+            Focus();
+        }
+
+        private void UserControl_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+            {
+                IsPlaying = !IsPlaying;
+            }
+            else if (e.Key == Key.Right)
+            {
+                int pos = Convert.ToInt32(sliderProgress.Value + 5);
+                player.Position = new TimeSpan(0, 0, 0, pos, 0);
+                sliderProgress.Value = player.Position.TotalSeconds;
+            }
+            else if (e.Key == Key.Left)
+            {
+                int pos = Convert.ToInt32(sliderProgress.Value - 5);
+                player.Position = new TimeSpan(0, 0, 0, pos, 0);
+                sliderProgress.Value = player.Position.TotalSeconds;
+            }
         }
     }
 }
