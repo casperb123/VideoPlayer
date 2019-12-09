@@ -10,13 +10,13 @@
 
     <UserControl.CommandBindings>
         <CommandBinding Command="{x:Static local:MediaPlayerUserControl.PlayPauseCmd}"
-                        CanExecute="PlayPauseCanExecute"
+                        CanExecute="CommandCanExecute"
                         Executed="PlayPauseExecuted" />
         <CommandBinding Command="{x:Static local:MediaPlayerUserControl.SkipForwardCmd}"
-                        CanExecute="SkipForwardCanExecute"
+                        CanExecute="CommandCanExecute"
                         Executed="SkipForwardExecuted" />
         <CommandBinding Command="{x:Static local:MediaPlayerUserControl.SkipBackwardCmd}"
-                        CanExecute="SkipBackwardCanExecute"
+                        CanExecute="CommandCanExecute"
                         Executed="SkipBackwardExecuted" />
     </UserControl.CommandBindings>
 

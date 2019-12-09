@@ -29,7 +29,7 @@ namespace VideoPlayer.UserControls
             DataContext = viewModel;
         }
 
-        private void PlayPauseCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void CommandCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
             e.Handled = true;
@@ -43,23 +43,11 @@ namespace VideoPlayer.UserControls
             }
         }
 
-        private void SkipForwardCanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-            e.Handled = true;
-        }
-
         private void SkipForwardExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             int pos = Convert.ToInt32(sliderProgress.Value + 5);
             player.Position = new TimeSpan(0, 0, 0, pos, 0);
             sliderProgress.Value = player.Position.TotalSeconds;
-        }
-
-        private void SkipBackwardCanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-            e.Handled = true;
         }
 
         private void SkipBackwardExecuted(object sender, ExecutedRoutedEventArgs e)
