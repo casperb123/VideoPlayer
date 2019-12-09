@@ -15,27 +15,5 @@ namespace VideoPlayer
             InitializeComponent();
             masterUserControl.Content = new MediaPlayerUserControl();
         }
-
-        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            MediaPlayerUserControl mediaPlayerUserControl = masterUserControl.Content as MediaPlayerUserControl;
-
-            if (e.Key == Key.Space)
-            {
-                mediaPlayerUserControl.IsPlaying = !mediaPlayerUserControl.IsPlaying;
-            }
-            else if (e.Key == Key.Right)
-            {
-                int pos = Convert.ToInt32(mediaPlayerUserControl.sliderProgress.Value + 5);
-                mediaPlayerUserControl.player.Position = new TimeSpan(0, 0, 0, pos, 0);
-                mediaPlayerUserControl.sliderProgress.Value = mediaPlayerUserControl.player.Position.TotalSeconds;
-            }
-            else if (e.Key == Key.Left)
-            {
-                int pos = Convert.ToInt32(mediaPlayerUserControl.sliderProgress.Value - 5);
-                mediaPlayerUserControl.player.Position = new TimeSpan(0, 0, 0, pos, 0);
-                mediaPlayerUserControl.sliderProgress.Value = mediaPlayerUserControl.player.Position.TotalSeconds;
-            }
-        }
     }
 }

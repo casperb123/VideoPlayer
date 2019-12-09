@@ -63,6 +63,46 @@ namespace VideoPlayer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] high_volume {
+            get {
+                object obj = ResourceManager.GetObject("high_volume", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] high_volume_disabled {
+            get {
+                object obj = ResourceManager.GetObject("high_volume_disabled", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] low_volume {
+            get {
+                object obj = ResourceManager.GetObject("low_volume", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] low_volume_disabled {
+            get {
+                object obj = ResourceManager.GetObject("low_volume_disabled", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] muted {
             get {
                 object obj = ResourceManager.GetObject("muted", resourceCulture);
@@ -156,26 +196,6 @@ namespace VideoPlayer.Properties {
         internal static byte[] stop_disabled {
             get {
                 object obj = ResourceManager.GetObject("stop_disabled", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] unmuted {
-            get {
-                object obj = ResourceManager.GetObject("unmuted", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] unmuted_disabled {
-            get {
-                object obj = ResourceManager.GetObject("unmuted_disabled", resourceCulture);
                 return ((byte[])(obj));
             }
         }

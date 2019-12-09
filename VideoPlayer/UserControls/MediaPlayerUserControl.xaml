@@ -4,21 +4,29 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:VideoPlayer.UserControls"
-             xmlns:commands="clr-namespace:VideoPlayer.Commands"
              mc:Ignorable="d"
              d:DesignHeight="535"
-             d:DesignWidth="800"
-             KeyDown="UserControl_KeyDown">
+             d:DesignWidth="800">
 
     <UserControl.CommandBindings>
-        <CommandBinding Command="{x:Static commands:UICommands.PlayPauseCmd}"
+        <CommandBinding Command="{x:Static local:MediaPlayerUserControl.PlayPauseCmd}"
                         CanExecute="PlayPauseCanExecute"
                         Executed="PlayPauseExecuted" />
+        <CommandBinding Command="{x:Static local:MediaPlayerUserControl.SkipForwardCmd}"
+                        CanExecute="SkipForwardCanExecute"
+                        Executed="SkipForwardExecuted" />
+        <CommandBinding Command="{x:Static local:MediaPlayerUserControl.SkipBackwardCmd}"
+                        CanExecute="SkipBackwardCanExecute"
+                        Executed="SkipBackwardExecuted" />
     </UserControl.CommandBindings>
 
     <UserControl.InputBindings>
-        <KeyBinding Command="{x:Static commands:UICommands.PlayPauseCmd}"
+        <KeyBinding Command="{x:Static local:MediaPlayerUserControl.PlayPauseCmd}"
                     Key="Space" />
+        <KeyBinding Command="{x:Static local:MediaPlayerUserControl.SkipForwardCmd}"
+                    Key="Right" />
+        <KeyBinding Command="{x:Static local:MediaPlayerUserControl.SkipBackwardCmd}"
+                    Key="Left" />
     </UserControl.InputBindings>
 
     <UserControl.Resources>
@@ -44,7 +52,7 @@
                             <Trigger Property="IsPressed"
                                      Value="true">
                                 <Setter Property="Cursor"
-                                        Value="Hand"/>
+                                        Value="Hand" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

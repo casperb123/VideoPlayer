@@ -7,6 +7,18 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Commands\**" />
+    <EmbeddedResource Remove="Commands\**" />
+    <None Remove="Commands\**" />
+    <Page Remove="Commands\**" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\VideoPlayer.Entities\VideoPlayer.Entities.csproj" />
   </ItemGroup>
@@ -27,6 +39,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Resources\low-volume-disabled.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\low-volume.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\muted-disabled.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -57,10 +75,10 @@
     <None Update="Resources\stop.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Resources\unmuted-disabled.png">
+    <None Update="Resources\high-volume-disabled.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Resources\unmuted.png">
+    <None Update="Resources\high-volume.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -118,6 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="high_volume" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\high-volume.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="high_volume_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\high-volume-disabled.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="low_volume" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\low-volume.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="low_volume_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\low-volume-disabled.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="muted" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\muted.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -147,11 +159,5 @@
   </data>
   <data name="stop_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\stop-disabled.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="unmuted" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\unmuted.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="unmuted_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\unmuted-disabled.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>
