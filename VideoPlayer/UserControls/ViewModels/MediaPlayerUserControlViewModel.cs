@@ -42,6 +42,12 @@ namespace VideoPlayer.UserControls.ViewModels
 
         public DispatcherTimer ProgressTimer;
 
+        public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl, string filePath)
+            : this(mediaPlayerUserControl)
+        {
+            Open(filePath);
+        }
+
         public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl)
         {
             this.mediaPlayerUserControl = mediaPlayerUserControl;
@@ -141,8 +147,10 @@ namespace VideoPlayer.UserControls.ViewModels
             mediaPlayerUserControl.imageOpen.Source = OpenImage.Source;
             mediaPlayerUserControl.imageMuteUnmute.Source = HighVolume.Source;
 
-            ProgressTimer = new DispatcherTimer();
-            ProgressTimer.Interval = TimeSpan.FromMilliseconds(1000);
+            ProgressTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(1000)
+            };
             ProgressTimer.Tick += ProgressTimer_Tick;
         }
         private void ProgressTimer_Tick(object sender, EventArgs e)
