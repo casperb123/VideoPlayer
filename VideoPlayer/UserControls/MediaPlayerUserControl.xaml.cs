@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -88,7 +89,15 @@ namespace VideoPlayer.UserControls
 
         private void Player_MediaEnded(object sender, RoutedEventArgs e)
         {
-            viewModel.Stop();
+            if (viewModel.Loop)
+            {
+                viewModel.Stop(false);
+                viewModel.Play();
+            }
+            else
+            {
+                viewModel.Stop();
+            }
         }
 
         private void Player_MediaOpened(object sender, RoutedEventArgs e)
@@ -161,6 +170,31 @@ namespace VideoPlayer.UserControls
         {
             viewModel.MuteToggle();
             Focus();
+        }
+
+        private void ButtonSettings_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.ToggleSettings();
+        }
+
+        private void ComboBoxPlaybackSpeed_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!IsLoaded) return;
+
+            ComboBoxItem selectedItem = comboBoxPlaybackSpeed.SelectedItem as ComboBoxItem;
+            double value = double.Parse(selectedItem.Tag.ToString(), CultureInfo.InvariantCulture);
+
+            viewModel.ChangeSpeed(value);
+        }
+
+        private void CheckBoxLoop_Checked(object sender, RoutedEventArgs e)
+        {
+            viewModel.Loop = true;
+        }
+
+        private void CheckBoxLoop_Unchecked(object sender, RoutedEventArgs e)
+        {
+            viewModel.Loop = false;
         }
     }
 }

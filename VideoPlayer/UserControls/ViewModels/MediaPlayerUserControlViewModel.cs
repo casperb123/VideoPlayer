@@ -37,8 +37,12 @@ namespace VideoPlayer.UserControls.ViewModels
         public readonly Image LowVolume;
         public readonly Image LowVolumeDisabled;
 
+        public readonly Image Settings;
+        public readonly Image SettingsDisabled;
+
         public TimeSpan position;
         public double OldVolume;
+        public bool Loop;
 
         public DispatcherTimer ProgressTimer;
 
@@ -52,10 +56,11 @@ namespace VideoPlayer.UserControls.ViewModels
         {
             userControl = mediaPlayerUserControl;
 
-            mediaPlayerUserControl.Focusable = true;
-            mediaPlayerUserControl.Loaded += (s, e) => Keyboard.Focus(mediaPlayerUserControl);
+            userControl.Focusable = true;
+            userControl.Loaded += (s, e) => Keyboard.Focus(userControl);
 
-            mediaPlayerUserControl.mediaElementBackground.Background = new SolidColorBrush(Color.FromRgb(16, 16, 16));
+            userControl.mediaElementBackground.Background = new SolidColorBrush(Color.FromRgb(16, 16, 16));
+            userControl.comboBoxPlaybackSpeed.SelectedItem = "Normal";
 
             string runningPath = AppDomain.CurrentDomain.BaseDirectory;
             string resourcesPath = $@"{Path.GetFullPath(Path.Combine(runningPath, @"..\..\..\"))}Resources";
@@ -142,20 +147,34 @@ namespace VideoPlayer.UserControls.ViewModels
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\low-volume-disabled.png"))
             };
 
+            Settings = new Image
+            {
+                Width = mediaPlayerUserControl.buttonMuteUnmute.Width,
+                Source = new BitmapImage(new Uri($@"{resourcesPath}\settings.png"))
+            };
+            SettingsDisabled = new Image
+            {
+                Width = mediaPlayerUserControl.buttonMuteUnmute.Width,
+                Source = new BitmapImage(new Uri($@"{resourcesPath}\settings-disabled.png"))
+            };
+
             mediaPlayerUserControl.imagePlayPause.Source = PlayImageDisabled.Source;
             mediaPlayerUserControl.imageStop.Source = StopImageDisabled.Source;
             mediaPlayerUserControl.imageOpen.Source = OpenImage.Source;
             mediaPlayerUserControl.imageMuteUnmute.Source = HighVolume.Source;
+            mediaPlayerUserControl.imageSettings.Source = Settings.Source;
 
             ProgressTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromMilliseconds(1000)
             };
-            ProgressTimer.Tick += ProgressTimer_Tick;
-        }
-        private void ProgressTimer_Tick(object sender, EventArgs e)
-        {
-            userControl.sliderProgress.Value = userControl.player.Position.TotalSeconds;
+            ProgressTimer.Tick += (s, e) =>
+            {
+                if (IsPlaying)
+                {
+                    userControl.sliderProgress.Value = userControl.player.Position.TotalSeconds;
+                }
+            };
         }
 
         public bool IsPlaying
@@ -209,17 +228,6 @@ namespace VideoPlayer.UserControls.ViewModels
                         return false;
                     default:
                         return false;
-                }
-            }
-            set
-            {
-                if (value)
-                {
-                    Pause();
-                }
-                else
-                {
-                    Play();
                 }
             }
         }
@@ -308,10 +316,13 @@ namespace VideoPlayer.UserControls.ViewModels
             userControl.imagePlayPause.Source = PlayImage.Source;
         }
 
-        public void Stop()
+        public void Stop(bool resetSource = true)
         {
             userControl.player.Close();
-            userControl.player.Source = null;
+            if (resetSource)
+            {
+                userControl.player.Source = null;
+            }
 
             DisablePlayPause();
             DisableStop();
@@ -344,110 +355,25 @@ namespace VideoPlayer.UserControls.ViewModels
             return false;
         }
 
-        public void ButtonPlayPause_Click(object sender, RoutedEventArgs e)
+        public void ToggleSettings()
         {
-            MediaPlayerUserControl.PlayPauseCmd.Execute(null, userControl.buttonPlayPause);
-            userControl.Focus();
-        }
+            userControl.gridSettings.IsEnabled = !userControl.gridSettings.IsEnabled;
 
-        private void ButtonStop_Click(object sender, RoutedEventArgs e)
-        {
-            Stop();
-            userControl.Focus();
-        }
-
-        private void ButtonOpen_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            if (userControl.gridSettings.IsEnabled)
             {
-                Title = "Select video file",
-                DefaultExt = ".avi",
-                Filter = "Media Files|*.mpg;*.avi;*.wma;*.mov;*.wav;*.mp2;*.mp3;*.mp4|All Files|*.*"
-            };
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                Open(openFileDialog.FileName);
-            }
-
-            userControl.Focus();
-        }
-
-        private void Player_MediaEnded(object sender, RoutedEventArgs e)
-        {
-            Stop();
-        }
-
-        private void Player_MediaOpened(object sender, RoutedEventArgs e)
-        {
-            Play();
-
-            position = userControl.player.NaturalDuration.TimeSpan;
-            userControl.sliderProgress.Minimum = 0;
-            userControl.sliderProgress.Maximum = position.TotalSeconds;
-
-            EnablePlayPause();
-            EnableStop();
-
-            ProgressTimer.Start();
-        }
-
-        private void SliderProgress_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            userControl.player.Pause();
-            ProgressTimer.Stop();
-        }
-
-        private void SliderProgress_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            int pos = Convert.ToInt32(userControl.sliderProgress.Value);
-            userControl.player.Position = new TimeSpan(0, 0, 0, pos, 0);
-            userControl.player.Play();
-            ProgressTimer.Start();
-        }
-
-        private void SliderProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            ShowTime();
-        }
-
-        private void SliderVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (!userControl.IsLoaded) return;
-
-            userControl.player.Volume = userControl.sliderVolume.Value;
-
-            if (userControl.sliderVolume.Value == 0)
-            {
-                userControl.imageMuteUnmute.Source = MutedImage.Source;
-            }
-            else if (userControl.sliderVolume.Value <= .5)
-            {
-                userControl.imageMuteUnmute.Source = LowVolume.Source;
+                userControl.gridSettings.Visibility = Visibility.Visible;
+                userControl.gridSettings.Focus();
             }
             else
             {
-                userControl.imageMuteUnmute.Source = HighVolume.Source;
+                userControl.gridSettings.Visibility = Visibility.Hidden;
             }
         }
 
-        private void SliderVolume_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        public void ChangeSpeed(double speed)
         {
-            OldVolume = userControl.sliderVolume.Value;
-        }
-
-        private void SliderVolume_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (userControl.sliderVolume.Value > 0)
-            {
-                OldVolume = userControl.sliderVolume.Value;
-            }
-        }
-
-        private void ButtonMuteUnmute_Click(object sender, RoutedEventArgs e)
-        {
-            MuteToggle();
-            userControl.Focus();
+            userControl.player.SpeedRatio = speed;
+            ProgressTimer.Interval = TimeSpan.FromMilliseconds(speed);
         }
     }
 }

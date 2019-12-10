@@ -183,6 +183,26 @@ namespace VideoPlayer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] settings {
+            get {
+                object obj = ResourceManager.GetObject("settings", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] settings_disabled {
+            get {
+                object obj = ResourceManager.GetObject("settings_disabled", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] stop {
             get {
                 object obj = ResourceManager.GetObject("stop", resourceCulture);
