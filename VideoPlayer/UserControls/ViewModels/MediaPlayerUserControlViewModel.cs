@@ -166,7 +166,7 @@ namespace VideoPlayer.UserControls.ViewModels
 
             ProgressTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromMilliseconds(1000)
+                Interval = TimeSpan.FromMilliseconds(500)
             };
             ProgressTimer.Tick += (s, e) =>
             {
@@ -373,7 +373,6 @@ namespace VideoPlayer.UserControls.ViewModels
         public void ChangeSpeed(double speed)
         {
             userControl.player.SpeedRatio = speed;
-            ProgressTimer.Interval = TimeSpan.FromMilliseconds(speed);
         }
     }
 }
