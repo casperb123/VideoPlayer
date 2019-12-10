@@ -6,8 +6,9 @@
              xmlns:local="clr-namespace:VideoPlayer.UserControls"
              mc:Ignorable="d"
              d:DesignHeight="535"
-             d:DesignWidth="800">
-
+             d:DesignWidth="800"
+             UseLayoutRounding="True"
+             RenderOptions.BitmapScalingMode="HighQuality">
     <UserControl.CommandBindings>
         <CommandBinding Command="{x:Static local:MediaPlayerUserControl.PlayPauseCmd}"
                         CanExecute="CommandCanExecute"
@@ -82,17 +83,17 @@
                     Grid.Row="2"
                     Orientation="Horizontal">
 
-            <Button x:Name="buttonPlayPause"
-                    Style="{StaticResource ImageButton}"
-                    IsEnabled="False"
-                    Click="ButtonPlayPause_Click">
-                <Image x:Name="imagePlayPause" />
-            </Button>
             <Button x:Name="buttonStop"
                     Style="{StaticResource ImageButton}"
                     IsEnabled="False"
                     Click="ButtonStop_Click">
                 <Image x:Name="imageStop" />
+            </Button>
+            <Button x:Name="buttonPlayPause"
+                    Style="{StaticResource ImageButton}"
+                    IsEnabled="False"
+                    Click="ButtonPlayPause_Click">
+                <Image x:Name="imagePlayPause" />
             </Button>
             <Button x:Name="buttonOpen"
                     Style="{StaticResource ImageButton}"
