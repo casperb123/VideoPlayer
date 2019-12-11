@@ -19,6 +19,17 @@ namespace VideoPlayer.UserControls
         public static RoutedUICommand SkipForwardCmd;
         public static RoutedUICommand SkipBackwardCmd;
 
+        public MediaPlayerUserControl(string filePath)
+        {
+            PlayPauseCmd = new RoutedUICommand("Toggle playing", "PlayPause", typeof(MediaPlayerUserControl));
+            SkipForwardCmd = new RoutedUICommand("Skip forward", "SkipForward", typeof(MediaPlayerUserControl));
+            SkipBackwardCmd = new RoutedUICommand("Skip backwards", "SkipBackard", typeof(MediaPlayerUserControl));
+
+            InitializeComponent();
+            viewModel = new MediaPlayerUserControlViewModel(this, filePath);
+            DataContext = viewModel;
+        }
+
         public MediaPlayerUserControl()
         {
             PlayPauseCmd = new RoutedUICommand("Toggle playing", "PlayPause", typeof(MediaPlayerUserControl));

@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Windows;
 using VideoPlayer.UserControls;
 
 namespace VideoPlayer
@@ -8,10 +11,30 @@ namespace VideoPlayer
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly string[] validExtensions = new string[]
+        {
+            ".mpg",
+            ".avi",
+            ".wma",
+            ".mov",
+            ".wav",
+            ".mp2",
+            ".mp3",
+            ".mp4"
+        };
+
         public MainWindow()
         {
             InitializeComponent();
-            masterUserControl.Content = new MediaPlayerUserControl();
+            string[] cmdLine = Environment.GetCommandLineArgs();
+            if (cmdLine.Length == 2 && validExtensions.Contains(Path.GetExtension(cmdLine[1])))
+            {
+                masterUserControl.Content = new MediaPlayerUserControl(cmdLine[1]);
+            }
+            else
+            {
+                masterUserControl.Content = new MediaPlayerUserControl();
+            }
         }
     }
 }

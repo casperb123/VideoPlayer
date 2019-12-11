@@ -69,6 +69,12 @@
     <None Update="Resources\play.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\settings-disabled.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\settings.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\stop-disabled.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
