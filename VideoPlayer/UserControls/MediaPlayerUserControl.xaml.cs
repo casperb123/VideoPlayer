@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -96,7 +97,7 @@ namespace VideoPlayer.UserControls
 
         private void Player_MediaEnded(object sender, RoutedEventArgs e)
         {
-            if (viewModel.Loop)
+            if (viewModel.LoopVideo)
             {
                 viewModel.Stop(false);
                 viewModel.Play();
@@ -201,14 +202,53 @@ namespace VideoPlayer.UserControls
 
         private void CheckBoxLoop_Checked(object sender, RoutedEventArgs e)
         {
-            viewModel.Loop = true;
+            viewModel.LoopVideo = true;
             Focus();
         }
 
         private void CheckBoxLoop_Unchecked(object sender, RoutedEventArgs e)
         {
-            viewModel.Loop = false;
+            viewModel.LoopVideo = false;
             Focus();
+        }
+
+        private void TextBoxLoop_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!IsLoaded) return;
+
+            if (viewModel.CheckSyntax(textBoxLoopStart.Text) &&
+                viewModel.CheckSyntax(textBoxLoopEnd.Text) &&
+                player.NaturalDuration.HasTimeSpan &&
+                viewModel.IsValidTime(textBoxLoopStart.Text) &&
+                viewModel.IsValidTime(textBoxLoopEnd.Text))
+            {
+                checkBoxLoopTime.IsEnabled = true;
+            }
+            else
+            {
+                checkBoxLoopTime.IsEnabled = false;
+                checkBoxLoopTime.IsChecked = false;
+            }
+        }
+
+        private void TextBoxLoopStart_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (viewModel.IsValidLoop())
+            {
+                checkBoxLoopTime.IsEnabled = true;
+                viewModel.LoopStart = viewModel.ConvertTimeToSeconds(textBoxLoopStart.Text);
+                viewModel.LoopEnd = viewModel.ConvertTimeToSeconds(textBoxLoopEnd.Text);
+            }
+        }
+
+        private void TextBoxLoopEnd_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            checkBoxLoopTime.IsEnabled = viewModel.IsValidLoop();
+
+            if (viewModel.IsValidLoop())
+            {
+                checkBoxLoopTime.IsChecked = false;
+            }
         }
     }
 }

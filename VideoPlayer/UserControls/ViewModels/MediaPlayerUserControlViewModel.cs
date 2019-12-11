@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -42,7 +43,38 @@ namespace VideoPlayer.UserControls.ViewModels
 
         public TimeSpan position;
         public double OldVolume;
-        public bool Loop;
+        public bool LoopVideo;
+
+        private int loopStart;
+        private int loopEnd;
+
+        public int LoopStart
+        {
+            get => loopStart;
+            set
+            {
+                if (value >= LoopEnd)
+                {
+                    throw new ArgumentException("The start time must be lower than the end time");
+                }
+
+                loopStart = value;
+            }
+        }
+
+        public int LoopEnd
+        {
+            get => loopEnd;
+            set
+            {
+                if (value <= LoopStart)
+                {
+                    throw new ArgumentException("The end time must be higher than the start time");
+                }
+
+                loopEnd = value;
+            }
+        }
 
         public DispatcherTimer ProgressTimer;
 
@@ -373,6 +405,43 @@ namespace VideoPlayer.UserControls.ViewModels
         public void ChangeSpeed(double speed)
         {
             userControl.player.SpeedRatio = speed;
+        }
+
+        public bool CheckSyntax(string text)
+        {
+            Regex syntax = new Regex("[0-9]:[0-9][0-9]");
+            return syntax.IsMatch(text);
+        }
+
+        public bool IsValidTime(string time)
+        {
+            double seconds = ConvertTimeToSeconds(time);
+
+            if (seconds < userControl.sliderProgress.Value ||
+                seconds > userControl.sliderProgress.Value)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public int ConvertTimeToSeconds(string time)
+        {
+            int minutes = int.Parse(time.Substring(0, 1));
+            int seconds = int.Parse(time.Substring(2));
+
+            int totalSeconds = (60 * minutes) + seconds;
+            return totalSeconds;
+        }
+
+        public bool IsValidLoop()
+        {
+            return CheckSyntax(userControl.textBoxLoopStart.Text) &&
+                   CheckSyntax(userControl.textBoxLoopEnd.Text) &&
+                   userControl.player.NaturalDuration.HasTimeSpan &&
+                   IsValidTime(userControl.textBoxLoopStart.Text) &&
+                   IsValidTime(userControl.textBoxLoopEnd.Text);
         }
     }
 }
