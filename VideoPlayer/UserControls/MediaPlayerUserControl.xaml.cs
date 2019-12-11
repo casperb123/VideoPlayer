@@ -19,25 +19,21 @@ namespace VideoPlayer.UserControls
         public static RoutedUICommand SkipForwardCmd;
         public static RoutedUICommand SkipBackwardCmd;
 
-        public MediaPlayerUserControl(string filePath)
+        public MediaPlayerUserControl(string filePath = null)
         {
             PlayPauseCmd = new RoutedUICommand("Toggle playing", "PlayPause", typeof(MediaPlayerUserControl));
             SkipForwardCmd = new RoutedUICommand("Skip forward", "SkipForward", typeof(MediaPlayerUserControl));
             SkipBackwardCmd = new RoutedUICommand("Skip backwards", "SkipBackard", typeof(MediaPlayerUserControl));
 
             InitializeComponent();
-            viewModel = new MediaPlayerUserControlViewModel(this, filePath);
-            DataContext = viewModel;
-        }
-
-        public MediaPlayerUserControl()
-        {
-            PlayPauseCmd = new RoutedUICommand("Toggle playing", "PlayPause", typeof(MediaPlayerUserControl));
-            SkipForwardCmd = new RoutedUICommand("Skip forward", "SkipForward", typeof(MediaPlayerUserControl));
-            SkipBackwardCmd = new RoutedUICommand("Skip backwards", "SkipBackard", typeof(MediaPlayerUserControl));
-
-            InitializeComponent();
-            viewModel = new MediaPlayerUserControlViewModel(this);
+            if (filePath is null)
+            {
+                viewModel = new MediaPlayerUserControlViewModel(this);
+            }
+            else
+            {
+                viewModel = new MediaPlayerUserControlViewModel(this, filePath);
+            }
             DataContext = viewModel;
         }
 
@@ -136,6 +132,8 @@ namespace VideoPlayer.UserControls
             int pos = Convert.ToInt32(sliderProgress.Value);
             player.Position = new TimeSpan(0, 0, 0, pos, 0);
             viewModel.Play();
+
+            Focus();
         }
 
         private void SliderProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -174,6 +172,8 @@ namespace VideoPlayer.UserControls
             {
                 viewModel.OldVolume = sliderVolume.Value;
             }
+
+            Focus();
         }
 
         private void ButtonMuteUnmute_Click(object sender, RoutedEventArgs e)
