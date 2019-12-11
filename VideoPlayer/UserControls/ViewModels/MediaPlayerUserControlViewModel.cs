@@ -45,10 +45,11 @@ namespace VideoPlayer.UserControls.ViewModels
         public double OldVolume;
         public bool LoopVideo;
 
-        private int loopStart;
-        private int loopEnd;
+        public bool LoopSpecificTime;
+        private double loopStart;
+        private double loopEnd;
 
-        public int LoopStart
+        public double LoopStart
         {
             get => loopStart;
             set
@@ -62,7 +63,7 @@ namespace VideoPlayer.UserControls.ViewModels
             }
         }
 
-        public int LoopEnd
+        public double LoopEnd
         {
             get => loopEnd;
             set
@@ -204,6 +205,20 @@ namespace VideoPlayer.UserControls.ViewModels
             {
                 if (IsPlaying)
                 {
+                    if (LoopSpecificTime)
+                    {
+                        if (userControl.sliderProgress.Value < LoopStart)
+                        {
+                            int pos = Convert.ToInt32(LoopStart);
+                            userControl.player.Position = new TimeSpan(0, 0, 0, pos, 0);
+                        }
+                        else if (userControl.sliderProgress.Value >= LoopEnd)
+                        {
+                            int pos = Convert.ToInt32(LoopStart);
+                            userControl.player.Position = new TimeSpan(0, 0, 0, pos, 0);
+                        }
+                    }
+
                     userControl.sliderProgress.Value = userControl.player.Position.TotalSeconds;
                 }
             };
@@ -407,13 +422,15 @@ namespace VideoPlayer.UserControls.ViewModels
             userControl.player.SpeedRatio = speed;
         }
 
-        public bool CheckSyntax(string text)
+        private bool CheckSyntax(string text)
         {
-            Regex syntax = new Regex("[0-9]:[0-9][0-9]");
-            return syntax.IsMatch(text);
+            Regex firstSyntax = new Regex("[0-9]:[0-6][0-9]");
+            Regex secondSyntax = new Regex("[0-9][0-9]:[0-6][0-9]");
+
+            return firstSyntax.IsMatch(text) || secondSyntax.IsMatch(text);
         }
 
-        public bool IsValidTime(string time)
+        private bool IsValidTime(string time)
         {
             double seconds = ConvertTimeToSeconds(time);
 
@@ -426,12 +443,14 @@ namespace VideoPlayer.UserControls.ViewModels
             return true;
         }
 
-        public int ConvertTimeToSeconds(string time)
+        private double ConvertTimeToSeconds(string time)
         {
-            int minutes = int.Parse(time.Substring(0, 1));
-            int seconds = int.Parse(time.Substring(2));
+            int index = time.IndexOf(':');
 
-            int totalSeconds = (60 * minutes) + seconds;
+            double minutes = double.Parse(Split(time, 0, index));
+            double seconds = double.Parse(time.Substring(index));
+
+            double totalSeconds = (60 * minutes) + seconds;
             return totalSeconds;
         }
 
@@ -442,6 +461,41 @@ namespace VideoPlayer.UserControls.ViewModels
                    userControl.player.NaturalDuration.HasTimeSpan &&
                    IsValidTime(userControl.textBoxLoopStart.Text) &&
                    IsValidTime(userControl.textBoxLoopEnd.Text);
+        }
+
+        public void SetLoopTime(string start, string end)
+        {
+            double startTime = ConvertTimeToSeconds(start);
+            double endTime = ConvertTimeToSeconds(end);
+
+            if (startTime >= endTime)
+            {
+                throw new ArgumentException("The start time must be lower than the end time");
+            }
+            else if (endTime <= startTime)
+            {
+                throw new ArgumentException("The end time must be higher than the start time");
+            }
+            else if (startTime == endTime)
+            {
+                throw new ArgumentException("The start and end time can't be the same");
+            }
+            else
+            {
+                LoopStart = startTime;
+                LoopEnd = endTime;
+            }
+        }
+
+        private string Split(string source, int start, int end)
+        {
+            if (end < 0)
+            {
+                end = source.Length + end;
+            }
+            int len = end - start;
+
+            return source.Substring(start, len);
         }
     }
 }

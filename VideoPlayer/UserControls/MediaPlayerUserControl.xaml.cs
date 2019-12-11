@@ -216,13 +216,10 @@ namespace VideoPlayer.UserControls
         {
             if (!IsLoaded) return;
 
-            if (viewModel.CheckSyntax(textBoxLoopStart.Text) &&
-                viewModel.CheckSyntax(textBoxLoopEnd.Text) &&
-                player.NaturalDuration.HasTimeSpan &&
-                viewModel.IsValidTime(textBoxLoopStart.Text) &&
-                viewModel.IsValidTime(textBoxLoopEnd.Text))
+            if (viewModel.IsValidLoop())
             {
                 checkBoxLoopTime.IsEnabled = true;
+                viewModel.SetLoopTime(textBoxLoopStart.Text, textBoxLoopEnd.Text);
             }
             else
             {
@@ -231,24 +228,18 @@ namespace VideoPlayer.UserControls
             }
         }
 
-        private void TextBoxLoopStart_TextChanged(object sender, TextChangedEventArgs e)
+        private void CheckBoxLoopTime_Checked(object sender, RoutedEventArgs e)
         {
-            if (viewModel.IsValidLoop())
-            {
-                checkBoxLoopTime.IsEnabled = true;
-                viewModel.LoopStart = viewModel.ConvertTimeToSeconds(textBoxLoopStart.Text);
-                viewModel.LoopEnd = viewModel.ConvertTimeToSeconds(textBoxLoopEnd.Text);
-            }
+            if (!IsLoaded) return;
+
+            viewModel.LoopSpecificTime = true;
         }
 
-        private void TextBoxLoopEnd_TextChanged(object sender, TextChangedEventArgs e)
+        private void CheckBoxLoopTime_Unchecked(object sender, RoutedEventArgs e)
         {
-            checkBoxLoopTime.IsEnabled = viewModel.IsValidLoop();
+            if (!IsLoaded) return;
 
-            if (viewModel.IsValidLoop())
-            {
-                checkBoxLoopTime.IsChecked = false;
-            }
+            viewModel.LoopSpecificTime = false;
         }
     }
 }
