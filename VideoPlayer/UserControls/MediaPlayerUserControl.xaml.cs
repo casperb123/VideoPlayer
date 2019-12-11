@@ -127,7 +127,8 @@ namespace VideoPlayer.UserControls
 
         private void SliderProgress_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            viewModel.Pause();
+            player.Pause();
+            viewModel.ProgressTimer.Stop();
         }
 
         private void SliderProgress_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
