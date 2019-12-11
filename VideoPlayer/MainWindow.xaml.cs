@@ -36,5 +36,11 @@ namespace VideoPlayer
                 masterUserControl.Content = new MediaPlayerUserControl();
             }
         }
+
+        private void MenuItemCredits_Click(object sender, RoutedEventArgs e)
+        {
+            Credits credits = new Credits();
+            credits.ShowDialog();
+        }
     }
 }

@@ -40,9 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="LICENSE.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Resources\low-volume-disabled.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

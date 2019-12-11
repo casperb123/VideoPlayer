@@ -11,7 +11,16 @@
         MinWidth="800"
         SizeToContent="Height">
     <Grid>
-        <UserControl x:Name="masterUserControl"
-                     Margin="0,0,0,10"/>
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <MenuItem x:Name="menuItemCredits"
+                          Header="Credits"
+                          Click="MenuItemCredits_Click"/>
+            </Menu>
+
+            <UserControl x:Name="masterUserControl"
+                         Margin="0,0,0,10"
+                         DockPanel.Dock="Bottom"/>
+        </DockPanel>
     </Grid>
 </Window>
