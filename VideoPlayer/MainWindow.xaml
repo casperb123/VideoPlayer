@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:VideoPlayer"
         mc:Ignorable="d"
         Title="Video Player"
-        MinHeight="583"
+        MinHeight="601"
         Width="800"
         MinWidth="800"
         SizeToContent="Height">
