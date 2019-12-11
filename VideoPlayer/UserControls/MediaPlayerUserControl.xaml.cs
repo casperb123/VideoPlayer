@@ -185,6 +185,7 @@ namespace VideoPlayer.UserControls
         private void ButtonSettings_Click(object sender, RoutedEventArgs e)
         {
             viewModel.ToggleSettings();
+            Focus();
         }
 
         private void ComboBoxPlaybackSpeed_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -195,16 +196,19 @@ namespace VideoPlayer.UserControls
             double value = double.Parse(selectedItem.Tag.ToString(), CultureInfo.InvariantCulture);
 
             viewModel.ChangeSpeed(value);
+            Focus();
         }
 
         private void CheckBoxLoop_Checked(object sender, RoutedEventArgs e)
         {
             viewModel.Loop = true;
+            Focus();
         }
 
         private void CheckBoxLoop_Unchecked(object sender, RoutedEventArgs e)
         {
             viewModel.Loop = false;
+            Focus();
         }
     }
 }
