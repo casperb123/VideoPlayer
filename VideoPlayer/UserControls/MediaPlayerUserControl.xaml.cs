@@ -127,16 +127,14 @@ namespace VideoPlayer.UserControls
 
         private void SliderProgress_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            player.Pause();
-            viewModel.ProgressTimer.Stop();
+            viewModel.Pause();
         }
 
         private void SliderProgress_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             int pos = Convert.ToInt32(sliderProgress.Value);
             player.Position = new TimeSpan(0, 0, 0, pos, 0);
-            player.Play();
-            viewModel.ProgressTimer.Start();
+            viewModel.Play();
         }
 
         private void SliderProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
