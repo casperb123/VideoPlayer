@@ -11,6 +11,10 @@
         SizeToContent="WidthAndHeight">
     <StackPanel Margin="10">
         <TextBlock>
+            Program made by Casper Bastholm
+        </TextBlock>
+        
+        <TextBlock>
             Icon made by
             <Hyperlink NavigateUri="https://www.flaticon.com/authors/bqlqn"
                        RequestNavigate="Hyperlink_RequestNavigate">
