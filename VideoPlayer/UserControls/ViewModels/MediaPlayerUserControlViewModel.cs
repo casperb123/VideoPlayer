@@ -48,8 +48,6 @@ namespace VideoPlayer.UserControls.ViewModels
         private double loopStart;
         private double loopEnd;
 
-        private bool setStart = true;
-
         public DispatcherTimer ProgressTimer;
 
         public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl, string filePath)
@@ -434,12 +432,13 @@ namespace VideoPlayer.UserControls.ViewModels
                 double startSeconds = ConvertTimeToSeconds(start);
                 double endSeconds = ConvertTimeToSeconds(end);
 
-                if (startSeconds >= 0 &&
-                    startSeconds < endSeconds &&
-                    endSeconds <= userControl.player.NaturalDuration.TimeSpan.TotalSeconds)
+                loopStart = startSeconds;
+                loopEnd = endSeconds;
+
+                if (loopStart > 0 && loopEnd > 0 &&
+                    loopStart < loopEnd)
                 {
-                    loopStart = startSeconds;
-                    loopEnd = endSeconds;
+                    SetSelection(loopStart, loopEnd);
                 }
             }
             else
@@ -464,23 +463,28 @@ namespace VideoPlayer.UserControls.ViewModels
         {
             double range = maxValue - minValue;
             double percentage = (pixels / width) * 100;
-            return ((percentage / 100) * range) + minValue;
+            return (percentage / 100 * range) + minValue;
         }
 
         public void SetLoopValue(Point point)
         {
             double value = PixelsToValue(point.X, userControl.sliderProgress.Minimum, userControl.sliderProgress.Maximum, userControl.sliderProgress.ActualWidth);
 
-            if (setStart)
+            if (loopStart == 0 && loopEnd == 0 ||
+                Math.Abs(loopStart - value) < Math.Abs(loopEnd - value) && loopEnd > 0)
             {
                 userControl.textBoxLoopStart.Text = ConvertSecondsToTime(value);
-                setStart = false;
             }
             else
             {
                 userControl.textBoxLoopEnd.Text = ConvertSecondsToTime(value);
-                setStart = true;
             }
+        }
+
+        public void SetSelection(double start, double end)
+        {
+            userControl.sliderProgress.SelectionStart = start;
+            userControl.sliderProgress.SelectionEnd = end;
         }
     }
 }

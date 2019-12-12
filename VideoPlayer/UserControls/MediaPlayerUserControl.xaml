@@ -248,6 +248,7 @@
                     Grid.Column="0"
                     Grid.Row="1"
                     IsMoveToPointEnabled="True"
+                    IsSelectionRangeEnabled="True"
                     ValueChanged="SliderProgress_ValueChanged"
                     PreviewMouseLeftButtonDown="SliderProgress_PreviewMouseLeftButtonDown"
                     PreviewMouseLeftButtonUp="SliderProgress_PreviewMouseLeftButtonUp"

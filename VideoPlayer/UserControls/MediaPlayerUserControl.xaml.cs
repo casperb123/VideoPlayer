@@ -237,6 +237,7 @@ namespace VideoPlayer.UserControls
             if (!IsLoaded) return;
 
             viewModel.LoopSpecificTime = false;
+            viewModel.SetSelection(0, 0);
         }
 
         private void SliderProgress_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
