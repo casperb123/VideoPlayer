@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using System.Windows;
+﻿using MahApps.Metro.Controls;
+using System.Diagnostics;
 using System.Windows.Navigation;
 
 namespace VideoPlayer
@@ -7,7 +7,7 @@ namespace VideoPlayer
     /// <summary>
     /// Interaction logic for Credits.xaml
     /// </summary>
-    public partial class Credits : Window
+    public partial class Credits : MetroWindow
     {
         public Credits()
         {
