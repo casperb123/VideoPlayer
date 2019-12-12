@@ -47,7 +47,6 @@ namespace VideoPlayer.UserControls.ViewModels
         public bool LoopSpecificTime;
         private double loopStart;
         private double loopEnd;
-        private bool oldCheckBoxValue;
 
         public DispatcherTimer ProgressTimer;
 
@@ -77,97 +76,97 @@ namespace VideoPlayer.UserControls.ViewModels
 
             PlayImage = new Image
             {
-                Width = mediaPlayerUserControl.buttonPlayPause.Width,
+                Width = userControl.buttonPlayPause.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\play.png"))
             };
             PlayImageDisabled = new Image
             {
-                Width = mediaPlayerUserControl.buttonPlayPause.Width,
+                Width = userControl.buttonPlayPause.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\play-disabled.png"))
             };
 
             PauseImage = new Image
             {
-                Width = mediaPlayerUserControl.buttonPlayPause.Width,
+                Width = userControl.buttonPlayPause.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\pause.png"))
             };
             PauseImageDisabled = new Image
             {
-                Width = mediaPlayerUserControl.buttonPlayPause.Width,
+                Width = userControl.buttonPlayPause.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\pause-disabled.png"))
             };
 
             StopImage = new Image
             {
-                Width = mediaPlayerUserControl.buttonStop.Width,
+                Width = userControl.buttonStop.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\stop.png"))
             };
             StopImageDisabled = new Image
             {
-                Width = mediaPlayerUserControl.buttonStop.Width,
+                Width = userControl.buttonStop.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\stop-disabled.png"))
             };
 
             OpenImage = new Image
             {
-                Width = mediaPlayerUserControl.buttonOpen.Width,
+                Width = userControl.buttonOpen.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\open.png"))
             };
             OpenImageDisabled = new Image
             {
-                Width = mediaPlayerUserControl.buttonOpen.Width,
+                Width = userControl.buttonOpen.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\open-disabled.png"))
             };
 
             MutedImage = new Image
             {
-                Width = mediaPlayerUserControl.buttonMuteUnmute.Width,
+                Width = userControl.buttonMuteUnmute.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\muted.png"))
             };
             MutedImageDisabled = new Image
             {
-                Width = mediaPlayerUserControl.buttonMuteUnmute.Width,
+                Width = userControl.buttonMuteUnmute.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\muted-disabled.png"))
             };
 
             HighVolume = new Image
             {
-                Width = mediaPlayerUserControl.buttonMuteUnmute.Width,
+                Width = userControl.buttonMuteUnmute.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\high-volume.png"))
             };
             HighVolumeDisabled = new Image
             {
-                Width = mediaPlayerUserControl.buttonMuteUnmute.Width,
+                Width = userControl.buttonMuteUnmute.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\high-volume-disabled.png"))
             };
 
             LowVolume = new Image
             {
-                Width = mediaPlayerUserControl.buttonMuteUnmute.Width,
+                Width = userControl.buttonMuteUnmute.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\low-volume.png"))
             };
             LowVolumeDisabled = new Image
             {
-                Width = mediaPlayerUserControl.buttonMuteUnmute.Width,
+                Width = userControl.buttonMuteUnmute.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\low-volume-disabled.png"))
             };
 
             Settings = new Image
             {
-                Width = mediaPlayerUserControl.buttonMuteUnmute.Width,
+                Width = userControl.buttonMuteUnmute.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\settings.png"))
             };
             SettingsDisabled = new Image
             {
-                Width = mediaPlayerUserControl.buttonMuteUnmute.Width,
+                Width = userControl.buttonMuteUnmute.Width,
                 Source = new BitmapImage(new Uri($@"{resourcesPath}\settings-disabled.png"))
             };
 
-            mediaPlayerUserControl.imagePlayPause.Source = PlayImageDisabled.Source;
-            mediaPlayerUserControl.imageStop.Source = StopImageDisabled.Source;
-            mediaPlayerUserControl.imageOpen.Source = OpenImage.Source;
-            mediaPlayerUserControl.imageMuteUnmute.Source = HighVolume.Source;
-            mediaPlayerUserControl.imageSettings.Source = Settings.Source;
+            userControl.imagePlayPause.Source = PlayImageDisabled.Source;
+            userControl.imageStop.Source = StopImageDisabled.Source;
+            userControl.imageOpen.Source = OpenImage.Source;
+            userControl.imageMuteUnmute.Source = HighVolume.Source;
+            userControl.imageSettings.Source = Settings.Source;
 
             ProgressTimer = new DispatcherTimer
             {
@@ -341,6 +340,10 @@ namespace VideoPlayer.UserControls.ViewModels
             if (resetSource)
             {
                 userControl.player.Source = null;
+                userControl.textBoxLoopStart.IsEnabled = false;
+                userControl.textBoxLoopEnd.IsEnabled = false;
+                userControl.checkBoxLoopTime.IsEnabled = false;
+                userControl.checkBoxLoopTime.IsChecked = false;
             }
 
             DisablePlayPause();

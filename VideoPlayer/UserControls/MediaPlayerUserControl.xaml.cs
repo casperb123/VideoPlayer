@@ -110,6 +110,10 @@ namespace VideoPlayer.UserControls
 
         private void Player_MediaOpened(object sender, RoutedEventArgs e)
         {
+            textBoxLoopStart.IsEnabled = true;
+            textBoxLoopEnd.IsEnabled = true;
+            checkBoxLoopTime.IsEnabled = true;
+
             viewModel.Play();
 
             viewModel.position = player.NaturalDuration.TimeSpan;
@@ -223,6 +227,7 @@ namespace VideoPlayer.UserControls
         {
             if (!IsLoaded) return;
 
+            viewModel.SetLoopTime(textBoxLoopStart.Text, textBoxLoopEnd.Text);
             viewModel.LoopSpecificTime = true;
         }
 
