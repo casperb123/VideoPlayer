@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -48,34 +47,7 @@ namespace VideoPlayer.UserControls.ViewModels
         public bool LoopSpecificTime;
         private double loopStart;
         private double loopEnd;
-
-        public double LoopStart
-        {
-            get => loopStart;
-            set
-            {
-                if (value >= LoopEnd)
-                {
-                    throw new ArgumentException("The start time must be lower than the end time");
-                }
-
-                loopStart = value;
-            }
-        }
-
-        public double LoopEnd
-        {
-            get => loopEnd;
-            set
-            {
-                if (value <= LoopStart)
-                {
-                    throw new ArgumentException("The end time must be higher than the start time");
-                }
-
-                loopEnd = value;
-            }
-        }
+        private bool oldCheckBoxValue;
 
         public DispatcherTimer ProgressTimer;
 
@@ -205,16 +177,16 @@ namespace VideoPlayer.UserControls.ViewModels
             {
                 if (IsPlaying)
                 {
-                    if (LoopSpecificTime)
+                    if (LoopSpecificTime && loopEnd > loopStart)
                     {
-                        if (userControl.sliderProgress.Value < LoopStart)
+                        if (userControl.sliderProgress.Value < loopStart)
                         {
-                            int pos = Convert.ToInt32(LoopStart);
+                            int pos = Convert.ToInt32(loopStart);
                             userControl.player.Position = new TimeSpan(0, 0, 0, pos, 0);
                         }
-                        else if (userControl.sliderProgress.Value >= LoopEnd)
+                        else if (userControl.sliderProgress.Value >= loopEnd)
                         {
-                            int pos = Convert.ToInt32(LoopStart);
+                            int pos = Convert.ToInt32(loopStart);
                             userControl.player.Position = new TimeSpan(0, 0, 0, pos, 0);
                         }
                     }
@@ -422,68 +394,41 @@ namespace VideoPlayer.UserControls.ViewModels
             userControl.player.SpeedRatio = speed;
         }
 
-        private bool CheckSyntax(string text)
-        {
-            Regex firstSyntax = new Regex("[0-9]:[0-6][0-9]");
-            Regex secondSyntax = new Regex("[0-9][0-9]:[0-6][0-9]");
-
-            return firstSyntax.IsMatch(text) || secondSyntax.IsMatch(text);
-        }
-
-        private bool IsValidTime(string time)
-        {
-            double seconds = ConvertTimeToSeconds(time);
-
-            if (seconds < userControl.sliderProgress.Value ||
-                seconds > userControl.sliderProgress.Value)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
         private double ConvertTimeToSeconds(string time)
         {
             int index = time.IndexOf(':');
 
             double minutes = double.Parse(Split(time, 0, index));
-            double seconds = double.Parse(time.Substring(index));
+            double seconds = double.Parse(time.Substring(index + 1));
 
             double totalSeconds = (60 * minutes) + seconds;
             return totalSeconds;
         }
 
-        public bool IsValidLoop()
-        {
-            return CheckSyntax(userControl.textBoxLoopStart.Text) &&
-                   CheckSyntax(userControl.textBoxLoopEnd.Text) &&
-                   userControl.player.NaturalDuration.HasTimeSpan &&
-                   IsValidTime(userControl.textBoxLoopStart.Text) &&
-                   IsValidTime(userControl.textBoxLoopEnd.Text);
-        }
-
         public void SetLoopTime(string start, string end)
         {
-            double startTime = ConvertTimeToSeconds(start);
-            double endTime = ConvertTimeToSeconds(end);
+            Regex firstSyntax = new Regex("[0-9]:[0-6][0-9]");
+            Regex secondSyntax = new Regex("[0-9][0-9]:[0-6][0-9]");
 
-            if (startTime >= endTime)
+            if (userControl.player.NaturalDuration.HasTimeSpan &&
+                firstSyntax.IsMatch(start) && firstSyntax.IsMatch(end) ||
+                secondSyntax.IsMatch(start) && secondSyntax.IsMatch(end))
             {
-                throw new ArgumentException("The start time must be lower than the end time");
-            }
-            else if (endTime <= startTime)
-            {
-                throw new ArgumentException("The end time must be higher than the start time");
-            }
-            else if (startTime == endTime)
-            {
-                throw new ArgumentException("The start and end time can't be the same");
+                double startSeconds = ConvertTimeToSeconds(start);
+                double endSeconds = ConvertTimeToSeconds(end);
+
+                if (startSeconds >= 0 &&
+                    startSeconds < endSeconds &&
+                    endSeconds <= userControl.player.NaturalDuration.TimeSpan.TotalSeconds)
+                {
+                    loopStart = startSeconds;
+                    loopEnd = endSeconds;
+                }
             }
             else
             {
-                LoopStart = startTime;
-                LoopEnd = endTime;
+                loopEnd = 0;
+                loopStart = 0;
             }
         }
 

@@ -216,16 +216,7 @@ namespace VideoPlayer.UserControls
         {
             if (!IsLoaded) return;
 
-            if (viewModel.IsValidLoop())
-            {
-                checkBoxLoopTime.IsEnabled = true;
-                viewModel.SetLoopTime(textBoxLoopStart.Text, textBoxLoopEnd.Text);
-            }
-            else
-            {
-                checkBoxLoopTime.IsEnabled = false;
-                checkBoxLoopTime.IsChecked = false;
-            }
+            viewModel.SetLoopTime(textBoxLoopStart.Text, textBoxLoopEnd.Text);
         }
 
         private void CheckBoxLoopTime_Checked(object sender, RoutedEventArgs e)
