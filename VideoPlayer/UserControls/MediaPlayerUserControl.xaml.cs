@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Shapes;
 using VideoPlayer.UserControls.ViewModels;
 
 namespace VideoPlayer.UserControls
@@ -236,6 +237,14 @@ namespace VideoPlayer.UserControls
             if (!IsLoaded) return;
 
             viewModel.LoopSpecificTime = false;
+        }
+
+        private void SliderProgress_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (player.Source is null || !player.NaturalDuration.HasTimeSpan) return;
+
+            Point point = e.GetPosition(sliderProgress);
+            viewModel.SetLoopValue(point);
         }
     }
 }

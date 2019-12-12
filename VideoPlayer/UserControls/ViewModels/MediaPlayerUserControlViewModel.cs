@@ -48,6 +48,8 @@ namespace VideoPlayer.UserControls.ViewModels
         private double loopStart;
         private double loopEnd;
 
+        private bool setStart = true;
+
         public DispatcherTimer ProgressTimer;
 
         public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl, string filePath)
@@ -408,6 +410,18 @@ namespace VideoPlayer.UserControls.ViewModels
             return totalSeconds;
         }
 
+        private string ConvertSecondsToTime(double seconds)
+        {
+            TimeSpan timeSpan = TimeSpan.FromSeconds(seconds);
+
+            if (timeSpan.Minutes > 9)
+            {
+                return timeSpan.ToString(@"mm\:ss");
+            }
+
+            return timeSpan.ToString(@"m\:ss");
+        }
+
         public void SetLoopTime(string start, string end)
         {
             Regex firstSyntax = new Regex("[0-9]:[0-6][0-9]");
@@ -444,6 +458,29 @@ namespace VideoPlayer.UserControls.ViewModels
             int len = end - start;
 
             return source.Substring(start, len);
+        }
+
+        private double PixelsToValue(double pixels, double minValue, double maxValue, double width)
+        {
+            double range = maxValue - minValue;
+            double percentage = (pixels / width) * 100;
+            return ((percentage / 100) * range) + minValue;
+        }
+
+        public void SetLoopValue(Point point)
+        {
+            double value = PixelsToValue(point.X, userControl.sliderProgress.Minimum, userControl.sliderProgress.Maximum, userControl.sliderProgress.ActualWidth);
+
+            if (setStart)
+            {
+                userControl.textBoxLoopStart.Text = ConvertSecondsToTime(value);
+                setStart = false;
+            }
+            else
+            {
+                userControl.textBoxLoopEnd.Text = ConvertSecondsToTime(value);
+                setStart = true;
+            }
         }
     }
 }
