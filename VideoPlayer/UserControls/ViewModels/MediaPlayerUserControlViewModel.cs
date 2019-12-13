@@ -422,12 +422,14 @@ namespace VideoPlayer.UserControls.ViewModels
 
         public void SetLoopTime(string start, string end)
         {
-            Regex firstSyntax = new Regex("[0-9]:[0-6][0-9]");
-            Regex secondSyntax = new Regex("[0-9][0-9]:[0-6][0-9]");
+            Regex firstSyntax = new Regex("[0-9]:[0-5][0-9]");
+            Regex secondSyntax = new Regex("[0-5][0-9]:[0-5][0-9]");
+            Regex thirdSyntax = new Regex("[0-9]:[0-5][0-9]:[0-5][0-9]");
 
             if (userControl.player.NaturalDuration.HasTimeSpan &&
                 firstSyntax.IsMatch(start) && firstSyntax.IsMatch(end) ||
-                secondSyntax.IsMatch(start) && secondSyntax.IsMatch(end))
+                secondSyntax.IsMatch(start) && secondSyntax.IsMatch(end) ||
+                thirdSyntax.IsMatch(start) && thirdSyntax.IsMatch(end))
             {
                 double startSeconds = ConvertTimeToSeconds(start);
                 double endSeconds = ConvertTimeToSeconds(end);
