@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -399,32 +400,69 @@ namespace VideoPlayer.UserControls.ViewModels
 
         private double ConvertTimeToSeconds(string time)
         {
-            int index = time.IndexOf(':');
+            double totalSeconds = 0;
+            int colonCount = time.Count(x => x == ':');
 
-            double minutes = double.Parse(Split(time, 0, index));
-            double seconds = double.Parse(time.Substring(index + 1));
+            if (colonCount == 1)
+            {
+                int index = time.IndexOf(':');
 
-            double totalSeconds = (60 * minutes) + seconds;
+                double minutes = double.Parse(Split(time, 0, index));
+                double seconds = double.Parse(time.Substring(index + 1));
+
+                totalSeconds = (60 * minutes) + seconds;
+            }
+            else if (colonCount == 2)
+            {
+                int firstColonIndex = time.IndexOf(':');
+                int secondColonIndex = time.Substring(firstColonIndex + 1).IndexOf(':');
+
+                double hours = double.Parse(Split(time, 0, firstColonIndex));
+                double minutes = double.Parse(Split(time, firstColonIndex + 1, secondColonIndex));
+                double seconds = double.Parse(time.Substring(secondColonIndex + 1));
+
+                totalSeconds = (3600 * hours) + (60 * minutes) + seconds;
+            }
+
             return totalSeconds;
         }
 
         private string ConvertSecondsToTime(double seconds)
         {
             TimeSpan timeSpan = TimeSpan.FromSeconds(seconds);
+            string timeSpanString = string.Empty;
 
-            if (timeSpan.Minutes > 9)
+            if (timeSpan.Hours > 0)
             {
-                return timeSpan.ToString(@"mm\:ss");
+                if (timeSpan.Hours > 9)
+                {
+                    timeSpanString = @"hh\:";
+                }
+                else
+                {
+                    timeSpanString = @"h\:";
+                }
+            }
+            if (timeSpan.Minutes > 0)
+            {
+                if (timeSpan.Minutes > 9 || timeSpan.Hours > 0)
+                {
+                    timeSpanString += @"mm\:";
+                }
+                else
+                {
+                    timeSpanString += @"m\:";
+                }
             }
 
-            return timeSpan.ToString(@"m\:ss");
+            return timeSpan.ToString($@"{timeSpanString}ss");
         }
 
         public void SetLoopTime(string start, string end)
         {
-            Regex firstSyntax = new Regex("[0-9]:[0-5][0-9]");
-            Regex secondSyntax = new Regex("[0-5][0-9]:[0-5][0-9]");
-            Regex thirdSyntax = new Regex("[0-9]:[0-5][0-9]:[0-5][0-9]");
+            Regex firstSyntax = new Regex("[0-9]:[0-59]");
+            Regex secondSyntax = new Regex("[0-59]:[0-59]");
+            Regex thirdSyntax = new Regex("[0-9]:[0-59]:[0-59]");
 
             if (userControl.player.NaturalDuration.HasTimeSpan &&
                 firstSyntax.IsMatch(start) && firstSyntax.IsMatch(end) ||
