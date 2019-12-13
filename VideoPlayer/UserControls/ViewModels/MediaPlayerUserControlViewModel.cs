@@ -443,16 +443,13 @@ namespace VideoPlayer.UserControls.ViewModels
                     timeSpanString = @"h\:";
                 }
             }
-            if (timeSpan.Minutes > 0)
+            if (timeSpan.Minutes > 9 || timeSpan.Hours > 0)
             {
-                if (timeSpan.Minutes > 9 || timeSpan.Hours > 0)
-                {
-                    timeSpanString += @"mm\:";
-                }
-                else
-                {
-                    timeSpanString += @"m\:";
-                }
+                timeSpanString += @"mm\:";
+            }
+            else
+            {
+                timeSpanString += @"m\:";
             }
 
             return timeSpan.ToString($@"{timeSpanString}ss");
