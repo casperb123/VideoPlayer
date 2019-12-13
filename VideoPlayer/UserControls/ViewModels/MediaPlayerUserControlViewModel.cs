@@ -475,6 +475,11 @@ namespace VideoPlayer.UserControls.ViewModels
             {
                 userControl.textBoxLoopStart.Text = ConvertSecondsToTime(value);
             }
+            else if (loopEnd == 0)
+            {
+                userControl.textBoxLoopEnd.Text = ConvertSecondsToTime(value);
+                userControl.checkBoxLoopTime.IsChecked = true;
+            }
             else
             {
                 userControl.textBoxLoopEnd.Text = ConvertSecondsToTime(value);

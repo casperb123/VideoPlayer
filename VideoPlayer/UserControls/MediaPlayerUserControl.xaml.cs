@@ -1,11 +1,9 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Globalization;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Shapes;
 using VideoPlayer.UserControls.ViewModels;
 
 namespace VideoPlayer.UserControls
