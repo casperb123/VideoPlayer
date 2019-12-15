@@ -250,5 +250,10 @@ namespace VideoPlayer.UserControls
             viewModel.LoopSpecificTime = false;
             viewModel.SetSelection(0, 0);
         }
+
+        private void HyperLinkResetLoop_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.ResetLoop();
+        }
     }
 }

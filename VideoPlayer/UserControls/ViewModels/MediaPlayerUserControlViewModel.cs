@@ -343,8 +343,7 @@ namespace VideoPlayer.UserControls.ViewModels
                 userControl.player.Source = null;
                 userControl.textBoxLoopStart.IsEnabled = false;
                 userControl.textBoxLoopEnd.IsEnabled = false;
-                userControl.textBoxLoopStart.Text = "0:00";
-                userControl.textBoxLoopEnd.Text = "0:00";
+                ResetLoop();
                 userControl.checkBoxLoopTime.IsEnabled = false;
                 userControl.checkBoxLoopTime.IsChecked = false;
                 userControl.sliderProgress.IsEnabled = false;
@@ -479,12 +478,18 @@ namespace VideoPlayer.UserControls.ViewModels
                     loopStart < loopEnd)
                 {
                     SetSelection(loopStart, loopEnd);
+                    userControl.hyperLinkResetLoop.IsEnabled = true;
+                }
+                else
+                {
+                    userControl.hyperLinkResetLoop.IsEnabled = false;
                 }
             }
             else
             {
                 loopEnd = 0;
                 loopStart = 0;
+                userControl.hyperLinkResetLoop.IsEnabled = false;
             }
         }
 
@@ -530,6 +535,13 @@ namespace VideoPlayer.UserControls.ViewModels
         {
             userControl.sliderProgress.SelectionStart = start;
             userControl.sliderProgress.SelectionEnd = end;
+        }
+
+        public void ResetLoop()
+        {
+            userControl.textBoxLoopStart.Text = "0:00";
+            userControl.textBoxLoopEnd.Text = "0:00";
+            userControl.checkBoxLoopTime.IsChecked = false;
         }
     }
 }

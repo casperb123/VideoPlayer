@@ -190,19 +190,30 @@
                       Unchecked="CheckBoxLoop_Unchecked" />
         </Grid>
 
-        <Button x:Name="buttonSettings"
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="2"
+                    Margin="10,10,0,0"
+                    HorizontalAlignment="Left">
+            <Button x:Name="buttonSettings"
                 Style="{StaticResource ImageButton}"
                 Grid.Row="2"
-                Margin="10,10,0,0"
                 HorizontalAlignment="Left"
                 Click="ButtonSettings_Click">
-            <Image x:Name="imageSettings" />
-        </Button>
+                <Image x:Name="imageSettings" />
+            </Button>
+            <TextBlock VerticalAlignment="Bottom"
+                       Margin="10,0,0,5">
+                <Hyperlink x:Name="hyperLinkResetLoop"
+                           IsEnabled="False"
+                           Click="HyperLinkResetLoop_Click">
+                    Reset Loop
+                </Hyperlink>
+            </TextBlock>
+        </StackPanel>
 
         <StackPanel HorizontalAlignment="Center"
                     Grid.Row="2"
                     Orientation="Horizontal">
-
             <Button x:Name="buttonStop"
                     Style="{StaticResource ImageButton}"
                     IsEnabled="False"
