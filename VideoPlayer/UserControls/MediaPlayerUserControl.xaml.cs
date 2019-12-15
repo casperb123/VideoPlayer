@@ -112,6 +112,7 @@ namespace VideoPlayer.UserControls
             textBoxLoopStart.IsEnabled = true;
             textBoxLoopEnd.IsEnabled = true;
             checkBoxLoopTime.IsEnabled = true;
+            sliderProgress.IsEnabled = true;
 
             viewModel.Play();
 
@@ -127,17 +128,29 @@ namespace VideoPlayer.UserControls
 
         private void SliderProgress_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (player.Source is null || !player.NaturalDuration.HasTimeSpan) return;
+
             player.Pause();
             viewModel.ProgressTimer.Stop();
         }
 
         private void SliderProgress_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            if (player.Source is null || !player.NaturalDuration.HasTimeSpan) return;
+
             int pos = Convert.ToInt32(sliderProgress.Value);
             player.Position = new TimeSpan(0, 0, 0, pos, 0);
             viewModel.Play();
 
             Focus();
+        }
+
+        private void SliderProgress_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (player.Source is null || !player.NaturalDuration.HasTimeSpan) return;
+
+            Point point = e.GetPosition(sliderProgress);
+            viewModel.SetLoopValue(point);
         }
 
         private void SliderProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -236,14 +249,6 @@ namespace VideoPlayer.UserControls
 
             viewModel.LoopSpecificTime = false;
             viewModel.SetSelection(0, 0);
-        }
-
-        private void SliderProgress_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (player.Source is null || !player.NaturalDuration.HasTimeSpan) return;
-
-            Point point = e.GetPosition(sliderProgress);
-            viewModel.SetLoopValue(point);
         }
     }
 }

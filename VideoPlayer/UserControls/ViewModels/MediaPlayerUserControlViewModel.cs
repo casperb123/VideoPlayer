@@ -343,8 +343,11 @@ namespace VideoPlayer.UserControls.ViewModels
                 userControl.player.Source = null;
                 userControl.textBoxLoopStart.IsEnabled = false;
                 userControl.textBoxLoopEnd.IsEnabled = false;
+                userControl.textBoxLoopStart.Text = "0:00";
+                userControl.textBoxLoopEnd.Text = "0:00";
                 userControl.checkBoxLoopTime.IsEnabled = false;
                 userControl.checkBoxLoopTime.IsChecked = false;
+                userControl.sliderProgress.IsEnabled = false;
             }
 
             DisablePlayPause();
