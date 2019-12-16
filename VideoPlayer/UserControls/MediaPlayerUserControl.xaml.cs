@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using VideoPlayer.UserControls.ViewModels;
+using VideoPlayer.ViewModels;
 
 namespace VideoPlayer.UserControls
 {
@@ -26,6 +26,7 @@ namespace VideoPlayer.UserControls
             SkipBackwardCmd = new RoutedUICommand("Skip backwards", "SkipBackard", typeof(MediaPlayerUserControl));
 
             InitializeComponent();
+
             if (filePath is null)
             {
                 viewModel = new MediaPlayerUserControlViewModel(this);
@@ -166,15 +167,36 @@ namespace VideoPlayer.UserControls
 
             if (sliderVolume.Value == 0)
             {
-                imageMuteUnmute.Source = viewModel.MutedImage.Source;
+                if (viewModel.DarkTheme)
+                {
+                    imageMuteUnmute.Source = viewModel.MutedImageWhite.Source;
+                }
+                else
+                {
+                    imageMuteUnmute.Source = viewModel.MutedImage.Source;
+                }
             }
             else if (sliderVolume.Value <= .5)
             {
-                imageMuteUnmute.Source = viewModel.LowVolume.Source;
+                if (viewModel.DarkTheme)
+                {
+                    imageMuteUnmute.Source = viewModel.LowVolumeImageWhite.Source;
+                }
+                else
+                {
+                    imageMuteUnmute.Source = viewModel.LowVolumeImage.Source;
+                }
             }
             else
             {
-                imageMuteUnmute.Source = viewModel.HighVolume.Source;
+                if (viewModel.DarkTheme)
+                {
+                    imageMuteUnmute.Source = viewModel.HighVolumeImageWhite.Source;
+                }
+                else
+                {
+                    imageMuteUnmute.Source = viewModel.HighVolumeImage.Source;
+                }
             }
         }
 

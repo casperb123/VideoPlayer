@@ -11,6 +11,14 @@
         Width="800"
         MinWidth="800"
         SizeToContent="Height">
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button x:Name="buttonWindowSettings"
+                    Content="settings"
+                    Click="ButtonWindowSettings_Click"/>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+    
     <Grid>
         <DockPanel>
             <Menu DockPanel.Dock="Top">

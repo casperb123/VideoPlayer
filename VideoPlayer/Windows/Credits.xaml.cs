@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Navigation;
 
-namespace VideoPlayer
+namespace VideoPlayer.Windows
 {
     /// <summary>
     /// Interaction logic for Credits.xaml

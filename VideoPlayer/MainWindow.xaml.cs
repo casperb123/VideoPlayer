@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using VideoPlayer.UserControls;
+using VideoPlayer.Windows;
 
 namespace VideoPlayer
 {
@@ -27,6 +28,8 @@ namespace VideoPlayer
         public MainWindow()
         {
             InitializeComponent();
+            WindowSettings windowSettings = new WindowSettings(true);
+
             string[] cmdLine = Environment.GetCommandLineArgs();
             if (cmdLine.Length == 2 && validExtensions.Contains(Path.GetExtension(cmdLine[1])))
             {
@@ -42,6 +45,12 @@ namespace VideoPlayer
         {
             Credits credits = new Credits();
             credits.ShowDialog();
+        }
+
+        private void ButtonWindowSettings_Click(object sender, RoutedEventArgs e)
+        {
+            WindowSettings windowSettings = new WindowSettings();
+            windowSettings.ShowDialog();
         }
     }
 }

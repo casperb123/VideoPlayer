@@ -121,20 +121,20 @@
   <data name="high_volume" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\high-volume.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="high_volume_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\high-volume-disabled.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="high_volume_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\high-volume-white.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="low_volume" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\low-volume.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="low_volume_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\low-volume-disabled.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="low_volume_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\low-volume-white.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="muted" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\muted.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="muted_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\muted-disabled.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="muted_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\muted-white.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="open" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\open.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -142,11 +142,17 @@
   <data name="open_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\open-disabled.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="open_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\open-white.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="pause" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\pause.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="pause_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\pause-disabled.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="pause_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\pause-white.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="play" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\play.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -154,16 +160,25 @@
   <data name="play_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\play-disabled.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="play_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\play-white.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="settings" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\settings.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="settings_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\settings-disabled.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="settings_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\settings-white.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="stop" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\stop.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="stop_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\stop-disabled.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="stop_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\stop-white.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>
