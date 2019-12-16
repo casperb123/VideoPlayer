@@ -41,16 +41,16 @@ namespace VideoPlayer
             }
         }
 
-        private void MenuItemCredits_Click(object sender, RoutedEventArgs e)
-        {
-            Credits credits = new Credits();
-            credits.ShowDialog();
-        }
-
         private void ButtonWindowSettings_Click(object sender, RoutedEventArgs e)
         {
             WindowSettings windowSettings = new WindowSettings();
             windowSettings.ShowDialog();
+        }
+
+        private void ButtonWindowCredits_Click(object sender, RoutedEventArgs e)
+        {
+            Credits credits = new Credits();
+            credits.ShowDialog();
         }
     }
 }

@@ -263,11 +263,11 @@ namespace VideoPlayer.ViewModels
                 }
                 if (userControl.imageStop.Source != StopImageDisabled.Source)
                 {
-                    userControl.imageSettings.Source = StopImageWhite.Source;
+                    userControl.imageStop.Source = StopImageWhite.Source;
                 }
                 if (userControl.imagePlayPause.Source != PlayImageDisabled.Source && userControl.imagePlayPause.Source != PauseImageDisabled.Source)
                 {
-                    if (IsPlaying)
+                    if (userControl.imagePlayPause.Source == PlayImage.Source)
                     {
                         userControl.imagePlayPause.Source = PlayImageWhite.Source;
                     }
@@ -301,11 +301,11 @@ namespace VideoPlayer.ViewModels
                 }
                 if (userControl.imageStop.Source != StopImageDisabled.Source)
                 {
-                    userControl.imageSettings.Source = StopImage.Source;
+                    userControl.imageStop.Source = StopImage.Source;
                 }
                 if (userControl.imagePlayPause.Source != PlayImageDisabled.Source && userControl.imagePlayPause.Source != PauseImageDisabled.Source)
                 {
-                    if (IsPlaying)
+                    if (userControl.imagePlayPause.Source == PlayImageWhite.Source)
                     {
                         userControl.imagePlayPause.Source = PlayImage.Source;
                     }
@@ -424,13 +424,27 @@ namespace VideoPlayer.ViewModels
         {
             userControl.buttonPlayPause.IsEnabled = true;
 
-            if (userControl.imagePlayPause.Source == PlayImageDisabled.Source)
+            if (DarkTheme)
             {
-                userControl.imagePlayPause.Source = PlayImage.Source;
+                if (userControl.imagePlayPause.Source == PlayImageDisabled.Source)
+                {
+                    userControl.imagePlayPause.Source = PlayImageWhite.Source;
+                }
+                else if (userControl.imagePlayPause.Source == PauseImageDisabled.Source)
+                {
+                    userControl.imagePlayPause.Source = PauseImageWhite.Source;
+                }
             }
-            else if (userControl.imagePlayPause.Source == PauseImageDisabled.Source)
+            else
             {
-                userControl.imagePlayPause.Source = PauseImage.Source;
+                if (userControl.imagePlayPause.Source == PlayImageDisabled.Source)
+                {
+                    userControl.imagePlayPause.Source = PlayImage.Source;
+                }
+                else if (userControl.imagePlayPause.Source == PauseImageDisabled.Source)
+                {
+                    userControl.imagePlayPause.Source = PauseImage.Source;
+                }
             }
         }
 
@@ -443,7 +457,15 @@ namespace VideoPlayer.ViewModels
         public void EnableStop()
         {
             userControl.buttonStop.IsEnabled = true;
-            userControl.imageStop.Source = StopImage.Source;
+
+            if (DarkTheme)
+            {
+                userControl.imageStop.Source = StopImageWhite.Source;
+            }
+            else
+            {
+                userControl.imageStop.Source = StopImage.Source;
+            }
         }
 
         public void Open(string filePath)
@@ -462,14 +484,30 @@ namespace VideoPlayer.ViewModels
         {
             ProgressTimer.Start();
             userControl.player.Play();
-            userControl.imagePlayPause.Source = PauseImage.Source;
+
+            if (DarkTheme)
+            {
+                userControl.imagePlayPause.Source = PauseImageWhite.Source;
+            }
+            else
+            {
+                userControl.imagePlayPause.Source = PauseImage.Source;
+            }
         }
 
         public void Pause()
         {
             ProgressTimer.Stop();
             userControl.player.Pause();
-            userControl.imagePlayPause.Source = PlayImage.Source;
+
+            if (DarkTheme)
+            {
+                userControl.imagePlayPause.Source = PlayImageWhite.Source;
+            }
+            else
+            {
+                userControl.imagePlayPause.Source = PlayImage.Source;
+            }
         }
 
         public void Stop(bool resetSource = true)

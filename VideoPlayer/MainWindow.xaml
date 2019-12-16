@@ -13,23 +13,21 @@
         SizeToContent="Height">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
+            <Button x:Name="buttonWindowCredits"
+                    Content="Credits"
+                    Cursor="Hand"
+                    Click="ButtonWindowCredits_Click"/>
+
             <Button x:Name="buttonWindowSettings"
-                    Content="settings"
+                    Content="Settings"
+                    Cursor="Hand"
                     Click="ButtonWindowSettings_Click"/>
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
-    
-    <Grid>
-        <DockPanel>
-            <Menu DockPanel.Dock="Top">
-                <MenuItem x:Name="menuItemCredits"
-                          Header="Credits"
-                          Click="MenuItemCredits_Click"/>
-            </Menu>
 
-            <UserControl x:Name="masterUserControl"
-                         Margin="0,0,0,10"
-                         DockPanel.Dock="Bottom"/>
-        </DockPanel>
+    <Grid>
+        <UserControl x:Name="masterUserControl"
+                     Margin="0,0,0,10"
+                     DockPanel.Dock="Bottom"/>
     </Grid>
 </Controls:MetroWindow>
