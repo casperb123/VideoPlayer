@@ -71,7 +71,9 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <Grid x:Name="mediaElementBackground">
+        <Grid x:Name="mediaElementBackground"
+              AllowDrop="True"
+              Drop="MediaElementBackground_Drop">
             <MediaElement x:Name="player"
                           LoadedBehavior="Manual"
                           UnloadedBehavior="Manual"
