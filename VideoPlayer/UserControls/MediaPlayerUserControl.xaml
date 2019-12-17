@@ -71,16 +71,17 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <Grid x:Name="mediaElementBackground"
+        <Grid x:Name="gridMediaElementBackground"
               AllowDrop="True"
-              Drop="MediaElementBackground_Drop">
+              Drop="GridMediaElementBackground_Drop">
             <MediaElement x:Name="player"
                           LoadedBehavior="Manual"
                           UnloadedBehavior="Manual"
                           ScrubbingEnabled="True"
                           Volume="1"
                           MediaEnded="Player_MediaEnded"
-                          MediaOpened="Player_MediaOpened" />
+                          MediaOpened="Player_MediaOpened"
+                          MouseLeftButtonUp="Player_MouseLeftButtonUp"/>
         </Grid>
 
         <Grid x:Name="gridSettings"

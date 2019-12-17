@@ -10,7 +10,8 @@
                       Height="450"
                       Width="800"
                       SizeToContent="WidthAndHeight"
-                      ResizeMode="NoResize">
+                      ResizeMode="NoResize"
+                      WindowStartupLocation="CenterOwner">
     <StackPanel Margin="10">
         <TextBlock>
             Program made by Casper Bastholm

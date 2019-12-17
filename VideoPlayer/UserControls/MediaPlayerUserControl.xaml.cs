@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using VideoPlayer.ViewModels;
 
 namespace VideoPlayer.UserControls
@@ -278,7 +279,7 @@ namespace VideoPlayer.UserControls
             viewModel.ResetLoop();
         }
 
-        private void MediaElementBackground_Drop(object sender, DragEventArgs e)
+        private void GridMediaElementBackground_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -291,6 +292,12 @@ namespace VideoPlayer.UserControls
 
                 viewModel.Open(files[0]);
             }
+        }
+
+        private void Player_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (player.Source is null || !player.NaturalDuration.HasTimeSpan) return;
+            viewModel.IsPlaying = !viewModel.IsPlaying;
         }
     }
 }

@@ -44,12 +44,14 @@ namespace VideoPlayer
         private void ButtonWindowSettings_Click(object sender, RoutedEventArgs e)
         {
             WindowSettings windowSettings = new WindowSettings();
+            windowSettings.Owner = this;
             windowSettings.ShowDialog();
         }
 
         private void ButtonWindowCredits_Click(object sender, RoutedEventArgs e)
         {
             Credits credits = new Credits();
+            credits.Owner = this;
             credits.ShowDialog();
         }
     }

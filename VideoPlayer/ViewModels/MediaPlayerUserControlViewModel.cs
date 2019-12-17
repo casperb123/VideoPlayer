@@ -72,7 +72,7 @@ namespace VideoPlayer.ViewModels
             userControl.Focusable = true;
             userControl.Loaded += (s, e) => Keyboard.Focus(userControl);
 
-            userControl.mediaElementBackground.Background = new SolidColorBrush(Color.FromRgb(16, 16, 16));
+            userControl.gridMediaElementBackground.Background = new SolidColorBrush(Color.FromRgb(16, 16, 16));
             userControl.comboBoxPlaybackSpeed.SelectedItem = "Normal";
 
             string runningPath = AppDomain.CurrentDomain.BaseDirectory;

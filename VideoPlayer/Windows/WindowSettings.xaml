@@ -10,7 +10,8 @@
                       Title="Window Settings"
                       Height="450"
                       Width="483"
-                      SizeToContent="Height">
+                      SizeToContent="Height"
+                      WindowStartupLocation="CenterOwner">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
