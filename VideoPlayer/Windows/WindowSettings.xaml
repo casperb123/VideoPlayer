@@ -6,12 +6,14 @@
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:local="clr-namespace:VideoPlayer.Windows"
                       xmlns:metro="clr-namespace:MahApps.Metro;assembly=MahApps.Metro"
+                      xmlns:properties="clr-namespace:VideoPlayer.Properties"
                       mc:Ignorable="d"
                       Title="Window Settings"
                       Height="450"
                       Width="483"
                       SizeToContent="Height"
-                      WindowStartupLocation="CenterOwner">
+                      WindowStartupLocation="CenterOwner"
+                      ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
@@ -29,7 +31,8 @@
                   Grid.Row="1"
                   Margin="10,0,5,10"
                   ItemsSource="{x:Static metro:ThemeManager.BaseColors}"
-                  SelectionChanged="ComboBox_SelectionChanged" />
+                  SelectionChanged="ComboBox_SelectionChanged"
+                  SelectedIndex="{Binding Theme, Source={x:Static properties:Settings.Default}, Mode=TwoWay}"/>
 
         <Label x:Name="labelColor"
                Content="Color"
@@ -41,6 +44,7 @@
                   Margin="5,0,10,10"
                   ItemsSource="{x:Static metro:ThemeManager.ColorSchemes}"
                   DisplayMemberPath="Name"
+                  SelectedIndex="{Binding Color, Source={x:Static properties:Settings.Default}, Mode=TwoWay}"
                   SelectionChanged="ComboBox_SelectionChanged" />
     </Grid>
 </Controls:MetroWindow>

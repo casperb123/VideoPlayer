@@ -25,10 +25,10 @@ namespace VideoPlayer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Light")]
-        public string Theme {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Theme {
             get {
-                return ((string)(this["Theme"]));
+                return ((int)(this["Theme"]));
             }
             set {
                 this["Theme"] = value;
@@ -37,10 +37,10 @@ namespace VideoPlayer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Blue")]
-        public string Color {
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int Color {
             get {
-                return ((string)(this["Color"]));
+                return ((int)(this["Color"]));
             }
             set {
                 this["Color"] = value;

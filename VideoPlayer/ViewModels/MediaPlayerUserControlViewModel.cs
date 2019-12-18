@@ -409,15 +409,7 @@ namespace VideoPlayer.ViewModels
         public void DisablePlayPause()
         {
             userControl.buttonPlayPause.IsEnabled = false;
-
-            if (userControl.imagePlayPause.Source == PlayImage.Source)
-            {
-                userControl.imagePlayPause.Source = PlayImageDisabled.Source;
-            }
-            else if (userControl.imagePlayPause.Source == PauseImage.Source)
-            {
-                userControl.imagePlayPause.Source = PauseImageDisabled.Source;
-            }
+            userControl.imagePlayPause.Source = PlayImageDisabled.Source;
         }
 
         public void EnablePlayPause()
@@ -426,25 +418,11 @@ namespace VideoPlayer.ViewModels
 
             if (DarkTheme)
             {
-                if (userControl.imagePlayPause.Source == PlayImageDisabled.Source)
-                {
-                    userControl.imagePlayPause.Source = PlayImageWhite.Source;
-                }
-                else if (userControl.imagePlayPause.Source == PauseImageDisabled.Source)
-                {
-                    userControl.imagePlayPause.Source = PauseImageWhite.Source;
-                }
+                userControl.imagePlayPause.Source = PauseImageWhite.Source;
             }
             else
             {
-                if (userControl.imagePlayPause.Source == PlayImageDisabled.Source)
-                {
-                    userControl.imagePlayPause.Source = PlayImage.Source;
-                }
-                else if (userControl.imagePlayPause.Source == PauseImageDisabled.Source)
-                {
-                    userControl.imagePlayPause.Source = PauseImage.Source;
-                }
+                userControl.imagePlayPause.Source = PauseImage.Source;
             }
         }
 
