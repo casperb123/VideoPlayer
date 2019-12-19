@@ -1,10 +1,12 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Unosquare.FFME.Common;
 using VideoPlayer.ViewModels;
 
 namespace VideoPlayer.UserControls
@@ -15,6 +17,7 @@ namespace VideoPlayer.UserControls
     public partial class MediaPlayerUserControl : UserControl
     {
         private readonly MediaPlayerUserControlViewModel viewModel;
+        private bool seeking;
 
         public static RoutedUICommand PlayPauseCmd;
         public static RoutedUICommand SkipForwardCmd;
@@ -49,7 +52,14 @@ namespace VideoPlayer.UserControls
         {
             if (player.Source != null)
             {
-                viewModel.IsPlaying = !viewModel.IsPlaying;
+                if (player.IsPlaying)
+                {
+                    viewModel.Stop();
+                }
+                else
+                {
+                    viewModel.Play();
+                }
             }
         }
 
@@ -96,7 +106,7 @@ namespace VideoPlayer.UserControls
             Focus();
         }
 
-        private void Player_MediaEnded(object sender, RoutedEventArgs e)
+        private void Player_MediaEnded(object sender, EventArgs e)
         {
             if (viewModel.LoopVideo)
             {
@@ -109,7 +119,7 @@ namespace VideoPlayer.UserControls
             }
         }
 
-        private void Player_MediaOpened(object sender, RoutedEventArgs e)
+        private void Player_MediaOpened(object sender, MediaOpenedEventArgs e)
         {
             textBoxLoopStart.IsEnabled = true;
             textBoxLoopEnd.IsEnabled = true;
@@ -118,7 +128,7 @@ namespace VideoPlayer.UserControls
 
             viewModel.Play();
 
-            viewModel.position = player.NaturalDuration.TimeSpan;
+            viewModel.position = player.NaturalDuration.Value;
             sliderProgress.Minimum = 0;
             sliderProgress.Maximum = viewModel.position.TotalSeconds;
 
@@ -128,28 +138,35 @@ namespace VideoPlayer.UserControls
             viewModel.ProgressTimer.Start();
         }
 
+        private async Task Seek(TimeSpan timeSpan)
+        {
+            seeking = false;
+            await player.Seek(timeSpan);
+            viewModel.ProgressTimer.Start();
+            await player.Play();
+        }
+
         private void SliderProgress_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (player.Source is null || !player.NaturalDuration.HasTimeSpan) return;
-
-            player.Pause();
+            if (player.Source is null || !player.NaturalDuration.HasValue) return;
+            seeking = true;
             viewModel.ProgressTimer.Stop();
+            player.Pause();
         }
 
         private void SliderProgress_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (player.Source is null || !player.NaturalDuration.HasTimeSpan) return;
+            if (player.Source is null || !player.NaturalDuration.HasValue) return;
 
             int pos = Convert.ToInt32(sliderProgress.Value);
-            player.Position = new TimeSpan(0, 0, 0, pos, 0);
-            viewModel.Play();
+            _ = Seek(new TimeSpan(0, 0, 0, pos, 0));
 
             Focus();
         }
 
         private void SliderProgress_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (player.Source is null || !player.NaturalDuration.HasTimeSpan) return;
+            if (player.Source is null || !player.NaturalDuration.HasValue) return;
 
             Point point = e.GetPosition(sliderProgress);
             viewModel.SetLoopValue(point);
@@ -157,6 +174,12 @@ namespace VideoPlayer.UserControls
 
         private void SliderProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            if (seeking)
+            {
+                int pos = Convert.ToInt32(sliderProgress.Value);
+                player.Seek(new TimeSpan(0, 0, 0, pos, 0));
+            }
+
             viewModel.ShowTime();
         }
 
@@ -296,8 +319,15 @@ namespace VideoPlayer.UserControls
 
         private void Player_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (player.Source is null || !player.NaturalDuration.HasTimeSpan) return;
-            viewModel.IsPlaying = !viewModel.IsPlaying;
+            if (player.Source is null || !player.NaturalDuration.HasValue) return;
+            if (player.IsPlaying)
+            {
+                viewModel.Stop();
+            }
+            else
+            {
+                viewModel.Play();
+            }
         }
     }
 }

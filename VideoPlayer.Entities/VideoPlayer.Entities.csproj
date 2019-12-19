@@ -4,4 +4,8 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="FFME.Windows" Version="4.2.320" />
+  </ItemGroup>
+
 </Project>

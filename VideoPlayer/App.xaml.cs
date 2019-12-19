@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -18,6 +20,16 @@ namespace VideoPlayer
                 new RoutedEventHandler(SelectAllText));
             EventManager.RegisterClassHandler(typeof(TextBox), Control.MouseDoubleClickEvent,
                 new RoutedEventHandler(SelectAllText));
+
+            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
+            string ffmpegPath = $@"{Path.GetFullPath(Path.Combine(runningPath, @"..\..\..\"))}ffmpeg";
+
+            if (!Directory.Exists(ffmpegPath))
+            {
+                ffmpegPath = $@"{runningPath}\ffmpeg";
+            }
+
+            Unosquare.FFME.Library.FFmpegDirectory = ffmpegPath;
             base.OnStartup(e);
         }
 

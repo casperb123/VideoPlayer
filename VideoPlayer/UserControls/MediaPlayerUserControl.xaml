@@ -1,11 +1,10 @@
 ﻿<UserControl x:Class="VideoPlayer.UserControls.MediaPlayerUserControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:VideoPlayer.UserControls"
+             xmlns:ffme="clr-namespace:Unosquare.FFME;assembly=ffme.win"
              mc:Ignorable="d"
              d:DesignHeight="535"
              d:DesignWidth="800"
@@ -74,14 +73,13 @@
         <Grid x:Name="gridMediaElementBackground"
               AllowDrop="True"
               Drop="GridMediaElementBackground_Drop">
-            <MediaElement x:Name="player"
-                          LoadedBehavior="Manual"
-                          UnloadedBehavior="Manual"
-                          ScrubbingEnabled="True"
-                          Volume="1"
-                          MediaEnded="Player_MediaEnded"
-                          MediaOpened="Player_MediaOpened"
-                          MouseLeftButtonUp="Player_MouseLeftButtonUp"/>
+            <ffme:MediaElement x:Name="player"
+                               LoadedBehavior="Manual"
+                               UnloadedBehavior="Manual"
+                               ScrubbingEnabled="True"
+                               MediaEnded="Player_MediaEnded"
+                               MediaOpened="Player_MediaOpened"
+                               MouseLeftButtonUp="Player_MouseLeftButtonUp" />
         </Grid>
 
         <Grid x:Name="gridSettings"

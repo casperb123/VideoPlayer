@@ -5,12 +5,8 @@ namespace VideoPlayer.Entities
     public class Media
     {
         private string source;
-        private Uri uri;
 
-        public Uri Uri
-        {
-            get => uri;
-        }
+        public Uri Uri { get; private set; }
 
         public string Source
         {
@@ -23,7 +19,7 @@ namespace VideoPlayer.Entities
                 }
                 if (Uri.TryCreate(value, UriKind.Absolute, out Uri uri))
                 {
-                    this.uri = uri;
+                    Uri = uri;
                 }
                 else
                 {

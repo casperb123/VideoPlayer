@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Unosquare.FFME.Common;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
 
@@ -208,7 +210,7 @@ namespace VideoPlayer.ViewModels
             };
             ProgressTimer.Tick += (s, e) =>
             {
-                if (IsPlaying)
+                if (userControl.player.IsPlaying)
                 {
                     if (LoopSpecificTime && loopEnd > loopStart)
                     {
@@ -333,76 +335,12 @@ namespace VideoPlayer.ViewModels
             }
         }
 
-        public bool IsPlaying
-        {
-            get
-            {
-                switch (GetMediaState(userControl.player))
-                {
-                    case MediaState.Manual:
-                        return false;
-                    case MediaState.Play:
-                        return true;
-                    case MediaState.Close:
-                        return false;
-                    case MediaState.Pause:
-                        return false;
-                    case MediaState.Stop:
-                        return false;
-                    default:
-                        return false;
-                }
-            }
-            set
-            {
-                if (value)
-                {
-                    Play();
-                }
-                else
-                {
-                    Pause();
-                }
-            }
-        }
-
-        public bool IsPaused
-        {
-            get
-            {
-                switch (GetMediaState(userControl.player))
-                {
-                    case MediaState.Manual:
-                        return false;
-                    case MediaState.Play:
-                        return false;
-                    case MediaState.Close:
-                        return false;
-                    case MediaState.Pause:
-                        return true;
-                    case MediaState.Stop:
-                        return false;
-                    default:
-                        return false;
-                }
-            }
-        }
-
-        private MediaState GetMediaState(MediaElement mediaElement)
-        {
-            FieldInfo hlp = typeof(MediaElement).GetField("_helper", BindingFlags.NonPublic | BindingFlags.Instance);
-            object helperObject = hlp.GetValue(mediaElement);
-            FieldInfo stateField = helperObject.GetType().GetField("_currentState", BindingFlags.NonPublic | BindingFlags.Instance);
-            MediaState state = (MediaState)stateField.GetValue(helperObject);
-            return state;
-        }
-
         public void ShowTime()
         {
-            if (userControl.player.NaturalDuration.HasTimeSpan)
+            if (userControl.player.NaturalDuration.HasValue)
             {
                 TimeSpan currentTime = TimeSpan.FromSeconds(userControl.sliderProgress.Value);
-                userControl.textBlockDuration.Text = $"{currentTime.ToString(@"m\:ss")} / {userControl.player.NaturalDuration.TimeSpan.ToString(@"m\:ss")}";
+                userControl.textBlockDuration.Text = $"{currentTime.ToString(@"m\:ss")} / {userControl.player.NaturalDuration.Value.ToString(@"m\:ss")}";
             }
         }
 
@@ -448,7 +386,7 @@ namespace VideoPlayer.ViewModels
 
         public void Open(string filePath)
         {
-            if (userControl.player.NaturalDuration.HasTimeSpan)
+            if (userControl.player.NaturalDuration.HasValue)
             {
                 Stop();
             }
@@ -616,7 +554,7 @@ namespace VideoPlayer.ViewModels
             Regex secondSyntax = new Regex("[0-59]:[0-59]");
             Regex thirdSyntax = new Regex("[0-9]:[0-59]:[0-59]");
 
-            if (userControl.player.NaturalDuration.HasTimeSpan &&
+            if (userControl.player.NaturalDuration.HasValue &&
                 firstSyntax.IsMatch(start) && firstSyntax.IsMatch(end) ||
                 secondSyntax.IsMatch(start) && secondSyntax.IsMatch(end) ||
                 thirdSyntax.IsMatch(start) && thirdSyntax.IsMatch(end))
@@ -657,7 +595,7 @@ namespace VideoPlayer.ViewModels
             return source.Substring(start, len);
         }
 
-        private double PixelsToValue(double pixels, double minValue, double maxValue, double width)
+        public double PixelsToValue(double pixels, double minValue, double maxValue, double width)
         {
             double range = maxValue - minValue;
             double percentage = (pixels / width) * 100;
