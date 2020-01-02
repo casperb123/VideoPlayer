@@ -73,7 +73,7 @@ namespace VideoPlayer.ViewModels
 
         public void ShowTime()
         {
-            if (userControl.player.NaturalDuration.HasValue)
+            if (userControl.player.IsOpen)
             {
                 TimeSpan currentTime = TimeSpan.FromSeconds(userControl.sliderProgress.Value);
                 userControl.textBlockDuration.Text = $"{currentTime.ToString(@"m\:ss")} / {userControl.player.NaturalDuration.Value.ToString(@"m\:ss")}";
@@ -103,9 +103,10 @@ namespace VideoPlayer.ViewModels
 
         public void Open(string filePath)
         {
-            if (userControl.player.NaturalDuration.HasValue)
+            if (userControl.player.IsOpen)
             {
-                Stop();
+                ResetLoop();
+                ResetProgress();
             }
 
             Media video = new Media(filePath);
@@ -129,22 +130,32 @@ namespace VideoPlayer.ViewModels
 
         public void Stop(bool resetSource = true)
         {
-            userControl.player.Close();
+            userControl.player.Stop();
             if (resetSource)
             {
                 userControl.player.Source = null;
-                userControl.textBoxLoopStart.IsEnabled = false;
-                userControl.textBoxLoopEnd.IsEnabled = false;
-                ResetLoop();
-                userControl.checkBoxLoopTime.IsEnabled = false;
-                userControl.checkBoxLoopTime.IsChecked = false;
-                userControl.sliderProgress.IsEnabled = false;
+                ResetControls();
             }
 
             DisablePlayPause();
             DisableStop();
 
             ProgressTimer.Stop();
+            ResetProgress();
+        }
+
+        public void ResetControls()
+        {
+            userControl.textBoxLoopStart.IsEnabled = false;
+            userControl.textBoxLoopEnd.IsEnabled = false;
+            ResetLoop();
+            userControl.checkBoxLoopTime.IsEnabled = false;
+            userControl.checkBoxLoopTime.IsChecked = false;
+            userControl.sliderProgress.IsEnabled = false;
+        }
+
+        public void ResetProgress()
+        {
             userControl.sliderProgress.Value = 0;
             userControl.textBlockDuration.Text = "0:00 / 0:00";
         }
@@ -255,7 +266,7 @@ namespace VideoPlayer.ViewModels
             Regex secondSyntax = new Regex("[0-59]:[0-59]");
             Regex thirdSyntax = new Regex("[0-9]:[0-59]:[0-59]");
 
-            if (userControl.player.NaturalDuration.HasValue &&
+            if (userControl.player.IsOpen &&
                 firstSyntax.IsMatch(start) && firstSyntax.IsMatch(end) ||
                 secondSyntax.IsMatch(start) && secondSyntax.IsMatch(end) ||
                 thirdSyntax.IsMatch(start) && thirdSyntax.IsMatch(end))

@@ -148,7 +148,7 @@ namespace VideoPlayer.UserControls
 
         private void SliderProgress_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (player.Source is null || !player.NaturalDuration.HasValue) return;
+            if (player.Source is null || !player.IsOpen) return;
             seeking = true;
             viewModel.ProgressTimer.Stop();
             player.Pause();
@@ -156,7 +156,7 @@ namespace VideoPlayer.UserControls
 
         private void SliderProgress_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (player.Source is null || !player.NaturalDuration.HasValue) return;
+            if (player.Source is null || !player.IsOpen) return;
 
             int pos = Convert.ToInt32(sliderProgress.Value);
             _ = Seek(new TimeSpan(0, 0, 0, pos, 0));
@@ -166,7 +166,7 @@ namespace VideoPlayer.UserControls
 
         private void SliderProgress_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (player.Source is null || !player.NaturalDuration.HasValue) return;
+            if (player.Source is null || !player.IsOpen) return;
 
             Point point = e.GetPosition(sliderProgress);
             viewModel.SetLoopValue(point);
@@ -302,7 +302,7 @@ namespace VideoPlayer.UserControls
 
         private void Player_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (player.Source is null || !player.NaturalDuration.HasValue) return;
+            if (player.Source is null || !player.IsOpen) return;
             if (player.IsPlaying)
             {
                 viewModel.Stop();
