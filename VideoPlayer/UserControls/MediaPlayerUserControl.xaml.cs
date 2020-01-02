@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Unosquare.FFME.Common;
 using VideoPlayer.ViewModels;
+using MaterialDesignThemes.Wpf;
 
 namespace VideoPlayer.UserControls
 {
@@ -54,7 +54,7 @@ namespace VideoPlayer.UserControls
             {
                 if (player.IsPlaying)
                 {
-                    viewModel.Stop();
+                    viewModel.Pause();
                 }
                 else
                 {
@@ -79,7 +79,7 @@ namespace VideoPlayer.UserControls
 
         private void ButtonPlayPause_Click(object sender, RoutedEventArgs e)
         {
-            PlayPauseCmd.Execute(null, buttonPlayPause);
+            PlayPauseCmd.Execute(null, sender as Button);
             Focus();
         }
 
@@ -191,36 +191,19 @@ namespace VideoPlayer.UserControls
 
             if (sliderVolume.Value == 0)
             {
-                if (viewModel.DarkTheme)
-                {
-                    imageMuteUnmute.Source = viewModel.MutedImageWhite.Source;
-                }
-                else
-                {
-                    imageMuteUnmute.Source = viewModel.MutedImage.Source;
-                }
+                iconVolume.Kind = PackIconKind.VolumeMute;
             }
-            else if (sliderVolume.Value <= .5)
+            else if (sliderVolume.Value <= .3)
             {
-                if (viewModel.DarkTheme)
-                {
-                    imageMuteUnmute.Source = viewModel.LowVolumeImageWhite.Source;
-                }
-                else
-                {
-                    imageMuteUnmute.Source = viewModel.LowVolumeImage.Source;
-                }
+                iconVolume.Kind = PackIconKind.VolumeLow;
+            }
+            else if (sliderVolume.Value <= .6)
+            {
+                iconVolume.Kind = PackIconKind.VolumeMedium;
             }
             else
             {
-                if (viewModel.DarkTheme)
-                {
-                    imageMuteUnmute.Source = viewModel.HighVolumeImageWhite.Source;
-                }
-                else
-                {
-                    imageMuteUnmute.Source = viewModel.HighVolumeImage.Source;
-                }
+                iconVolume.Kind = PackIconKind.VolumeHigh;
             }
         }
 

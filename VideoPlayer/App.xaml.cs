@@ -14,12 +14,12 @@ namespace VideoPlayer
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            EventManager.RegisterClassHandler(typeof(TextBox), UIElement.PreviewMouseLeftButtonDownEvent,
-            new MouseButtonEventHandler(SelectivelyIgnoreMouseButton));
-            EventManager.RegisterClassHandler(typeof(TextBox), UIElement.GotKeyboardFocusEvent,
-                new RoutedEventHandler(SelectAllText));
-            EventManager.RegisterClassHandler(typeof(TextBox), Control.MouseDoubleClickEvent,
-                new RoutedEventHandler(SelectAllText));
+            //EventManager.RegisterClassHandler(typeof(TextBox), UIElement.PreviewMouseLeftButtonDownEvent,
+            //new MouseButtonEventHandler(SelectivelyIgnoreMouseButton));
+            //EventManager.RegisterClassHandler(typeof(TextBox), UIElement.GotKeyboardFocusEvent,
+            //    new RoutedEventHandler(SelectAllText));
+            //EventManager.RegisterClassHandler(typeof(TextBox), Control.MouseDoubleClickEvent,
+            //    new RoutedEventHandler(SelectAllText));
 
             string runningPath = AppDomain.CurrentDomain.BaseDirectory;
             string ffmpegPath = $@"{Path.GetFullPath(Path.Combine(runningPath, @"..\..\..\"))}ffmpeg";

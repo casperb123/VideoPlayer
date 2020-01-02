@@ -1,55 +1,22 @@
-﻿using MahApps.Metro;
-using System;
+﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Unosquare.FFME.Common;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
+using MaterialDesignThemes.Wpf;
 
 namespace VideoPlayer.ViewModels
 {
-    public class MediaPlayerUserControlViewModel
+    public class MediaPlayerUserControlViewModel : INotifyPropertyChanged
     {
         private readonly MediaPlayerUserControl userControl;
         public bool DarkTheme;
-
-        public readonly Image PlayImage;
-        public readonly Image PlayImageWhite;
-        public readonly Image PlayImageDisabled;
-
-        public readonly Image PauseImage;
-        public readonly Image PauseImageWhite;
-        public readonly Image PauseImageDisabled;
-
-        public readonly Image StopImage;
-        public readonly Image StopImageWhite;
-        public readonly Image StopImageDisabled;
-
-        public readonly Image OpenImage;
-        public readonly Image OpenImageWhite;
-        public readonly Image OpenImageDisabled;
-
-        public readonly Image MutedImage;
-        public readonly Image MutedImageWhite;
-
-        public readonly Image HighVolumeImage;
-        public readonly Image HighVolumeImageWhite;
-
-        public readonly Image LowVolumeImage;
-        public readonly Image LowVolumeImageWhite;
-
-        public readonly Image SettingsImage;
-        public readonly Image SettingsImageWhite;
-        public readonly Image SettingsImageDisabled;
 
         public TimeSpan position;
         public double OldVolume;
@@ -60,6 +27,14 @@ namespace VideoPlayer.ViewModels
         private double loopEnd;
 
         public DispatcherTimer ProgressTimer;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string prop)
+        {
+            if (prop != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
 
         public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl, string filePath)
             : this(mediaPlayerUserControl)
@@ -84,125 +59,6 @@ namespace VideoPlayer.ViewModels
             {
                 resourcesPath = $@"{runningPath}\Resources";
             }
-
-            PlayImage = new Image
-            {
-                Width = userControl.buttonPlayPause.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\play.png"))
-            };
-            PlayImageWhite = new Image
-            {
-                Width = userControl.buttonPlayPause.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\play-white.png"))
-            };
-            PlayImageDisabled = new Image
-            {
-                Width = userControl.buttonPlayPause.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\play-disabled.png"))
-            };
-
-            PauseImage = new Image
-            {
-                Width = userControl.buttonPlayPause.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\pause.png"))
-            };
-            PauseImageWhite = new Image
-            {
-                Width = userControl.buttonPlayPause.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\pause-white.png"))
-            };
-            PauseImageDisabled = new Image
-            {
-                Width = userControl.buttonPlayPause.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\pause-disabled.png"))
-            };
-
-            StopImage = new Image
-            {
-                Width = userControl.buttonStop.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\stop.png"))
-            };
-            StopImageWhite = new Image
-            {
-                Width = userControl.buttonStop.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\stop-white.png"))
-            };
-            StopImageDisabled = new Image
-            {
-                Width = userControl.buttonStop.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\stop-disabled.png"))
-            };
-
-            OpenImage = new Image
-            {
-                Width = userControl.buttonOpen.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\open.png"))
-            };
-            OpenImageWhite = new Image
-            {
-                Width = userControl.buttonOpen.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\open-white.png"))
-            };
-            OpenImageDisabled = new Image
-            {
-                Width = userControl.buttonOpen.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\open-disabled.png"))
-            };
-
-            MutedImage = new Image
-            {
-                Width = userControl.buttonMuteUnmute.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\muted.png"))
-            };
-            MutedImageWhite = new Image
-            {
-                Width = userControl.buttonMuteUnmute.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\muted-white.png"))
-            };
-
-            HighVolumeImage = new Image
-            {
-                Width = userControl.buttonMuteUnmute.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\high-volume.png"))
-            };
-            HighVolumeImageWhite = new Image
-            {
-                Width = userControl.buttonMuteUnmute.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\high-volume-white.png"))
-            };
-
-            LowVolumeImage = new Image
-            {
-                Width = userControl.buttonMuteUnmute.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\low-volume.png"))
-            };
-            LowVolumeImageWhite = new Image
-            {
-                Width = userControl.buttonMuteUnmute.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\low-volume-white.png"))
-            };
-
-            SettingsImage = new Image
-            {
-                Width = userControl.buttonMuteUnmute.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\settings.png"))
-            };
-            SettingsImageWhite = new Image
-            {
-                Width = userControl.buttonMuteUnmute.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\settings-white.png"))
-            };
-            SettingsImageDisabled = new Image
-            {
-                Width = userControl.buttonMuteUnmute.Width,
-                Source = new BitmapImage(new Uri($@"{resourcesPath}\settings-disabled.png"))
-            };
-
-            userControl.imagePlayPause.Source = PlayImageDisabled.Source;
-            userControl.imageStop.Source = StopImageDisabled.Source;
-            userControl.imageOpen.Source = OpenImage.Source;
-            userControl.imageMuteUnmute.Source = HighVolumeImage.Source;
-            userControl.imageSettings.Source = SettingsImage.Source;
 
             ProgressTimer = new DispatcherTimer
             {
@@ -229,110 +85,6 @@ namespace VideoPlayer.ViewModels
                     userControl.sliderProgress.Value = userControl.player.Position.TotalSeconds;
                 }
             };
-
-            Theme theme = ThemeManager.DetectTheme(Application.Current);
-            ChangeImageTheme(theme);
-
-            ThemeManager.IsThemeChanged += ThemeManager_IsThemeChanged;
-        }
-
-        private void ThemeManager_IsThemeChanged(object sender, OnThemeChangedEventArgs e)
-        {
-            ChangeImageTheme(e.Theme);
-        }
-
-        private void ChangeImageTheme(Theme theme)
-        {
-            if (theme.BaseColorScheme == "Light")
-            {
-                ChangeImages(false);
-                DarkTheme = false;
-            }
-            else
-            {
-                ChangeImages(true);
-                DarkTheme = true;
-            }
-        }
-
-        private void ChangeImages(bool dark)
-        {
-            if (dark)
-            {
-                if (userControl.imageSettings.Source != SettingsImageDisabled.Source)
-                {
-                    userControl.imageSettings.Source = SettingsImageWhite.Source;
-                }
-                if (userControl.imageStop.Source != StopImageDisabled.Source)
-                {
-                    userControl.imageStop.Source = StopImageWhite.Source;
-                }
-                if (userControl.imagePlayPause.Source != PlayImageDisabled.Source && userControl.imagePlayPause.Source != PauseImageDisabled.Source)
-                {
-                    if (userControl.imagePlayPause.Source == PlayImage.Source)
-                    {
-                        userControl.imagePlayPause.Source = PlayImageWhite.Source;
-                    }
-                    else
-                    {
-                        userControl.imagePlayPause.Source = PauseImageWhite.Source;
-                    }
-                }
-                if (userControl.imageOpen.Source != OpenImageDisabled.Source)
-                {
-                    userControl.imageOpen.Source = OpenImageWhite.Source;
-                }
-                if (userControl.sliderVolume.Value == 0)
-                {
-                    userControl.imageMuteUnmute.Source = MutedImageWhite.Source;
-                }
-                else if (userControl.sliderVolume.Value <= .5)
-                {
-                    userControl.imageMuteUnmute.Source = LowVolumeImageWhite.Source;
-                }
-                else
-                {
-                    userControl.imageMuteUnmute.Source = HighVolumeImageWhite.Source;
-                }
-            }
-            else
-            {
-                if (userControl.imageSettings.Source != SettingsImageDisabled.Source)
-                {
-                    userControl.imageSettings.Source = SettingsImage.Source;
-                }
-                if (userControl.imageStop.Source != StopImageDisabled.Source)
-                {
-                    userControl.imageStop.Source = StopImage.Source;
-                }
-                if (userControl.imagePlayPause.Source != PlayImageDisabled.Source && userControl.imagePlayPause.Source != PauseImageDisabled.Source)
-                {
-                    if (userControl.imagePlayPause.Source == PlayImageWhite.Source)
-                    {
-                        userControl.imagePlayPause.Source = PlayImage.Source;
-                    }
-                    else
-                    {
-                        userControl.imagePlayPause.Source = PauseImage.Source;
-                    }
-                }
-                if (userControl.imageOpen.Source != OpenImageDisabled.Source)
-                {
-                    userControl.imageOpen.Source = OpenImage.Source;
-                }
-                if (userControl.sliderVolume.Value == 0)
-                {
-                    userControl.imageMuteUnmute.Source = MutedImage.Source;
-                }
-                else if (userControl.sliderVolume.Value <= .5)
-                {
-                    userControl.imageMuteUnmute.Source = LowVolumeImage.Source;
-                }
-                else
-                {
-                    userControl.imageMuteUnmute.Source = HighVolumeImage.Source;
-                }
-            }
         }
 
         public void ShowTime()
@@ -347,41 +99,22 @@ namespace VideoPlayer.ViewModels
         public void DisablePlayPause()
         {
             userControl.buttonPlayPause.IsEnabled = false;
-            userControl.imagePlayPause.Source = PlayImageDisabled.Source;
+            userControl.iconPlayPause.Kind = PackIconKind.Play;
         }
 
         public void EnablePlayPause()
         {
             userControl.buttonPlayPause.IsEnabled = true;
-
-            if (DarkTheme)
-            {
-                userControl.imagePlayPause.Source = PauseImageWhite.Source;
-            }
-            else
-            {
-                userControl.imagePlayPause.Source = PauseImage.Source;
-            }
         }
 
         public void DisableStop()
         {
             userControl.buttonStop.IsEnabled = false;
-            userControl.imageStop.Source = StopImageDisabled.Source;
         }
 
         public void EnableStop()
         {
             userControl.buttonStop.IsEnabled = true;
-
-            if (DarkTheme)
-            {
-                userControl.imageStop.Source = StopImageWhite.Source;
-            }
-            else
-            {
-                userControl.imageStop.Source = StopImage.Source;
-            }
         }
 
         public void Open(string filePath)
@@ -400,30 +133,14 @@ namespace VideoPlayer.ViewModels
         {
             ProgressTimer.Start();
             userControl.player.Play();
-
-            if (DarkTheme)
-            {
-                userControl.imagePlayPause.Source = PauseImageWhite.Source;
-            }
-            else
-            {
-                userControl.imagePlayPause.Source = PauseImage.Source;
-            }
+            userControl.iconPlayPause.Kind = PackIconKind.Pause;
         }
 
         public void Pause()
         {
             ProgressTimer.Stop();
             userControl.player.Pause();
-
-            if (DarkTheme)
-            {
-                userControl.imagePlayPause.Source = PlayImageWhite.Source;
-            }
-            else
-            {
-                userControl.imagePlayPause.Source = PlayImage.Source;
-            }
+            userControl.iconPlayPause.Kind = PackIconKind.Play;
         }
 
         public void Stop(bool resetSource = true)

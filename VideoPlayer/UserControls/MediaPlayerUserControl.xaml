@@ -5,6 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:VideoPlayer.UserControls"
              xmlns:ffme="clr-namespace:Unosquare.FFME;assembly=ffme.win"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
              d:DesignHeight="535"
              d:DesignWidth="800"
@@ -21,7 +24,7 @@
                         CanExecute="CommandCanExecute"
                         Executed="SkipBackwardExecuted" />
     </UserControl.CommandBindings>
-
+ 
     <UserControl.InputBindings>
         <KeyBinding Command="{x:Static local:MediaPlayerUserControl.PlayPauseCmd}"
                     Key="Space" />
@@ -30,38 +33,6 @@
         <KeyBinding Command="{x:Static local:MediaPlayerUserControl.SkipBackwardCmd}"
                     Key="Left" />
     </UserControl.InputBindings>
-
-    <UserControl.Resources>
-        <Style x:Key="ImageButton"
-               TargetType="Button">
-            <Setter Property="OverridesDefaultStyle"
-                    Value="True" />
-            <Setter Property="Margin"
-                    Value="5,10,5,0" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border"
-                                BorderThickness="0"
-                                Background="Transparent"
-                                Width="40"
-                                Height="40"
-                                Cursor="Hand">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsPressed"
-                                     Value="true">
-                                <Setter Property="Cursor"
-                                        Value="Hand" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -197,11 +168,18 @@
                     Margin="10,10,0,0"
                     HorizontalAlignment="Left">
             <Button x:Name="buttonSettings"
-                Style="{StaticResource ImageButton}"
-                Grid.Row="2"
-                HorizontalAlignment="Left"
-                Click="ButtonSettings_Click">
-                <Image x:Name="imageSettings" />
+                    BorderThickness="0"
+                    Grid.Row="2"
+                    HorizontalAlignment="Left"
+                    Width="40"
+                    Height="40"
+                    Click="ButtonSettings_Click">
+                <materialDesign:PackIcon x:Name="iconSettings"
+                                         Kind="Settings"
+                                         Width="30"
+                                         Height="30"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"/>
             </Button>
             <TextBlock VerticalAlignment="Bottom"
                        Margin="10,0,0,5">
@@ -213,35 +191,69 @@
             </TextBlock>
         </StackPanel>
 
-        <StackPanel HorizontalAlignment="Center"
-                    Grid.Row="2"
-                    Orientation="Horizontal">
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    Margin="0,10,0,0"
+                    HorizontalAlignment="Center">
             <Button x:Name="buttonStop"
-                    Style="{StaticResource ImageButton}"
+                    BorderThickness="0"
                     IsEnabled="False"
+                    Width="40"
+                    Height="40"
+                    Margin="5,0"
                     Click="ButtonStop_Click">
-                <Image x:Name="imageStop" />
+                <materialDesign:PackIcon x:Name="iconStop"
+                                         Kind="Stop"
+                                         Width="40"
+                                         Height="40"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"/>
             </Button>
             <Button x:Name="buttonPlayPause"
-                    Style="{StaticResource ImageButton}"
+                    Grid.Column="1"
+                    BorderThickness="0"
                     IsEnabled="False"
+                    Width="40"
+                    Height="40"
+                    Margin="5,0"
                     Click="ButtonPlayPause_Click">
-                <Image x:Name="imagePlayPause" />
+                <materialDesign:PackIcon x:Name="iconPlayPause"
+                                         Kind="Play"
+                                         Width="35"
+                                         Height="35"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"/>
             </Button>
             <Button x:Name="buttonOpen"
-                    Style="{StaticResource ImageButton}"
+                    Grid.Column="2"
+                    BorderThickness="0"
+                    Width="40"
+                    Height="40"
+                    Margin="5,0"
                     Click="ButtonOpen_Click">
-                <Image x:Name="imageOpen" />
+                <materialDesign:PackIcon x:Name="iconOpen"
+                                         Kind="FolderOpen"
+                                         Width="30"
+                                         Height="30"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"/>
             </Button>
         </StackPanel>
 
         <Button x:Name="buttonMuteUnmute"
-                Style="{StaticResource ImageButton}"
+                BorderThickness="0"
                 Grid.Row="2"
                 Margin="0,10,10,0"
                 HorizontalAlignment="Right"
+                Width="40"
+                Height="40"
                 Click="ButtonMuteUnmute_Click">
-            <Image x:Name="imageMuteUnmute" />
+            <materialDesign:PackIcon x:Name="iconVolume"
+                                     Kind="VolumeHigh"
+                                     Width="30"
+                                     Height="30"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"/>
         </Button>
 
         <Grid Grid.Row="1"
