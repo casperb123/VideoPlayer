@@ -43,6 +43,7 @@
 
         <Grid x:Name="gridMediaElementBackground"
               AllowDrop="True"
+              Background="Black"
               Drop="GridMediaElementBackground_Drop">
             <ffme:MediaElement x:Name="player"
                                LoadedBehavior="Manual"

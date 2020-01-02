@@ -10,6 +10,7 @@ using System.Windows.Threading;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
 using MaterialDesignThemes.Wpf;
+using System.Threading.Tasks;
 
 namespace VideoPlayer.ViewModels
 {
@@ -17,6 +18,7 @@ namespace VideoPlayer.ViewModels
     {
         private readonly MediaPlayerUserControl userControl;
         public bool DarkTheme;
+        public bool Seeking;
 
         public TimeSpan position;
         public double OldVolume;
@@ -41,34 +43,41 @@ namespace VideoPlayer.ViewModels
             userControl.Focusable = true;
             userControl.Loaded += (s, e) => Keyboard.Focus(userControl);
 
-            userControl.gridMediaElementBackground.Background = new SolidColorBrush(Color.FromRgb(16, 16, 16));
-            //userControl.comboBoxPlaybackSpeed.SelectedItem = "Normal";
-
             ProgressTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromMilliseconds(500)
+                Interval = TimeSpan.FromMilliseconds(300)
             };
-            ProgressTimer.Tick += (s, e) =>
-            {
-                if (userControl.player.IsPlaying)
-                {
-                    if (LoopSpecificTime && loopEnd > loopStart)
-                    {
-                        if (userControl.sliderProgress.Value < loopStart)
-                        {
-                            int pos = Convert.ToInt32(loopStart);
-                            userControl.player.Position = new TimeSpan(0, 0, 0, pos, 0);
-                        }
-                        else if (userControl.sliderProgress.Value >= loopEnd)
-                        {
-                            int pos = Convert.ToInt32(loopStart);
-                            userControl.player.Position = new TimeSpan(0, 0, 0, pos, 0);
-                        }
-                    }
+            ProgressTimer.Tick += ProgressTimer_Tick;
+        }
 
-                    userControl.sliderProgress.Value = userControl.player.Position.TotalSeconds;
+        private async void ProgressTimer_Tick(object sender, EventArgs e)
+        {
+            if (userControl.player.IsPlaying)
+            {
+                if (LoopSpecificTime && loopEnd > loopStart)
+                {
+                    if (userControl.sliderProgress.Value < loopStart ||
+                        userControl.sliderProgress.Value >= loopEnd)
+                    {
+                        ProgressTimer.Stop();
+                        Seeking = true;
+
+                        int pos = Convert.ToInt32(loopStart);
+                        await userControl.player.Pause();
+                        await Seek(new TimeSpan(0, 0, 0, pos, 0));
+                    }
                 }
-            };
+
+                userControl.sliderProgress.Value = userControl.player.Position.TotalSeconds;
+            }
+        }
+
+        public async Task Seek(TimeSpan timeSpan)
+        {
+            Seeking = false;
+            await userControl.player.Seek(timeSpan);
+            ProgressTimer.Start();
+            await userControl.player.Play();
         }
 
         public void ShowTime()

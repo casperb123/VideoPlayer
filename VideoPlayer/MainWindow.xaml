@@ -7,10 +7,10 @@
         xmlns:local="clr-namespace:VideoPlayer"
         mc:Ignorable="d"
         Title="Video Player"
-        MinHeight="616"
-        Width="800"
-        MinWidth="800"
-        SizeToContent="Height">
+        Height="620"
+        MinHeight="620"
+        Width="918"
+        MinWidth="918">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button x:Name="buttonWindowCredits"

@@ -13,11 +13,10 @@ namespace VideoPlayer.UserControls
 {
     /// <summary>
     /// Interaction logic for MediaPlayer.xaml
-    /// </summary>
+    /// </summary>F
     public partial class MediaPlayerUserControl : UserControl
     {
         private readonly MediaPlayerUserControlViewModel viewModel;
-        private bool seeking;
 
         public static RoutedUICommand PlayPauseCmd;
         public static RoutedUICommand SkipForwardCmd;
@@ -138,18 +137,10 @@ namespace VideoPlayer.UserControls
             viewModel.ProgressTimer.Start();
         }
 
-        private async Task Seek(TimeSpan timeSpan)
-        {
-            seeking = false;
-            await player.Seek(timeSpan);
-            viewModel.ProgressTimer.Start();
-            await player.Play();
-        }
-
         private void SliderProgress_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (player.Source is null || !player.IsOpen) return;
-            seeking = true;
+            viewModel.Seeking = true;
             viewModel.ProgressTimer.Stop();
             player.Pause();
         }
@@ -159,7 +150,7 @@ namespace VideoPlayer.UserControls
             if (player.Source is null || !player.IsOpen) return;
 
             int pos = Convert.ToInt32(sliderProgress.Value);
-            _ = Seek(new TimeSpan(0, 0, 0, pos, 0));
+            _ = viewModel.Seek(new TimeSpan(0, 0, 0, pos, 0));
 
             Focus();
         }
@@ -174,7 +165,7 @@ namespace VideoPlayer.UserControls
 
         private void SliderProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (seeking)
+            if (viewModel.Seeking)
             {
                 int pos = Convert.ToInt32(sliderProgress.Value);
                 player.Seek(new TimeSpan(0, 0, 0, pos, 0));
