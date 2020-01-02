@@ -234,16 +234,16 @@ namespace VideoPlayer.UserControls
             Focus();
         }
 
-        private void ComboBoxPlaybackSpeed_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!IsLoaded) return;
+        //private void ComboBoxPlaybackSpeed_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    if (!IsLoaded) return;
 
-            ComboBoxItem selectedItem = comboBoxPlaybackSpeed.SelectedItem as ComboBoxItem;
-            double value = double.Parse(selectedItem.Tag.ToString(), CultureInfo.InvariantCulture);
+        //    ComboBoxItem selectedItem = comboBoxPlaybackSpeed.SelectedItem as ComboBoxItem;
+        //    double value = double.Parse(selectedItem.Tag.ToString(), CultureInfo.InvariantCulture);
 
-            viewModel.ChangeSpeed(value);
-            Focus();
-        }
+        //    viewModel.ChangeSpeed(value);
+        //    Focus();
+        //}
 
         private void CheckBoxLoop_Checked(object sender, RoutedEventArgs e)
         {
@@ -311,6 +311,13 @@ namespace VideoPlayer.UserControls
             {
                 viewModel.Play();
             }
+        }
+
+        private void NumericPlaybackSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            if (!IsLoaded || !e.NewValue.HasValue) return;
+
+            viewModel.ChangeSpeed(e.NewValue.Value);
         }
     }
 }

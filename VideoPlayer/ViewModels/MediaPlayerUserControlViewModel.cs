@@ -42,7 +42,7 @@ namespace VideoPlayer.ViewModels
             userControl.Loaded += (s, e) => Keyboard.Focus(userControl);
 
             userControl.gridMediaElementBackground.Background = new SolidColorBrush(Color.FromRgb(16, 16, 16));
-            userControl.comboBoxPlaybackSpeed.SelectedItem = "Normal";
+            //userControl.comboBoxPlaybackSpeed.SelectedItem = "Normal";
 
             ProgressTimer = new DispatcherTimer
             {
