@@ -13,7 +13,7 @@ using MaterialDesignThemes.Wpf;
 
 namespace VideoPlayer.ViewModels
 {
-    public class MediaPlayerUserControlViewModel : INotifyPropertyChanged
+    public class MediaPlayerUserControlViewModel
     {
         private readonly MediaPlayerUserControl userControl;
         public bool DarkTheme;
@@ -27,14 +27,6 @@ namespace VideoPlayer.ViewModels
         private double loopEnd;
 
         public DispatcherTimer ProgressTimer;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string prop)
-        {
-            if (prop != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
 
         public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl, string filePath)
             : this(mediaPlayerUserControl)
@@ -51,14 +43,6 @@ namespace VideoPlayer.ViewModels
 
             userControl.gridMediaElementBackground.Background = new SolidColorBrush(Color.FromRgb(16, 16, 16));
             userControl.comboBoxPlaybackSpeed.SelectedItem = "Normal";
-
-            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
-            string resourcesPath = $@"{Path.GetFullPath(Path.Combine(runningPath, @"..\..\..\"))}Resources";
-
-            if (!Directory.Exists(resourcesPath))
-            {
-                resourcesPath = $@"{runningPath}\Resources";
-            }
 
             ProgressTimer = new DispatcherTimer
             {
