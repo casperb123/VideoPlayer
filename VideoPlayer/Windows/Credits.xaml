@@ -29,18 +29,5 @@
                 www.flaticon.com
             </Hyperlink>
         </TextBlock>
-
-        <TextBlock>
-            Media control images made by
-            <Hyperlink NavigateUri="https://www.flaticon.com/authors/freepik"
-                       RequestNavigate="Hyperlink_RequestNavigate">
-                Freepik
-            </Hyperlink>
-            from
-            <Hyperlink NavigateUri="https://www.flaticon.com"
-                       RequestNavigate="Hyperlink_RequestNavigate">
-                www.flaticon.com
-            </Hyperlink>
-        </TextBlock>
     </StackPanel>
 </Controls:MetroWindow>
