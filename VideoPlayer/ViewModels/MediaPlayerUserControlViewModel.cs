@@ -11,29 +11,79 @@ using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
 using MaterialDesignThemes.Wpf;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using VideoPlayer.Windows;
+using System.Collections.Generic;
 
 namespace VideoPlayer.ViewModels
 {
-    public class MediaPlayerUserControlViewModel
+    public class MediaPlayerUserControlViewModel : INotifyPropertyChanged
     {
         private readonly MediaPlayerUserControl userControl;
+        private double loopStart;
+        private double loopEnd;
+        private ObservableCollection<Media> queue;
+        private ObservableCollection<Media> oldQueue;
+        private Media selectedMedia;
+
         public bool DarkTheme;
         public bool Seeking;
-
         public TimeSpan position;
         public double OldVolume;
         public bool LoopVideo;
-
         public bool LoopSpecificTime;
-        private double loopStart;
-        private double loopEnd;
-
         public DispatcherTimer ProgressTimer;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl, string filePath)
+        public Media SelectedMedia
+        {
+            get => selectedMedia;
+            set
+            {
+                if (value is null)
+                    throw new ArgumentNullException("The selected media can't be null");
+
+                selectedMedia = value;
+                OnPropertyChanged(nameof(SelectedMedia));
+            }
+        }
+
+        public ObservableCollection<Media> Queue
+        {
+            get => queue;
+            set
+            {
+                if (value is null)
+                    throw new ArgumentNullException("The queue can't be null");
+
+                queue = value;
+                OnPropertyChanged(nameof(Queue));
+            }
+        }
+
+        public ObservableCollection<Media> OldQueue
+        {
+            get => oldQueue;
+            set
+            {
+                if (value is null)
+                    throw new ArgumentNullException("The old queue can't be null");
+
+                oldQueue = value;
+                OnPropertyChanged(nameof(OldQueue));
+            }
+        }
+
+        private void OnPropertyChanged(string prop)
+        {
+            if (prop != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
+
+        public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl, Media media)
             : this(mediaPlayerUserControl)
         {
-            Open(filePath);
+            _ = Open(media);
         }
 
         public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl)
@@ -48,6 +98,9 @@ namespace VideoPlayer.ViewModels
                 Interval = TimeSpan.FromMilliseconds(300)
             };
             ProgressTimer.Tick += ProgressTimer_Tick;
+
+            queue = new ObservableCollection<Media>();
+            oldQueue = new ObservableCollection<Media>();
         }
 
         private async void ProgressTimer_Tick(object sender, EventArgs e)
@@ -110,16 +163,22 @@ namespace VideoPlayer.ViewModels
             userControl.buttonStop.IsEnabled = true;
         }
 
-        public void Open(string filePath)
+        public void AddToQueue(Media media)
+        {
+            Queue.Add(media);
+            userControl.buttonSkipForward.IsEnabled = true;
+        }
+
+        public async Task Open(Media media)
         {
             if (userControl.player.IsOpen)
             {
+                await userControl.player.Close();
                 ResetLoop();
                 ResetProgress();
             }
 
-            Media video = new Media(filePath);
-            userControl.player.Source = video.Uri;
+            await userControl.player.Open(media.Uri);
             Play();
         }
 
@@ -354,6 +413,81 @@ namespace VideoPlayer.ViewModels
             userControl.textBoxLoopStart.Text = "0:00";
             userControl.textBoxLoopEnd.Text = "0:00";
             userControl.checkBoxLoopTime.IsChecked = false;
+        }
+
+        public async Task SkipBackwards()
+        {
+            Queue.Insert(0, SelectedMedia);
+            SelectedMedia = OldQueue[OldQueue.Count - 1];
+            OldQueue.Remove(SelectedMedia);
+            await Open(SelectedMedia);
+
+            if (OldQueue.Count == 0)
+            {
+                userControl.buttonSkipBackwards.IsEnabled = false;
+            }
+            else
+            {
+                userControl.buttonSkipBackwards.IsEnabled = true;
+            }
+
+            userControl.buttonSkipForward.IsEnabled = true;
+        }
+
+        public void ToggleQueuePanel()
+        {
+            if (userControl.columnDeifinitionQueue.IsEnabled)
+            {
+                userControl.columnDeifinitionQueue.Width = new GridLength(0);
+                userControl.columnDeifinitionQueue.IsEnabled = false;
+                Application.Current.MainWindow.MinWidth = 880;
+                Application.Current.MainWindow.Width = 880;
+            }
+            else
+            {
+                Application.Current.MainWindow.MinWidth = 1080;
+                Application.Current.MainWindow.Width = 1080;
+                userControl.columnDeifinitionQueue.Width = new GridLength(200);
+                userControl.columnDeifinitionQueue.IsEnabled = true;
+            }
+        }
+
+        public async void ChangeTrack(int index)
+        {
+            Media media = Queue[index];
+            await Open(media);
+
+            if (index + 1 == Queue.Count)
+            {
+                userControl.buttonSkipForward.IsEnabled = false;
+            }
+            else
+            {
+                userControl.buttonSkipForward.IsEnabled = true;
+            }
+
+            List<Media> oldMedias = Queue.Where(x => Queue.IndexOf(x) < index).ToList();
+            List<Media> medias = Queue.Where(x => Queue.IndexOf(x) > index).ToList();
+            Queue = new ObservableCollection<Media>(medias);
+
+            if (SelectedMedia != null)
+                OldQueue.Add(SelectedMedia);
+
+            foreach (Media oldMedia in oldMedias)
+            {
+                OldQueue.Add(oldMedia);
+            }
+
+            SelectedMedia = media;
+
+            if (OldQueue.Count > 0)
+            {
+                userControl.buttonSkipBackwards.IsEnabled = true;
+            }
+            else
+            {
+                userControl.buttonSkipBackwards.IsEnabled = false;
+            }
         }
     }
 }

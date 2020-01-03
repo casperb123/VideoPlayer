@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace VideoPlayer.Entities
 {
@@ -27,6 +28,14 @@ namespace VideoPlayer.Entities
                 }
 
                 source = value;
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return Path.GetFileNameWithoutExtension(source);
             }
         }
 

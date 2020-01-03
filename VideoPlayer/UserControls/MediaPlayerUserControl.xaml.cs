@@ -8,6 +8,10 @@ using System.Windows.Input;
 using Unosquare.FFME.Common;
 using VideoPlayer.ViewModels;
 using MaterialDesignThemes.Wpf;
+using VideoPlayer.Entities;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace VideoPlayer.UserControls
 {
@@ -36,7 +40,8 @@ namespace VideoPlayer.UserControls
             }
             else
             {
-                viewModel = new MediaPlayerUserControlViewModel(this, filePath);
+                Media media = new Media(filePath);
+                viewModel = new MediaPlayerUserControlViewModel(this, media);
             }
             DataContext = viewModel;
         }
@@ -88,7 +93,7 @@ namespace VideoPlayer.UserControls
             Focus();
         }
 
-        private void ButtonOpen_Click(object sender, RoutedEventArgs e)
+        private async void ButtonAddToQueue_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -99,7 +104,17 @@ namespace VideoPlayer.UserControls
 
             if (openFileDialog.ShowDialog() == true)
             {
-                viewModel.Open(openFileDialog.FileName);
+                Media media = new Media(openFileDialog.FileName);
+                
+                if (player.IsOpen || viewModel.Queue.Count >= 1)
+                {
+                    viewModel.AddToQueue(media);
+                }
+                else
+                {
+                    await viewModel.Open(media);
+                    viewModel.SelectedMedia = media;
+                }
             }
 
             Focus();
@@ -225,17 +240,6 @@ namespace VideoPlayer.UserControls
             Focus();
         }
 
-        //private void ComboBoxPlaybackSpeed_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //{
-        //    if (!IsLoaded) return;
-
-        //    ComboBoxItem selectedItem = comboBoxPlaybackSpeed.SelectedItem as ComboBoxItem;
-        //    double value = double.Parse(selectedItem.Tag.ToString(), CultureInfo.InvariantCulture);
-
-        //    viewModel.ChangeSpeed(value);
-        //    Focus();
-        //}
-
         private void CheckBoxLoop_Checked(object sender, RoutedEventArgs e)
         {
             viewModel.LoopVideo = true;
@@ -287,7 +291,8 @@ namespace VideoPlayer.UserControls
                     return;
                 }
 
-                viewModel.Open(files[0]);
+                Media media = new Media(files[0]);
+                viewModel.AddToQueue(media);
             }
         }
 
@@ -309,6 +314,56 @@ namespace VideoPlayer.UserControls
             if (!IsLoaded || !e.NewValue.HasValue) return;
 
             viewModel.ChangeSpeed(e.NewValue.Value);
+        }
+
+        private void ButtonQueue_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.ToggleQueuePanel();
+        }
+
+        private void ListBoxQueue_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int index = listBoxQueue.SelectedIndex;
+            if (index == -1)
+                return;
+
+            viewModel.ChangeTrack(index);
+        }
+
+        private void ButtonClearQueue_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.Queue.Clear();
+            buttonSkipForward.IsEnabled = false;
+        }
+
+        private void MenuItemQueueRemove_Click(object sender, RoutedEventArgs e)
+        {
+            Media media = listBoxQueue.SelectedItem as Media;
+            viewModel.Queue.Remove(media);
+        }
+
+        private void ListBoxQueueContextMenu_Opened(object sender, RoutedEventArgs e)
+        {
+            if (viewModel.SelectedMedia is null ||
+                viewModel.Queue.Count == 1 ||
+                ((Media)listBoxQueue.SelectedItem) == viewModel.SelectedMedia)
+            {
+                menuItemQueueRemove.IsEnabled = false;
+            }
+            else
+            {
+                menuItemQueueRemove.IsEnabled = true;
+            }
+        }
+
+        private void ButtonSkipForward_Click(object sender, RoutedEventArgs e)
+        {
+            listBoxQueue.SelectedIndex++;
+        }
+
+        private async void ButtonSkipBackwards_Click(object sender, RoutedEventArgs e)
+        {
+            await viewModel.SkipBackwards();
         }
     }
 }
