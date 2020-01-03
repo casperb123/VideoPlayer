@@ -99,15 +99,19 @@ namespace VideoPlayer.UserControls
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Title = "Select video file",
+                Title = "Select video file(s)",
                 DefaultExt = ".avi",
-                Filter = "Media Files|*.mpg;*.avi;*.wma;*.mov;*.wav;*.mp2;*.mp3;*.mp4|All Files|*.*"
+                Filter = "Media Files|*.mpg;*.avi;*.wma;*.mov;*.wav;*.mp2;*.mp3;*.mp4|All Files|*.*",
+                Multiselect = true
             };
 
             if (openFileDialog.ShowDialog() == true)
             {
-                Media media = new Media(openFileDialog.FileName);
-                await viewModel.AddToQueue(media);
+                List<string> fileNames = openFileDialog.FileNames.ToList();
+                List<Media> medias = new List<Media>();
+                fileNames.ForEach(x => medias.Add(new Media(x)));
+
+                await viewModel.AddMediasToQueue(medias);
             }
 
             Focus();

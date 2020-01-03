@@ -27,10 +27,18 @@
     <UserControl.InputBindings>
         <KeyBinding Command="{x:Static local:MediaPlayerUserControl.PlayPauseCmd}"
                     Key="Space" />
+        <KeyBinding Command="{x:Static local:MediaPlayerUserControl.PlayPauseCmd}"
+                    Key="MediaPlayPause" />
+        
         <KeyBinding Command="{x:Static local:MediaPlayerUserControl.SkipForwardCmd}"
                     Key="Right" />
+        <KeyBinding Command="{x:Static local:MediaPlayerUserControl.SkipForwardCmd}"
+                    Key="MediaNextTrack" />
+
         <KeyBinding Command="{x:Static local:MediaPlayerUserControl.SkipBackwardCmd}"
                     Key="Left" />
+        <KeyBinding Command="{x:Static local:MediaPlayerUserControl.SkipBackwardCmd}"
+                    Key="MediaPreviousTrack" />
     </UserControl.InputBindings>
 
     <Grid>
