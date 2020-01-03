@@ -26,7 +26,7 @@ namespace VideoPlayer.UserControls
         public static RoutedUICommand SkipForwardCmd;
         public static RoutedUICommand SkipBackwardCmd;
 
-        public MediaPlayerUserControl(string filePath = null)
+        public MediaPlayerUserControl(List<Media> medias = null)
         {
             PlayPauseCmd = new RoutedUICommand("Toggle playing", "PlayPause", typeof(MediaPlayerUserControl));
             SkipForwardCmd = new RoutedUICommand("Skip forward", "SkipForward", typeof(MediaPlayerUserControl));
@@ -37,14 +37,13 @@ namespace VideoPlayer.UserControls
             sliderProgress.AddHandler(PreviewMouseLeftButtonDownEvent, new MouseButtonEventHandler(SliderProgress_PreviewMouseLeftButtonDown), true);
             sliderProgress.AddHandler(PreviewMouseLeftButtonUpEvent, new MouseButtonEventHandler(SliderProgress_PreviewMouseLeftButtonUp), true);
 
-            if (filePath is null)
+            if (medias is null)
             {
                 viewModel = new MediaPlayerUserControlViewModel(this);
             }
             else
             {
-                Media media = new Media(filePath);
-                viewModel = new MediaPlayerUserControlViewModel(this, media);
+                viewModel = new MediaPlayerUserControlViewModel(this, medias);
             }
             DataContext = viewModel;
         }
@@ -108,16 +107,7 @@ namespace VideoPlayer.UserControls
             if (openFileDialog.ShowDialog() == true)
             {
                 Media media = new Media(openFileDialog.FileName);
-
-                if (player.IsOpen || viewModel.Queue.Count >= 1)
-                {
-                    viewModel.AddToQueue(media);
-                }
-                else
-                {
-                    await viewModel.Open(media);
-                    viewModel.SelectedMedia = media;
-                }
+                await viewModel.AddToQueue(media);
             }
 
             Focus();
@@ -290,19 +280,15 @@ namespace VideoPlayer.UserControls
             viewModel.ResetLoop();
         }
 
-        private void GridMediaElementBackground_Drop(object sender, DragEventArgs e)
+        private async void MediaFile_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                if (files.Length > 1)
-                {
-                    MessageBox.Show("Please only drag 1 media file", "Video Player", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
+                List<Media> medias = new List<Media>();
+                files.ToList().ForEach(x => medias.Add(new Media(x)));
 
-                Media media = new Media(files[0]);
-                viewModel.AddToQueue(media);
+                await viewModel.AddMediasToQueue(medias);
             }
         }
 
@@ -331,13 +317,13 @@ namespace VideoPlayer.UserControls
             viewModel.ToggleQueuePanel();
         }
 
-        private void ListBoxQueue_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void ListBoxQueue_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int index = listBoxQueue.SelectedIndex;
             if (index == -1)
                 return;
 
-            viewModel.ChangeTrack(index);
+            await viewModel.ChangeTrack(index);
         }
 
         private void ButtonClearQueue_Click(object sender, RoutedEventArgs e)

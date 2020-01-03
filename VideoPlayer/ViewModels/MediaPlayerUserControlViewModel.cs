@@ -79,10 +79,10 @@ namespace VideoPlayer.ViewModels
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
 
-        public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl, Media media)
+        public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl, List<Media> medias)
             : this(mediaPlayerUserControl)
         {
-            _ = Open(media);
+            AddMediasToQueue(medias).ConfigureAwait(false);
         }
 
         public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl)
@@ -163,10 +163,18 @@ namespace VideoPlayer.ViewModels
             userControl.buttonStop.IsEnabled = true;
         }
 
-        public void AddToQueue(Media media)
+        public async Task AddToQueue(Media media)
         {
-            Queue.Add(media);
-            userControl.buttonSkipForward.IsEnabled = true;
+            if (userControl.player.IsOpen || Queue.Count >= 1)
+            {
+                Queue.Add(media);
+                userControl.buttonSkipForward.IsEnabled = true;
+            }
+            else
+            {
+                await Open(media);
+                SelectedMedia = media;
+            }
         }
 
         public async Task Open(Media media)
@@ -446,18 +454,22 @@ namespace VideoPlayer.ViewModels
                 userControl.columnDeifinitionQueue.Width = new GridLength(0);
                 userControl.columnDeifinitionQueue.IsEnabled = false;
                 Application.Current.MainWindow.MinWidth = 880;
-                Application.Current.MainWindow.Width = 880;
+
+                if (Application.Current.MainWindow.Width == 1080)
+                    Application.Current.MainWindow.Width = 880;
             }
             else
             {
                 Application.Current.MainWindow.MinWidth = 1080;
-                Application.Current.MainWindow.Width = 1080;
                 userControl.columnDeifinitionQueue.Width = new GridLength(200);
                 userControl.columnDeifinitionQueue.IsEnabled = true;
+
+                if (Application.Current.MainWindow.Width < 1080)
+                    Application.Current.MainWindow.Width = 1080;
             }
         }
 
-        public async void ChangeTrack(int index)
+        public async Task ChangeTrack(int index)
         {
             Media media = Queue[index];
             await Open(media);
@@ -492,6 +504,14 @@ namespace VideoPlayer.ViewModels
             else
             {
                 userControl.buttonSkipBackwards.IsEnabled = false;
+            }
+        }
+
+        public async Task AddMediasToQueue(List<Media> medias)
+        {
+            foreach (Media media in medias)
+            {
+                await AddToQueue(media);
             }
         }
     }

@@ -49,7 +49,7 @@
         <Grid x:Name="gridMediaElementBackground"
               AllowDrop="True"
               Background="Black"
-              Drop="GridMediaElementBackground_Drop">
+              Drop="MediaFile_Drop">
             <ffme:MediaElement x:Name="player"
                                LoadedBehavior="Manual"
                                UnloadedBehavior="Manual"
@@ -343,7 +343,9 @@
         </Grid>
 
         <Grid Grid.RowSpan="2"
-              Grid.Column="1">
+              Grid.Column="1"
+              AllowDrop="True"
+              Drop="MediaFile_Drop">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="1*"/>

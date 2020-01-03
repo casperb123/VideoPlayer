@@ -1,8 +1,10 @@
 ﻿using MahApps.Metro.Controls;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
 using VideoPlayer.Windows;
 
@@ -31,9 +33,13 @@ namespace VideoPlayer
             WindowSettings windowSettings = new WindowSettings(true);
 
             string[] cmdLine = Environment.GetCommandLineArgs();
-            if (cmdLine.Length == 2 && validExtensions.Contains(Path.GetExtension(cmdLine[1])))
+            if (cmdLine.Length >= 2)
             {
-                masterUserControl.Content = new MediaPlayerUserControl(cmdLine[1]);
+                List<string> filePaths = cmdLine.Where(x => validExtensions.Contains(Path.GetExtension(x))).ToList();
+                List<Media> medias = new List<Media>();
+                filePaths.ForEach(x => medias.Add(new Media(x)));
+
+                masterUserControl.Content = new MediaPlayerUserControl(medias);
             }
             else
             {
