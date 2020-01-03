@@ -178,37 +178,39 @@ namespace VideoPlayer.ViewModels
             }
 
             await userControl.player.Open(media.Uri);
-            Play();
+            await Play();
         }
 
-        public void Play()
+        public async Task Play()
         {
             ProgressTimer.Start();
-            userControl.player.Play();
+            await userControl.player.Play();
             userControl.iconPlayPause.Kind = PackIconKind.Pause;
+            EnablePlayPause();
+            EnableStop();
         }
 
-        public void Pause()
+        public async Task Pause()
         {
             ProgressTimer.Stop();
-            userControl.player.Pause();
+            await userControl.player.Pause();
             userControl.iconPlayPause.Kind = PackIconKind.Play;
         }
 
-        public void Stop(bool resetSource = true)
+        public async Task Stop(bool resetSource = true)
         {
-            userControl.player.Stop();
-            if (resetSource)
-            {
-                userControl.player.Source = null;
-                ResetControls();
-            }
-
             DisablePlayPause();
             DisableStop();
 
             ProgressTimer.Stop();
             ResetProgress();
+
+            await userControl.player.Stop();
+            if (resetSource)
+            {
+                userControl.player.Source = null;
+                ResetControls();
+            }
         }
 
         public void ResetControls()

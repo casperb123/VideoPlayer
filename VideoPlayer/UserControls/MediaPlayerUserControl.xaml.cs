@@ -52,17 +52,17 @@ namespace VideoPlayer.UserControls
             e.Handled = true;
         }
 
-        private void PlayPauseExecuted(object sender, ExecutedRoutedEventArgs e)
+        private async void PlayPauseExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             if (player.Source != null)
             {
                 if (player.IsPlaying)
                 {
-                    viewModel.Pause();
+                    await viewModel.Pause();
                 }
                 else
                 {
-                    viewModel.Play();
+                    await viewModel.Play();
                 }
             }
         }
@@ -87,9 +87,9 @@ namespace VideoPlayer.UserControls
             Focus();
         }
 
-        private void ButtonStop_Click(object sender, RoutedEventArgs e)
+        private async void ButtonStop_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.Stop();
+            await viewModel.Stop();
             Focus();
         }
 
@@ -105,7 +105,7 @@ namespace VideoPlayer.UserControls
             if (openFileDialog.ShowDialog() == true)
             {
                 Media media = new Media(openFileDialog.FileName);
-                
+
                 if (player.IsOpen || viewModel.Queue.Count >= 1)
                 {
                     viewModel.AddToQueue(media);
@@ -120,27 +120,34 @@ namespace VideoPlayer.UserControls
             Focus();
         }
 
-        private void Player_MediaEnded(object sender, EventArgs e)
+        private async void Player_MediaEnded(object sender, EventArgs e)
         {
             if (viewModel.LoopVideo)
             {
-                viewModel.Stop(false);
-                viewModel.Play();
+                await viewModel.Stop(false);
+                await viewModel.Play();
             }
             else
             {
-                viewModel.Stop();
+                if (viewModel.Queue.Count > 0)
+                {
+                    listBoxQueue.SelectedIndex++;
+                }
+                else
+                {
+                    await viewModel.Stop();
+                }
             }
         }
 
-        private void Player_MediaOpened(object sender, MediaOpenedEventArgs e)
+        private async void Player_MediaOpened(object sender, MediaOpenedEventArgs e)
         {
             textBoxLoopStart.IsEnabled = true;
             textBoxLoopEnd.IsEnabled = true;
             checkBoxLoopTime.IsEnabled = true;
             sliderProgress.IsEnabled = true;
 
-            viewModel.Play();
+            await viewModel.Play();
 
             viewModel.position = player.NaturalDuration.Value;
             sliderProgress.Minimum = 0;
@@ -296,16 +303,16 @@ namespace VideoPlayer.UserControls
             }
         }
 
-        private void Player_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private async void Player_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (player.Source is null || !player.IsOpen) return;
             if (player.IsPlaying)
             {
-                viewModel.Stop();
+                await viewModel.Stop();
             }
             else
             {
-                viewModel.Play();
+                await viewModel.Play();
             }
         }
 
