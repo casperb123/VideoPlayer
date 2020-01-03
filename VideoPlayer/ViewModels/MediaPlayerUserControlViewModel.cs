@@ -200,17 +200,20 @@ namespace VideoPlayer.ViewModels
 
         public async Task Stop(bool resetSource = true)
         {
-            DisablePlayPause();
+            userControl.iconPlayPause.Kind = PackIconKind.Play;
             DisableStop();
 
             ProgressTimer.Stop();
             ResetProgress();
-
-            await userControl.player.Stop();
             if (resetSource)
             {
+                await userControl.player.Close();
                 userControl.player.Source = null;
                 ResetControls();
+            }
+            else
+            {
+                await userControl.player.Stop();
             }
         }
 

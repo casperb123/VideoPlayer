@@ -92,7 +92,7 @@ namespace VideoPlayer.UserControls
 
         private async void ButtonStop_Click(object sender, RoutedEventArgs e)
         {
-            await viewModel.Stop();
+            await viewModel.Stop(false);
             Focus();
         }
 
@@ -138,7 +138,7 @@ namespace VideoPlayer.UserControls
                 }
                 else
                 {
-                    await viewModel.Stop();
+                    await viewModel.Stop(false);
                 }
             }
         }

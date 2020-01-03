@@ -8,6 +8,7 @@
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:entities="clr-namespace:VideoPlayer.Entities;assembly=VideoPlayer.Entities"
              mc:Ignorable="d"
              d:DesignHeight="535"
              d:DesignWidth="980">
@@ -215,7 +216,7 @@
                                          HorizontalAlignment="Center"
                                          VerticalAlignment="Center"/>
             </Button>
-            
+
             <Button x:Name="buttonPlayPause"
                     BorderThickness="0"
                     IsEnabled="False"
@@ -308,35 +309,37 @@
             <TextBlock x:Name="textBlockDuration"
                        Text="0:00 / 0:00"
                        VerticalAlignment="Center" />
-            <Slider x:Name="sliderProgress"
-                    Grid.Column="0"
-                    Grid.Row="1"
-                    IsMoveToPointEnabled="True"
-                    IsSelectionRangeEnabled="True"
-                    Margin="0,0,10,0"
-                    TickPlacement="BottomRight"
-                    IsEnabled="False"
-                    ValueChanged="SliderProgress_ValueChanged"
-                    PreviewMouseLeftButtonDown="SliderProgress_PreviewMouseLeftButtonDown"
-                    PreviewMouseLeftButtonUp="SliderProgress_PreviewMouseLeftButtonUp"
-                    PreviewMouseRightButtonUp="SliderProgress_PreviewMouseRightButtonUp"/>
+            <entities:CustomSlider x:Name="sliderProgress"
+                                   Style="{StaticResource MahApps.Styles.Slider}"
+                                   Grid.Column="0"
+                                   Grid.Row="1"
+                                   IsMoveToPointEnabled="True"
+                                   IsSelectionRangeEnabled="True"
+                                   Margin="0,0,10,0"
+                                   TickPlacement="BottomRight"
+                                   IsEnabled="False"
+                                   ValueChanged="SliderProgress_ValueChanged"
+                                   PreviewMouseLeftButtonDown="SliderProgress_PreviewMouseLeftButtonDown"
+                                   PreviewMouseLeftButtonUp="SliderProgress_PreviewMouseLeftButtonUp"
+                                   PreviewMouseRightButtonUp="SliderProgress_PreviewMouseRightButtonUp"/>
 
             <TextBlock Text="Volume"
                        TextAlignment="Center"
                        Grid.Column="1"
                        VerticalAlignment="Center" />
-            <Slider x:Name="sliderVolume"
-                    Grid.Column="1"
-                    Grid.Row="1"
-                    Minimum="0"
-                    Maximum="1"
-                    Value="1"
-                    IsMoveToPointEnabled="True"
-                    TickPlacement="BottomRight"
-                    TickFrequency=".04"
-                    PreviewMouseLeftButtonDown="SliderVolume_PreviewMouseLeftButtonDown"
-                    PreviewMouseLeftButtonUp="SliderVolume_PreviewMouseLeftButtonUp"
-                    ValueChanged="SliderVolume_ValueChanged" />
+            <entities:CustomSlider x:Name="sliderVolume"
+                                   Style="{StaticResource MahApps.Styles.Slider}"
+                                   Grid.Column="1"
+                                   Grid.Row="1"
+                                   Minimum="0"
+                                   Maximum="1"
+                                   Value="1"
+                                   IsMoveToPointEnabled="True"
+                                   TickPlacement="BottomRight"
+                                   TickFrequency=".04"
+                                   PreviewMouseLeftButtonDown="SliderVolume_PreviewMouseLeftButtonDown"
+                                   PreviewMouseLeftButtonUp="SliderVolume_PreviewMouseLeftButtonUp"
+                                   ValueChanged="SliderVolume_ValueChanged" />
         </Grid>
 
         <Grid Grid.RowSpan="2"
