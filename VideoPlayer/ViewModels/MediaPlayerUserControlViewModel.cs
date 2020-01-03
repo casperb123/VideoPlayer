@@ -120,14 +120,15 @@ namespace VideoPlayer.ViewModels
                     }
                 }
 
-                userControl.sliderProgress.Value = userControl.player.Position.TotalSeconds;
+                if (!Seeking)
+                    userControl.sliderProgress.Value = userControl.player.Position.TotalSeconds;
             }
         }
 
         public async Task Seek(TimeSpan timeSpan)
         {
-            Seeking = false;
             await userControl.player.Seek(timeSpan);
+            Seeking = false;
             ProgressTimer.Start();
             await userControl.player.Play();
         }

@@ -34,6 +34,9 @@ namespace VideoPlayer.UserControls
 
             InitializeComponent();
 
+            sliderProgress.AddHandler(PreviewMouseLeftButtonDownEvent, new MouseButtonEventHandler(SliderProgress_PreviewMouseLeftButtonDown), true);
+            sliderProgress.AddHandler(PreviewMouseLeftButtonUpEvent, new MouseButtonEventHandler(SliderProgress_PreviewMouseLeftButtonUp), true);
+
             if (filePath is null)
             {
                 viewModel = new MediaPlayerUserControlViewModel(this);
@@ -167,12 +170,12 @@ namespace VideoPlayer.UserControls
             player.Pause();
         }
 
-        private void SliderProgress_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private async void SliderProgress_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (player.Source is null || !player.IsOpen) return;
 
             int pos = Convert.ToInt32(sliderProgress.Value);
-            _ = viewModel.Seek(new TimeSpan(0, 0, 0, pos, 0));
+            await viewModel.Seek(new TimeSpan(0, 0, 0, pos, 0));
 
             Focus();
         }
