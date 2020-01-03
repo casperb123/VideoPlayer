@@ -33,6 +33,7 @@ namespace VideoPlayer.ViewModels
         public bool LoopVideo;
         public bool LoopSpecificTime;
         public DispatcherTimer ProgressTimer;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Media SelectedMedia
@@ -44,7 +45,6 @@ namespace VideoPlayer.ViewModels
                     throw new ArgumentNullException("The selected media can't be null");
 
                 selectedMedia = value;
-                OnPropertyChanged(nameof(SelectedMedia));
             }
         }
 
@@ -70,7 +70,6 @@ namespace VideoPlayer.ViewModels
                     throw new ArgumentNullException("The old queue can't be null");
 
                 oldQueue = value;
-                OnPropertyChanged(nameof(OldQueue));
             }
         }
 
