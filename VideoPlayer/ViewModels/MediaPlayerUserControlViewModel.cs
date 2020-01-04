@@ -428,7 +428,7 @@ namespace VideoPlayer.ViewModels
             userControl.checkBoxLoopTime.IsChecked = false;
         }
 
-        public async Task SkipBackwards()
+        public async Task PreviousTrack()
         {
             Queue.Insert(0, SelectedMedia);
             SelectedMedia = OldQueue[OldQueue.Count - 1];

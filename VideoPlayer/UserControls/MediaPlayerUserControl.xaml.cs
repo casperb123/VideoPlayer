@@ -25,12 +25,16 @@ namespace VideoPlayer.UserControls
         public static RoutedUICommand PlayPauseCmd;
         public static RoutedUICommand SkipForwardCmd;
         public static RoutedUICommand SkipBackwardCmd;
+        public static RoutedUICommand NextTrackCmd;
+        public static RoutedUICommand PreviousTrackCmd;
 
         public MediaPlayerUserControl(List<Media> medias = null)
         {
             PlayPauseCmd = new RoutedUICommand("Toggle playing", "PlayPause", typeof(MediaPlayerUserControl));
             SkipForwardCmd = new RoutedUICommand("Skip forward", "SkipForward", typeof(MediaPlayerUserControl));
             SkipBackwardCmd = new RoutedUICommand("Skip backwards", "SkipBackard", typeof(MediaPlayerUserControl));
+            NextTrackCmd = new RoutedUICommand("Next track", "NextTrack", typeof(MediaPlayerUserControl));
+            PreviousTrackCmd = new RoutedUICommand("Previous track", "PreviousTrack", typeof(MediaPlayerUserControl));
 
             InitializeComponent();
 
@@ -81,6 +85,16 @@ namespace VideoPlayer.UserControls
             int pos = Convert.ToInt32(sliderProgress.Value - 5);
             player.Position = new TimeSpan(0, 0, 0, pos, 0);
             sliderProgress.Value = player.Position.TotalSeconds;
+        }
+
+        private void NextTrackExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            listBoxQueue.SelectedIndex++;
+        }
+
+        private async void PreviousTrackExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            await viewModel.PreviousTrack();
         }
 
         private void ButtonPlayPause_Click(object sender, RoutedEventArgs e)
@@ -363,7 +377,7 @@ namespace VideoPlayer.UserControls
 
         private async void ButtonSkipBackwards_Click(object sender, RoutedEventArgs e)
         {
-            await viewModel.SkipBackwards();
+            await viewModel.PreviousTrack();
         }
     }
 }

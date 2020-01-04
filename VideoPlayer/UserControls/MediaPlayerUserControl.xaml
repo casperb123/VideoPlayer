@@ -22,6 +22,12 @@
         <CommandBinding Command="{x:Static local:MediaPlayerUserControl.SkipBackwardCmd}"
                         CanExecute="CommandCanExecute"
                         Executed="SkipBackwardExecuted" />
+        <CommandBinding Command="{x:Static local:MediaPlayerUserControl.NextTrackCmd}"
+                        CanExecute="CommandCanExecute"
+                        Executed="NextTrackExecuted" />
+        <CommandBinding Command="{x:Static local:MediaPlayerUserControl.PreviousTrackCmd}"
+                        CanExecute="CommandCanExecute"
+                        Executed="PreviousTrackExecuted" />
     </UserControl.CommandBindings>
 
     <UserControl.InputBindings>
@@ -29,15 +35,13 @@
                     Key="Space" />
         <KeyBinding Command="{x:Static local:MediaPlayerUserControl.PlayPauseCmd}"
                     Key="MediaPlayPause" />
-        
         <KeyBinding Command="{x:Static local:MediaPlayerUserControl.SkipForwardCmd}"
                     Key="Right" />
-        <KeyBinding Command="{x:Static local:MediaPlayerUserControl.SkipForwardCmd}"
-                    Key="MediaNextTrack" />
-
         <KeyBinding Command="{x:Static local:MediaPlayerUserControl.SkipBackwardCmd}"
                     Key="Left" />
-        <KeyBinding Command="{x:Static local:MediaPlayerUserControl.SkipBackwardCmd}"
+        <KeyBinding Command="{x:Static local:MediaPlayerUserControl.NextTrackCmd}"
+                    Key="MediaNextTrack" />
+        <KeyBinding Command="{x:Static local:MediaPlayerUserControl.PreviousTrackCmd}"
                     Key="MediaPreviousTrack" />
     </UserControl.InputBindings>
 
