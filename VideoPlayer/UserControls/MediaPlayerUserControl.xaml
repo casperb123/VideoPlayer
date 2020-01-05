@@ -51,12 +51,6 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*" />
-            <ColumnDefinition x:Name="columnDeifinitionQueue"
-                              Width="0"
-                              IsEnabled="False" />
-        </Grid.ColumnDefinitions>
 
         <Grid x:Name="gridMediaElementBackground"
               AllowDrop="True"
