@@ -12,6 +12,7 @@ using VideoPlayer.Entities;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Data;
 
 namespace VideoPlayer.UserControls
 {
@@ -89,7 +90,7 @@ namespace VideoPlayer.UserControls
 
         private void NextTrackExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            listBoxQueue.SelectedIndex++;
+            dataGridQueue.SelectedIndex++;
         }
 
         private async void PreviousTrackExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -142,7 +143,7 @@ namespace VideoPlayer.UserControls
             {
                 if (viewModel.Queue.Count > 0)
                 {
-                    listBoxQueue.SelectedIndex++;
+                    dataGridQueue.SelectedIndex++;
                 }
                 else
                 {
@@ -335,9 +336,9 @@ namespace VideoPlayer.UserControls
             viewModel.ToggleQueuePanel();
         }
 
-        private async void ListBoxQueue_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void DataGridQueue_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            int index = listBoxQueue.SelectedIndex;
+            int index = dataGridQueue.SelectedIndex;
             if (index == -1)
                 return;
 
@@ -352,15 +353,15 @@ namespace VideoPlayer.UserControls
 
         private void MenuItemQueueRemove_Click(object sender, RoutedEventArgs e)
         {
-            Media media = listBoxQueue.SelectedItem as Media;
+            Media media = dataGridQueue.SelectedItem as Media;
             viewModel.Queue.Remove(media);
         }
 
-        private void ListBoxQueueContextMenu_Opened(object sender, RoutedEventArgs e)
+        private void DataGridQueueContextMenu_Opened(object sender, RoutedEventArgs e)
         {
             if (viewModel.SelectedMedia is null ||
                 viewModel.Queue.Count == 1 ||
-                ((Media)listBoxQueue.SelectedItem) == viewModel.SelectedMedia)
+                ((Media)dataGridQueue.SelectedItem) == viewModel.SelectedMedia)
             {
                 menuItemQueueRemove.IsEnabled = false;
             }
@@ -372,7 +373,7 @@ namespace VideoPlayer.UserControls
 
         private void ButtonSkipForward_Click(object sender, RoutedEventArgs e)
         {
-            listBoxQueue.SelectedIndex++;
+            dataGridQueue.SelectedIndex++;
         }
 
         private async void ButtonSkipBackwards_Click(object sender, RoutedEventArgs e)

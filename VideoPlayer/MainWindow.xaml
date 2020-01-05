@@ -16,12 +16,12 @@
             <Button x:Name="buttonWindowCredits"
                     Content="Credits"
                     Cursor="Hand"
-                    Click="ButtonWindowCredits_Click"/>
+                    Click="ButtonWindowCredits_Click" />
 
             <Button x:Name="buttonWindowSettings"
                     Content="Settings"
                     Cursor="Hand"
-                    Click="ButtonWindowSettings_Click"/>
+                    Click="ButtonWindowSettings_Click" />
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
 

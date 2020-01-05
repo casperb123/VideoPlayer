@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using VideoPlayer.Windows;
 using System.Collections.Generic;
+using MahApps.Metro.Controls;
+using System.Windows.Controls;
 
 namespace VideoPlayer.ViewModels
 {
@@ -449,24 +451,7 @@ namespace VideoPlayer.ViewModels
 
         public void ToggleQueuePanel()
         {
-            if (userControl.columnDeifinitionQueue.IsEnabled)
-            {
-                userControl.columnDeifinitionQueue.Width = new GridLength(0);
-                userControl.columnDeifinitionQueue.IsEnabled = false;
-                Application.Current.MainWindow.MinWidth = 880;
-
-                if (Application.Current.MainWindow.Width == 1080)
-                    Application.Current.MainWindow.Width = 880;
-            }
-            else
-            {
-                Application.Current.MainWindow.MinWidth = 1080;
-                userControl.columnDeifinitionQueue.Width = new GridLength(200);
-                userControl.columnDeifinitionQueue.IsEnabled = true;
-
-                if (Application.Current.MainWindow.Width < 1080)
-                    Application.Current.MainWindow.Width = 1080;
-            }
+            userControl.flyoutQueue.IsOpen = !userControl.flyoutQueue.IsOpen;
         }
 
         public async Task ChangeTrack(int index)

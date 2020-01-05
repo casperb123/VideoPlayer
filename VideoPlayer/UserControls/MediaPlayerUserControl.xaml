@@ -52,10 +52,10 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*" />
             <ColumnDefinition x:Name="columnDeifinitionQueue"
                               Width="0"
-                              IsEnabled="False"/>
+                              IsEnabled="False" />
         </Grid.ColumnDefinitions>
 
         <Grid x:Name="gridMediaElementBackground"
@@ -105,7 +105,7 @@
                                     Speedup="True"
                                     Interval="0.05"
                                     StringFormat="0.00"
-                                    ValueChanged="NumericPlaybackSpeed_ValueChanged"/>
+                                    ValueChanged="NumericPlaybackSpeed_ValueChanged" />
 
             <Label Content="Loop:"
                    Foreground="White"
@@ -183,7 +183,7 @@
                                          Width="30"
                                          Height="30"
                                          HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"/>
+                                         VerticalAlignment="Center" />
             </Button>
             <TextBlock VerticalAlignment="Bottom"
                        Margin="10,0,0,5">
@@ -211,7 +211,7 @@
                                          Width="40"
                                          Height="40"
                                          HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"/>
+                                         VerticalAlignment="Center" />
             </Button>
 
             <Button x:Name="buttonSkipBackwards"
@@ -226,7 +226,7 @@
                                          Width="35"
                                          Height="35"
                                          HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"/>
+                                         VerticalAlignment="Center" />
             </Button>
 
             <Button x:Name="buttonPlayPause"
@@ -241,7 +241,7 @@
                                          Width="35"
                                          Height="35"
                                          HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"/>
+                                         VerticalAlignment="Center" />
             </Button>
 
             <Button x:Name="buttonSkipForward"
@@ -256,7 +256,7 @@
                                          Width="35"
                                          Height="35"
                                          HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"/>
+                                         VerticalAlignment="Center" />
             </Button>
 
             <Button x:Name="buttonAddToQueue"
@@ -270,7 +270,7 @@
                                          Width="25"
                                          Height="25"
                                          HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"/>
+                                         VerticalAlignment="Center" />
             </Button>
         </StackPanel>
 
@@ -289,21 +289,21 @@
                                          Width="30"
                                          Height="30"
                                          HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"/>
+                                         VerticalAlignment="Center" />
             </Button>
             <Button x:Name="buttonMuteUnmute"
-                BorderThickness="0"
-                HorizontalAlignment="Right"
-                Width="40"
-                Height="40"
-                Margin="5,0,10,0"
-                Click="ButtonMuteUnmute_Click">
+                    BorderThickness="0"
+                    HorizontalAlignment="Right"
+                    Width="40"
+                    Height="40"
+                    Margin="5,0,10,0"
+                    Click="ButtonMuteUnmute_Click">
                 <materialDesign:PackIcon x:Name="iconVolume"
-                                     Kind="VolumeHigh"
-                                     Width="30"
-                                     Height="30"
-                                     HorizontalAlignment="Center"
-                                     VerticalAlignment="Center"/>
+                                         Kind="VolumeHigh"
+                                         Width="30"
+                                         Height="30"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
             </Button>
         </StackPanel>
 
@@ -333,7 +333,7 @@
                                    ValueChanged="SliderProgress_ValueChanged"
                                    PreviewMouseLeftButtonDown="SliderProgress_PreviewMouseLeftButtonDown"
                                    PreviewMouseLeftButtonUp="SliderProgress_PreviewMouseLeftButtonUp"
-                                   PreviewMouseRightButtonUp="SliderProgress_PreviewMouseRightButtonUp"/>
+                                   PreviewMouseRightButtonUp="SliderProgress_PreviewMouseRightButtonUp" />
 
             <TextBlock Text="Volume"
                        TextAlignment="Center"
@@ -354,42 +354,62 @@
                                    ValueChanged="SliderVolume_ValueChanged" />
         </Grid>
 
-        <Grid Grid.RowSpan="2"
-              Grid.Column="1"
-              AllowDrop="True"
-              Drop="MediaFile_Drop">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="1*"/>
-            </Grid.RowDefinitions>
+        <Controls:Flyout x:Name="flyoutQueue"
+                         Header="Queue"
+                         Position="Right"
+                         Theme="Adapt"
+                         Width="250"
+                         Grid.RowSpan="2">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="40" />
+                </Grid.RowDefinitions>
 
-            <Label Content="Queue"
-                   Grid.Column="1"
-                   HorizontalContentAlignment="Center"/>
-            <ListBox x:Name="listBoxQueue"
-                     Grid.Row="1"
-                     ItemsSource="{Binding Path=Queue}"
-                     DisplayMemberPath="Name"
-                     SelectionMode="Single"
-                     SelectionChanged="ListBoxQueue_SelectionChanged">
-                <ListBox.ContextMenu>
-                    <ContextMenu x:Name="listBoxQueueContextMenu"
-                                 Opened="ListBoxQueueContextMenu_Opened">
-                        <MenuItem x:Name="menuItemQueueRemove"
-                                  Header="Remove"
-                                  Click="MenuItemQueueRemove_Click"/>
-                    </ContextMenu>
-                </ListBox.ContextMenu>
-            </ListBox>
-        </Grid>
+                <DataGrid x:Name="dataGridQueue"
+                          ItemsSource="{Binding Path=Queue}"
+                          SelectionMode="Single"
+                          AutoGenerateColumns="False"
+                          CanUserSortColumns="False"
+                          CanUserResizeColumns="False"
+                          CanUserReorderColumns="False"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          SelectionChanged="DataGridQueue_SelectionChanged">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name"
+                                            Binding="{Binding Path=Name}"
+                                            Width="1*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="{x:Type TextBlock}"
+                                       BasedOn="{StaticResource MahApps.Styles.TextBlock}">
+                                    <Setter Property="TextTrimming"
+                                            Value="CharacterEllipsis" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Duration"
+                                            Binding="{Binding Path=Duration}"
+                                            Width="85" />
+                    </DataGrid.Columns>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu x:Name="dataGridQueueContextMenu"
+                                     Opened="DataGridQueueContextMenu_Opened">
+                            <MenuItem x:Name="menuItemQueueRemove"
+                                      Header="Remove"
+                                      Click="MenuItemQueueRemove_Click" />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                </DataGrid>
 
-        <Button x:Name="buttonClearQueue"
-                BorderThickness="0"
-                Grid.Row="2"
-                Grid.Column="1"
-                Content="Clear Queue"
-                Height="40"
-                Margin="10,10,10,0"
-                Click="ButtonClearQueue_Click"/>
+                <Button x:Name="buttonClearQueue"
+                        BorderThickness="0"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Content="Clear Queue"
+                        Height="40"
+                        Click="ButtonClearQueue_Click" />
+            </Grid>
+        </Controls:Flyout>
     </Grid>
 </UserControl>

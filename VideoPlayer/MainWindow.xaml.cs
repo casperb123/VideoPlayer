@@ -1,6 +1,7 @@
 ﻿using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -15,6 +16,8 @@ namespace VideoPlayer
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        public static Process FFmpegProcess;
+
         private readonly string[] validExtensions = new string[]
         {
             ".mpg",
