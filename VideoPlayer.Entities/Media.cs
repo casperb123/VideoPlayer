@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NReco.VideoInfo;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -68,33 +69,62 @@ namespace VideoPlayer.Entities
                 ffmpegPath = $@"{runningPath}\ffmpeg";
             }
 
-            using (Process ffmpeg = new Process())
+            FFProbe fFProbe = new FFProbe
             {
-                string result;
-                StreamReader errorReader;
+                ToolPath = ffmpegPath
+            };
+            MediaInfo mediaInfo = fFProbe.GetMediaInfo(Source);
+            string timeSpanString = string.Empty;
 
-                ffmpeg.StartInfo.UseShellExecute = false;
-                ffmpeg.StartInfo.ErrorDialog = false;
-                ffmpeg.StartInfo.RedirectStandardError = true;
-                ffmpeg.StartInfo.FileName = $@"{ffmpegPath}\ffmpeg.exe";
-                ffmpeg.StartInfo.Arguments = $"-i {Source}";
-
-                ffmpeg.Start();
-                errorReader = ffmpeg.StandardError;
-                ffmpeg.WaitForExit(5000);
-
-                result = errorReader.ReadToEnd();
-                result = result.Substring(result.IndexOf("Duration: ") + ("Duration: ").Length, ("00:00:00.00").Length);
-                result = result.Remove(result.IndexOf("."), 3);
-
-                int colonIndex = result.IndexOf(':');
-                double time = double.Parse(Split(result, 0, colonIndex));
-
-                if (time == 0)
-                    result = result.Substring(colonIndex + 1);
-
-                Duration = result;
+            if (mediaInfo.Duration.Hours > 0)
+            {
+                if (mediaInfo.Duration.Hours > 9)
+                {
+                    timeSpanString = @"hh\:";
+                }
+                else
+                {
+                    timeSpanString = @"h\:";
+                }
             }
+            if (mediaInfo.Duration.Minutes > 9 || mediaInfo.Duration.Hours > 0)
+            {
+                timeSpanString += @"mm\:";
+            }
+            else
+            {
+                timeSpanString += @"m\:";
+            }
+
+            Duration = mediaInfo.Duration.ToString($"{timeSpanString}ss");
+
+            //using (Process ffmpeg = new Process())
+            //{
+            //    string result;
+            //    StreamReader errorReader;
+
+            //    ffmpeg.StartInfo.UseShellExecute = false;
+            //    ffmpeg.StartInfo.ErrorDialog = false;
+            //    ffmpeg.StartInfo.RedirectStandardError = true;
+            //    ffmpeg.StartInfo.FileName = $@"{ffmpegPath}\ffmpeg.exe";
+            //    ffmpeg.StartInfo.Arguments = $"-i {Source}";
+
+            //    ffmpeg.Start();
+            //    errorReader = ffmpeg.StandardError;
+            //    ffmpeg.WaitForExit(5000);
+
+            //    result = errorReader.ReadToEnd();
+            //    result = result.Substring(result.IndexOf("Duration: ") + ("Duration: ").Length, ("00:00:00.00").Length);
+            //    result = result.Remove(result.IndexOf("."), 3);
+
+            //    int colonIndex = result.IndexOf(':');
+            //    double time = double.Parse(Split(result, 0, colonIndex));
+
+            //    if (time == 0)
+            //        result = result.Substring(colonIndex + 1);
+
+            //    Duration = result;
+            //}
         }
 
         private string Split(string source, int start, int end)

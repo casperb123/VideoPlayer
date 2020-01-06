@@ -218,7 +218,6 @@ namespace VideoPlayer.ViewModels
             if (resetSource)
             {
                 await userControl.player.Close();
-                userControl.player.Source = null;
                 ResetControls();
             }
             else
@@ -497,6 +496,22 @@ namespace VideoPlayer.ViewModels
             foreach (Media media in medias)
             {
                 await AddToQueue(media);
+            }
+        }
+
+        private async void OnHotkeyHandler(Hotkey hotkey)
+        {
+            if (hotkey.Key == Key.MediaNextTrack)
+            {
+                userControl.dataGridQueue.SelectedIndex++;
+            }
+            else if (hotkey.Key == Key.MediaPreviousTrack)
+            {
+                await PreviousTrack();
+            }
+            else if (hotkey.Key == Key.MediaPlayPause)
+            {
+                MediaPlayerUserControl.PlayPauseCmd.Execute(null, userControl.buttonPlayPause);
             }
         }
     }

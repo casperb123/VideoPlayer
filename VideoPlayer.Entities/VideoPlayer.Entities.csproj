@@ -1,11 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FFME.Windows" Version="4.2.320" />
+    <PackageReference Include="FFME.Windows" Version="4.2.330" />
+    <PackageReference Include="NReco.VideoInfo.LT" Version="1.1.0" />
+    <PackageReference Include="System.Net.Primitives" Version="4.3.1" />
   </ItemGroup>
 
 </Project>
