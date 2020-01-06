@@ -10,7 +10,8 @@
                       Width="880"
                       MinWidth="880"
                       Height="600"
-                      MinHeight="600">
+                      MinHeight="600"
+                      Closing="MetroWindow_Closing">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button x:Name="buttonWindowCredits"

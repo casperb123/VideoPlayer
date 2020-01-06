@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Net.Mime;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 
@@ -118,7 +114,7 @@ namespace VideoPlayer.Entities
         protected virtual void Dispose(bool disposing)
         {
             // Check to see if Dispose has already been called.
-            if (!this._disposed)
+            if (!_disposed)
             {
                 // If disposing equals true, dispose all managed
                 // and unmanaged resources.

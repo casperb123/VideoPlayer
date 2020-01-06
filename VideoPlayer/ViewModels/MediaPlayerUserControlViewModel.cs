@@ -35,6 +35,7 @@ namespace VideoPlayer.ViewModels
         public bool LoopVideo;
         public bool LoopSpecificTime;
         public DispatcherTimer ProgressTimer;
+        public List<Hotkey> Hotkeys;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -102,6 +103,16 @@ namespace VideoPlayer.ViewModels
 
             queue = new ObservableCollection<Media>();
             oldQueue = new ObservableCollection<Media>();
+
+            Hotkey nextTrackHotkey = new Hotkey(Key.MediaNextTrack, KeyModifier.None, OnHotkeyHandler, true);
+            Hotkey previousTrackHotkey = new Hotkey(Key.MediaPreviousTrack, KeyModifier.None, OnHotkeyHandler, true);
+            Hotkey playPauseHotkey = new Hotkey(Key.MediaPlayPause, KeyModifier.None, OnHotkeyHandler, true);
+            Hotkeys = new List<Hotkey>
+            {
+                nextTrackHotkey,
+                previousTrackHotkey,
+                playPauseHotkey
+            };
         }
 
         private async void ProgressTimer_Tick(object sender, EventArgs e)

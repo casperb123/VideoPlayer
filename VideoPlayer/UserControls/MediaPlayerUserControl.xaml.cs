@@ -21,7 +21,7 @@ namespace VideoPlayer.UserControls
     /// </summary>F
     public partial class MediaPlayerUserControl : UserControl
     {
-        private readonly MediaPlayerUserControlViewModel viewModel;
+        public readonly MediaPlayerUserControlViewModel ViewModel;
 
         public static RoutedUICommand PlayPauseCmd;
         public static RoutedUICommand SkipForwardCmd;
@@ -44,13 +44,13 @@ namespace VideoPlayer.UserControls
 
             if (medias is null)
             {
-                viewModel = new MediaPlayerUserControlViewModel(this);
+                ViewModel = new MediaPlayerUserControlViewModel(this);
             }
             else
             {
-                viewModel = new MediaPlayerUserControlViewModel(this, medias);
+                ViewModel = new MediaPlayerUserControlViewModel(this, medias);
             }
-            DataContext = viewModel;
+            DataContext = ViewModel;
         }
 
         private void CommandCanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -65,11 +65,11 @@ namespace VideoPlayer.UserControls
             {
                 if (player.IsPlaying)
                 {
-                    await viewModel.Pause();
+                    await ViewModel.Pause();
                 }
                 else
                 {
-                    await viewModel.Play();
+                    await ViewModel.Play();
                 }
             }
         }
@@ -95,7 +95,7 @@ namespace VideoPlayer.UserControls
 
         private async void PreviousTrackExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            await viewModel.PreviousTrack();
+            await ViewModel.PreviousTrack();
         }
 
         private void ButtonPlayPause_Click(object sender, RoutedEventArgs e)
@@ -106,7 +106,7 @@ namespace VideoPlayer.UserControls
 
         private async void ButtonStop_Click(object sender, RoutedEventArgs e)
         {
-            await viewModel.Stop(false);
+            await ViewModel.Stop(false);
             Focus();
         }
 
@@ -126,7 +126,7 @@ namespace VideoPlayer.UserControls
                 List<Media> medias = new List<Media>();
                 fileNames.ForEach(x => medias.Add(new Media(x)));
 
-                await viewModel.AddMediasToQueue(medias);
+                await ViewModel.AddMediasToQueue(medias);
             }
 
             Focus();
@@ -134,20 +134,20 @@ namespace VideoPlayer.UserControls
 
         private async void Player_MediaEnded(object sender, EventArgs e)
         {
-            if (viewModel.LoopVideo)
+            if (ViewModel.LoopVideo)
             {
-                await viewModel.Stop(false);
-                await viewModel.Play();
+                await ViewModel.Stop(false);
+                await ViewModel.Play();
             }
             else
             {
-                if (viewModel.Queue.Count > 0)
+                if (ViewModel.Queue.Count > 0)
                 {
                     dataGridQueue.SelectedIndex++;
                 }
                 else
                 {
-                    await viewModel.Stop(false);
+                    await ViewModel.Stop(false);
                 }
             }
         }
@@ -159,23 +159,23 @@ namespace VideoPlayer.UserControls
             checkBoxLoopTime.IsEnabled = true;
             sliderProgress.IsEnabled = true;
 
-            await viewModel.Play();
+            await ViewModel.Play();
 
-            viewModel.position = player.NaturalDuration.Value;
+            ViewModel.position = player.NaturalDuration.Value;
             sliderProgress.Minimum = 0;
-            sliderProgress.Maximum = viewModel.position.TotalSeconds;
+            sliderProgress.Maximum = ViewModel.position.TotalSeconds;
 
-            viewModel.EnablePlayPause();
-            viewModel.EnableStop();
+            ViewModel.EnablePlayPause();
+            ViewModel.EnableStop();
 
-            viewModel.ProgressTimer.Start();
+            ViewModel.ProgressTimer.Start();
         }
 
         private void SliderProgress_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (player.Source is null || !player.IsOpen) return;
-            viewModel.Seeking = true;
-            viewModel.ProgressTimer.Stop();
+            ViewModel.Seeking = true;
+            ViewModel.ProgressTimer.Stop();
             player.Pause();
         }
 
@@ -184,7 +184,7 @@ namespace VideoPlayer.UserControls
             if (player.Source is null || !player.IsOpen) return;
 
             int pos = Convert.ToInt32(sliderProgress.Value);
-            await viewModel.Seek(new TimeSpan(0, 0, 0, pos, 0));
+            await ViewModel.Seek(new TimeSpan(0, 0, 0, pos, 0));
 
             Focus();
         }
@@ -194,18 +194,18 @@ namespace VideoPlayer.UserControls
             if (player.Source is null || !player.IsOpen) return;
 
             Point point = e.GetPosition(sliderProgress);
-            viewModel.SetLoopValue(point);
+            ViewModel.SetLoopValue(point);
         }
 
         private void SliderProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (viewModel.Seeking)
+            if (ViewModel.Seeking)
             {
                 int pos = Convert.ToInt32(sliderProgress.Value);
                 player.Seek(new TimeSpan(0, 0, 0, pos, 0));
             }
 
-            viewModel.ShowTime();
+            ViewModel.ShowTime();
         }
 
         private void SliderVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -234,14 +234,14 @@ namespace VideoPlayer.UserControls
 
         private void SliderVolume_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            viewModel.OldVolume = sliderVolume.Value;
+            ViewModel.OldVolume = sliderVolume.Value;
         }
 
         private void SliderVolume_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (sliderVolume.Value > 0)
             {
-                viewModel.OldVolume = sliderVolume.Value;
+                ViewModel.OldVolume = sliderVolume.Value;
             }
 
             Focus();
@@ -249,25 +249,25 @@ namespace VideoPlayer.UserControls
 
         private void ButtonMuteUnmute_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.MuteToggle();
+            ViewModel.MuteToggle();
             Focus();
         }
 
         private void ButtonSettings_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.ToggleSettings();
+            ViewModel.ToggleSettings();
             Focus();
         }
 
         private void CheckBoxLoop_Checked(object sender, RoutedEventArgs e)
         {
-            viewModel.LoopVideo = true;
+            ViewModel.LoopVideo = true;
             Focus();
         }
 
         private void CheckBoxLoop_Unchecked(object sender, RoutedEventArgs e)
         {
-            viewModel.LoopVideo = false;
+            ViewModel.LoopVideo = false;
             Focus();
         }
 
@@ -275,28 +275,28 @@ namespace VideoPlayer.UserControls
         {
             if (!IsLoaded) return;
 
-            viewModel.SetLoopTime(textBoxLoopStart.Text, textBoxLoopEnd.Text);
+            ViewModel.SetLoopTime(textBoxLoopStart.Text, textBoxLoopEnd.Text);
         }
 
         private void CheckBoxLoopTime_Checked(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded) return;
 
-            viewModel.SetLoopTime(textBoxLoopStart.Text, textBoxLoopEnd.Text);
-            viewModel.LoopSpecificTime = true;
+            ViewModel.SetLoopTime(textBoxLoopStart.Text, textBoxLoopEnd.Text);
+            ViewModel.LoopSpecificTime = true;
         }
 
         private void CheckBoxLoopTime_Unchecked(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded) return;
 
-            viewModel.LoopSpecificTime = false;
-            viewModel.SetSelection(0, 0);
+            ViewModel.LoopSpecificTime = false;
+            ViewModel.SetSelection(0, 0);
         }
 
         private void HyperLinkResetLoop_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.ResetLoop();
+            ViewModel.ResetLoop();
         }
 
         private async void MediaFile_Drop(object sender, DragEventArgs e)
@@ -307,7 +307,7 @@ namespace VideoPlayer.UserControls
                 List<Media> medias = new List<Media>();
                 files.ToList().ForEach(x => medias.Add(new Media(x)));
 
-                await viewModel.AddMediasToQueue(medias);
+                await ViewModel.AddMediasToQueue(medias);
             }
         }
 
@@ -316,11 +316,11 @@ namespace VideoPlayer.UserControls
             if (player.Source is null || !player.IsOpen) return;
             if (player.IsPlaying)
             {
-                await viewModel.Stop();
+                await ViewModel.Stop();
             }
             else
             {
-                await viewModel.Play();
+                await ViewModel.Play();
             }
         }
 
@@ -328,12 +328,12 @@ namespace VideoPlayer.UserControls
         {
             if (!IsLoaded || !e.NewValue.HasValue) return;
 
-            viewModel.ChangeSpeed(e.NewValue.Value);
+            ViewModel.ChangeSpeed(e.NewValue.Value);
         }
 
         private void ButtonQueue_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.ToggleQueuePanel();
+            ViewModel.ToggleQueuePanel();
         }
 
         private async void DataGridQueue_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -342,26 +342,26 @@ namespace VideoPlayer.UserControls
             if (index == -1)
                 return;
 
-            await viewModel.ChangeTrack(index);
+            await ViewModel.ChangeTrack(index);
         }
 
         private void ButtonClearQueue_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.Queue.Clear();
+            ViewModel.Queue.Clear();
             buttonSkipForward.IsEnabled = false;
         }
 
         private void MenuItemQueueRemove_Click(object sender, RoutedEventArgs e)
         {
             Media media = dataGridQueue.SelectedItem as Media;
-            viewModel.Queue.Remove(media);
+            ViewModel.Queue.Remove(media);
         }
 
         private void DataGridQueueContextMenu_Opened(object sender, RoutedEventArgs e)
         {
-            if (viewModel.SelectedMedia is null ||
-                viewModel.Queue.Count == 1 ||
-                ((Media)dataGridQueue.SelectedItem) == viewModel.SelectedMedia)
+            if (ViewModel.SelectedMedia is null ||
+                ViewModel.Queue.Count == 1 ||
+                ((Media)dataGridQueue.SelectedItem) == ViewModel.SelectedMedia)
             {
                 menuItemQueueRemove.IsEnabled = false;
             }
@@ -378,7 +378,7 @@ namespace VideoPlayer.UserControls
 
         private async void ButtonSkipBackwards_Click(object sender, RoutedEventArgs e)
         {
-            await viewModel.PreviousTrack();
+            await ViewModel.PreviousTrack();
         }
     }
 }

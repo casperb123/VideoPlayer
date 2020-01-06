@@ -1,6 +1,7 @@
 ﻿using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -62,6 +63,12 @@ namespace VideoPlayer
             Credits credits = new Credits();
             credits.Owner = this;
             credits.ShowDialog();
+        }
+
+        private void MetroWindow_Closing(object sender, CancelEventArgs e)
+        {
+            MediaPlayerUserControl userControl = masterUserControl.Content as MediaPlayerUserControl;
+            userControl.ViewModel.Hotkeys.ForEach(x => x.Dispose());
         }
     }
 }
