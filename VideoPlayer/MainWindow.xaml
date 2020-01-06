@@ -7,8 +7,8 @@
                       xmlns:local="clr-namespace:VideoPlayer"
                       mc:Ignorable="d"
                       Title="Video Player"
-                      Width="880"
-                      MinWidth="880"
+                      Width="825"
+                      MinWidth="825"
                       Height="600"
                       MinHeight="600"
                       Closing="MetroWindow_Closing">
