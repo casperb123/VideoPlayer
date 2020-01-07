@@ -29,7 +29,7 @@ namespace VideoPlayer.UserControls
         public static RoutedUICommand NextTrackCmd;
         public static RoutedUICommand PreviousTrackCmd;
 
-        public MediaPlayerUserControl(List<Media> medias = null)
+        public MediaPlayerUserControl(MainWindow mainWindow)
         {
             PlayPauseCmd = new RoutedUICommand("Toggle playing", "PlayPause", typeof(MediaPlayerUserControl));
             SkipForwardCmd = new RoutedUICommand("Skip forward", "SkipForward", typeof(MediaPlayerUserControl));
@@ -42,14 +42,7 @@ namespace VideoPlayer.UserControls
             sliderProgress.AddHandler(PreviewMouseLeftButtonDownEvent, new MouseButtonEventHandler(SliderProgress_PreviewMouseLeftButtonDown), true);
             sliderProgress.AddHandler(PreviewMouseLeftButtonUpEvent, new MouseButtonEventHandler(SliderProgress_PreviewMouseLeftButtonUp), true);
 
-            if (medias is null)
-            {
-                ViewModel = new MediaPlayerUserControlViewModel(this);
-            }
-            else
-            {
-                ViewModel = new MediaPlayerUserControlViewModel(this, medias);
-            }
+            ViewModel = new MediaPlayerUserControlViewModel(this, mainWindow);
             DataContext = ViewModel;
         }
 
@@ -90,7 +83,7 @@ namespace VideoPlayer.UserControls
 
         private void NextTrackExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            dataGridQueue.SelectedIndex++;
+            ViewModel.MainWindow.dataGridQueue.SelectedIndex++;
         }
 
         private async void PreviousTrackExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -126,7 +119,7 @@ namespace VideoPlayer.UserControls
                 List<Media> medias = new List<Media>();
                 fileNames.ForEach(x => medias.Add(new Media(x)));
 
-                await ViewModel.AddMediasToQueue(medias);
+                await ViewModel.MainWindow.ViewModel.AddMediasToQueue(medias);
             }
 
             Focus();
@@ -141,9 +134,9 @@ namespace VideoPlayer.UserControls
             }
             else
             {
-                if (ViewModel.Queue.Count > 0)
+                if (ViewModel.MainWindow.ViewModel.Queue.Count > 0)
                 {
-                    dataGridQueue.SelectedIndex++;
+                    ViewModel.MainWindow.dataGridQueue.SelectedIndex++;
                 }
                 else
                 {
@@ -307,7 +300,7 @@ namespace VideoPlayer.UserControls
                 List<Media> medias = new List<Media>();
                 files.ToList().ForEach(x => medias.Add(new Media(x)));
 
-                await ViewModel.AddMediasToQueue(medias);
+                await ViewModel.MainWindow.ViewModel.AddMediasToQueue(medias);
             }
         }
 
@@ -333,47 +326,21 @@ namespace VideoPlayer.UserControls
 
         private void ButtonQueue_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.ToggleQueuePanel();
+            ViewModel.MainWindow.flyoutQueue.IsOpen = true;
         }
 
         private async void DataGridQueue_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            int index = dataGridQueue.SelectedIndex;
+            int index = ViewModel.MainWindow.dataGridQueue.SelectedIndex;
             if (index == -1)
                 return;
 
             await ViewModel.ChangeTrack(index);
         }
 
-        private void ButtonClearQueue_Click(object sender, RoutedEventArgs e)
-        {
-            ViewModel.Queue.Clear();
-            buttonSkipForward.IsEnabled = false;
-        }
-
-        private void MenuItemQueueRemove_Click(object sender, RoutedEventArgs e)
-        {
-            Media media = dataGridQueue.SelectedItem as Media;
-            ViewModel.Queue.Remove(media);
-        }
-
-        private void DataGridQueueContextMenu_Opened(object sender, RoutedEventArgs e)
-        {
-            if (ViewModel.SelectedMedia is null ||
-                ViewModel.Queue.Count == 1 ||
-                ((Media)dataGridQueue.SelectedItem) == ViewModel.SelectedMedia)
-            {
-                menuItemQueueRemove.IsEnabled = false;
-            }
-            else
-            {
-                menuItemQueueRemove.IsEnabled = true;
-            }
-        }
-
         private void ButtonSkipForward_Click(object sender, RoutedEventArgs e)
         {
-            dataGridQueue.SelectedIndex++;
+            ViewModel.MainWindow.dataGridQueue.SelectedIndex++;
         }
 
         private async void ButtonSkipBackwards_Click(object sender, RoutedEventArgs e)

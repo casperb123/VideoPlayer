@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="video_icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FFME.Windows" Version="4.2.330" />
     <PackageReference Include="MahApps.Metro" Version="2.0.0-alpha0660" />
     <PackageReference Include="MaterialDesignThemes" Version="3.0.1" />
@@ -28,6 +32,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VideoPlayer.Entities\VideoPlayer.Entities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="video_icon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

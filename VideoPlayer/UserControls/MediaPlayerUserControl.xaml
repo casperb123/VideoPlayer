@@ -147,33 +147,16 @@
                       Unchecked="CheckBoxLoop_Unchecked" />
         </Grid>
 
-        <StackPanel Orientation="Horizontal"
-                    Grid.Row="2"
-                    Margin="10,10,0,0"
-                    HorizontalAlignment="Left">
-            <Button x:Name="buttonSettings"
-                    BorderThickness="0"
-                    Grid.Row="2"
-                    HorizontalAlignment="Left"
-                    Width="40"
-                    Height="40"
-                    Click="ButtonSettings_Click">
-                <materialDesign:PackIcon x:Name="iconSettings"
-                                         Kind="Settings"
-                                         Width="30"
-                                         Height="30"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center" />
-            </Button>
-            <TextBlock VerticalAlignment="Bottom"
-                       Margin="10,0,0,5">
+        <TextBlock VerticalAlignment="Bottom"
+                   Grid.Row="2"
+                   Margin="10,10,0,0"
+                   HorizontalAlignment="Left">
                 <Hyperlink x:Name="hyperLinkResetLoop"
                            IsEnabled="False"
                            Click="HyperLinkResetLoop_Click">
                     Reset Loop
                 </Hyperlink>
-            </TextBlock>
-        </StackPanel>
+        </TextBlock>
 
         <StackPanel Grid.Row="2"
                     Orientation="Horizontal"
@@ -334,7 +317,7 @@
                                    ValueChanged="SliderVolume_ValueChanged" />
         </Grid>
 
-        <Controls:Flyout x:Name="flyoutQueue"
+        <!--<Controls:Flyout x:Name="flyoutQueue"
                          Header="Queue"
                          Position="Right"
                          Theme="Adapt"
@@ -390,6 +373,6 @@
                         Height="40"
                         Click="ButtonClearQueue_Click" />
             </Grid>
-        </Controls:Flyout>
+        </Controls:Flyout>-->
     </Grid>
 </UserControl>

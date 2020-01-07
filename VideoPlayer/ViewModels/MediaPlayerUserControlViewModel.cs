@@ -1,33 +1,25 @@
 ﻿using System;
-using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Threading;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
 using MaterialDesignThemes.Wpf;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
-using VideoPlayer.Windows;
 using System.Collections.Generic;
-using MahApps.Metro.Controls;
-using System.Windows.Controls;
 
 namespace VideoPlayer.ViewModels
 {
-    public class MediaPlayerUserControlViewModel : INotifyPropertyChanged
+    public class MediaPlayerUserControlViewModel
     {
         private readonly MediaPlayerUserControl userControl;
         private double loopStart;
         private double loopEnd;
-        private ObservableCollection<Media> queue;
-        private ObservableCollection<Media> oldQueue;
-        private Media selectedMedia;
 
+        public readonly MainWindow MainWindow;
         public bool DarkTheme;
         public bool Seeking;
         public TimeSpan position;
@@ -35,62 +27,11 @@ namespace VideoPlayer.ViewModels
         public bool LoopVideo;
         public bool LoopSpecificTime;
         public DispatcherTimer ProgressTimer;
-        public List<Hotkey> Hotkeys;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public Media SelectedMedia
-        {
-            get => selectedMedia;
-            set
-            {
-                if (value is null)
-                    throw new ArgumentNullException("The selected media can't be null");
-
-                selectedMedia = value;
-            }
-        }
-
-        public ObservableCollection<Media> Queue
-        {
-            get => queue;
-            set
-            {
-                if (value is null)
-                    throw new ArgumentNullException("The queue can't be null");
-
-                queue = value;
-                OnPropertyChanged(nameof(Queue));
-            }
-        }
-
-        public ObservableCollection<Media> OldQueue
-        {
-            get => oldQueue;
-            set
-            {
-                if (value is null)
-                    throw new ArgumentNullException("The old queue can't be null");
-
-                oldQueue = value;
-            }
-        }
-
-        private void OnPropertyChanged(string prop)
-        {
-            if (prop != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
-
-        public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl, List<Media> medias)
-            : this(mediaPlayerUserControl)
-        {
-            AddMediasToQueue(medias).ConfigureAwait(false);
-        }
-
-        public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl)
+        
+        public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl, MainWindow mainWindow)
         {
             userControl = mediaPlayerUserControl;
+            this.MainWindow = mainWindow;
 
             userControl.Focusable = true;
             userControl.Loaded += (s, e) => Keyboard.Focus(userControl);
@@ -100,19 +41,6 @@ namespace VideoPlayer.ViewModels
                 Interval = TimeSpan.FromMilliseconds(300)
             };
             ProgressTimer.Tick += ProgressTimer_Tick;
-
-            queue = new ObservableCollection<Media>();
-            oldQueue = new ObservableCollection<Media>();
-
-            Hotkey nextTrackHotkey = new Hotkey(Key.MediaNextTrack, KeyModifier.None, OnHotkeyHandler, true);
-            Hotkey previousTrackHotkey = new Hotkey(Key.MediaPreviousTrack, KeyModifier.None, OnHotkeyHandler, true);
-            Hotkey playPauseHotkey = new Hotkey(Key.MediaPlayPause, KeyModifier.None, OnHotkeyHandler, true);
-            Hotkeys = new List<Hotkey>
-            {
-                nextTrackHotkey,
-                previousTrackHotkey,
-                playPauseHotkey
-            };
         }
 
         private async void ProgressTimer_Tick(object sender, EventArgs e)
@@ -174,20 +102,6 @@ namespace VideoPlayer.ViewModels
         public void EnableStop()
         {
             userControl.buttonStop.IsEnabled = true;
-        }
-
-        public async Task AddToQueue(Media media)
-        {
-            if (userControl.player.IsOpen || Queue.Count >= 1)
-            {
-                Queue.Add(media);
-                userControl.buttonSkipForward.IsEnabled = true;
-            }
-            else
-            {
-                await Open(media);
-                SelectedMedia = media;
-            }
         }
 
         public async Task Open(Media media)
@@ -442,12 +356,12 @@ namespace VideoPlayer.ViewModels
 
         public async Task PreviousTrack()
         {
-            Queue.Insert(0, SelectedMedia);
-            SelectedMedia = OldQueue[OldQueue.Count - 1];
-            OldQueue.Remove(SelectedMedia);
-            await Open(SelectedMedia);
+            MainWindow.ViewModel.Queue.Insert(0, MainWindow.ViewModel.SelectedMedia);
+            MainWindow.ViewModel.SelectedMedia = MainWindow.ViewModel.OldQueue[MainWindow.ViewModel.OldQueue.Count - 1];
+            MainWindow.ViewModel.OldQueue.Remove(MainWindow.ViewModel.SelectedMedia);
+            await Open(MainWindow.ViewModel.SelectedMedia);
 
-            if (OldQueue.Count == 0)
+            if (MainWindow.ViewModel.OldQueue.Count == 0)
             {
                 userControl.buttonSkipBackwards.IsEnabled = false;
             }
@@ -459,17 +373,12 @@ namespace VideoPlayer.ViewModels
             userControl.buttonSkipForward.IsEnabled = true;
         }
 
-        public void ToggleQueuePanel()
-        {
-            userControl.flyoutQueue.IsOpen = !userControl.flyoutQueue.IsOpen;
-        }
-
         public async Task ChangeTrack(int index)
         {
-            Media media = Queue[index];
+            Media media = MainWindow.ViewModel.Queue[index];
             await Open(media);
 
-            if (index + 1 == Queue.Count)
+            if (index + 1 == MainWindow.ViewModel.Queue.Count)
             {
                 userControl.buttonSkipForward.IsEnabled = false;
             }
@@ -478,21 +387,21 @@ namespace VideoPlayer.ViewModels
                 userControl.buttonSkipForward.IsEnabled = true;
             }
 
-            List<Media> oldMedias = Queue.Where(x => Queue.IndexOf(x) < index).ToList();
-            List<Media> medias = Queue.Where(x => Queue.IndexOf(x) > index).ToList();
-            Queue = new ObservableCollection<Media>(medias);
+            List<Media> oldMedias = MainWindow.ViewModel.Queue.Where(x => MainWindow.ViewModel.Queue.IndexOf(x) < index).ToList();
+            List<Media> medias = MainWindow.ViewModel.Queue.Where(x => MainWindow.ViewModel.Queue.IndexOf(x) > index).ToList();
+            MainWindow.ViewModel.Queue = new ObservableCollection<Media>(medias);
 
-            if (SelectedMedia != null)
-                OldQueue.Add(SelectedMedia);
+            if (MainWindow.ViewModel.SelectedMedia != null)
+                MainWindow.ViewModel.OldQueue.Add(MainWindow.ViewModel.SelectedMedia);
 
             foreach (Media oldMedia in oldMedias)
             {
-                OldQueue.Add(oldMedia);
+                MainWindow.ViewModel.OldQueue.Add(oldMedia);
             }
 
-            SelectedMedia = media;
+            MainWindow.ViewModel.SelectedMedia = media;
 
-            if (OldQueue.Count > 0)
+            if (MainWindow.ViewModel.OldQueue.Count > 0)
             {
                 userControl.buttonSkipBackwards.IsEnabled = true;
             }
@@ -502,19 +411,11 @@ namespace VideoPlayer.ViewModels
             }
         }
 
-        public async Task AddMediasToQueue(List<Media> medias)
-        {
-            foreach (Media media in medias)
-            {
-                await AddToQueue(media);
-            }
-        }
-
         private async void OnHotkeyHandler(Hotkey hotkey)
         {
             if (hotkey.Key == Key.MediaNextTrack)
             {
-                userControl.dataGridQueue.SelectedIndex++;
+                MainWindow.dataGridQueue.SelectedIndex++;
             }
             else if (hotkey.Key == Key.MediaPreviousTrack)
             {

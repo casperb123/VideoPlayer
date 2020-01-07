@@ -13,7 +13,8 @@
                       MinWidth="825"
                       Height="600"
                       MinHeight="600"
-                      Closing="MetroWindow_Closing">
+                      Closing="MetroWindow_Closing"
+                      MouseLeftButtonDown="MetroWindow_MouseLeftButtonDown">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button x:Name="buttonWindowCredits"
@@ -30,138 +31,216 @@
 
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
-            <Controls:Flyout x:Name="flyOutSettings"
+            <Controls:Flyout x:Name="flyoutCredits"
+                             Position="Bottom"
+                             Header="Credits"
+                             Theme="Adapt"
+                             IsModal="True">
+                <StackPanel x:Name="stackPanelFlyoutCredits"
+                            Margin="10,20"
+                            VerticalAlignment="Center">
+                    <TextBlock>
+                        Program made by Casper Bastholm
+                    </TextBlock>
+
+                    <TextBlock>
+                        Icon made by
+                        <Hyperlink NavigateUri="https://www.flaticon.com/authors/bqlqn"
+                                   RequestNavigate="Hyperlink_RequestNavigate">
+                            bqlqn
+                        </Hyperlink>
+                        from
+                        <Hyperlink NavigateUri="https://www.flaticon.com"
+                                   RequestNavigate="Hyperlink_RequestNavigate">
+                            www.flaticon.com
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </Controls:Flyout>
+
+            <Controls:Flyout x:Name="flyoutSettings"
                              Position="Left"
                              Width="300"
-                             Header="Settings">
-                <StackPanel>
-                    <Label Content="Player Settings"
-                           HorizontalContentAlignment="Center"
-                           FontSize="18"/>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="1*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                        </Grid.RowDefinitions>
-
-                        <Label Content="Playback Speed:"
-                               Foreground="White"
-                               Margin="10,10,5,0" />
-                        <Controls:NumericUpDown x:Name="numericPlaybackSpeed"
-                                                Grid.Column="1"
-                                                Margin="5,10,10,0"
-                                                Maximum="3"
-                                                Minimum="0.2"
-                                                Value="1"
-                                                Speedup="True"
-                                                Interval="0.05"
-                                                StringFormat="0.00"
-                                                ValueChanged="NumericPlaybackSpeed_ValueChanged" />
-
-                        <Label Content="Loop:"
-                               Foreground="White"
-                               Margin="10,0,0,0"
-                               Grid.Row="1" />
-                        <Grid Grid.Column="1"
-                              Grid.Row="1"
-                              Margin="5,10,10,10">
+                             Header="Settings"
+                             Theme="Adapt"
+                             IsModal="True">
+                <StackPanel x:Name="stackPanelFlyoutSettings">
+                    <GroupBox Header="Player Settings">
+                        <Grid Margin="10">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition x:Name="cDefinitionPlayerSettings"
+                                                  Width="auto" />
                                 <ColumnDefinition Width="1*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="25" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
 
-                            <Grid.Resources>
-                                <Style TargetType="{x:Type TextBox}">
-                                    <Setter Property="Text"
-                                            Value="0:00" />
-                                    <Setter Property="HorizontalContentAlignment"
-                                            Value="Center" />
-                                    <Setter Property="VerticalContentAlignment"
-                                            Value="Center" />
-                                </Style>
-                            </Grid.Resources>
+                            <Label Content="Playback Speed:"
+                                   Margin="0,0,5,5" />
+                            <Controls:NumericUpDown x:Name="numericPlaybackSpeed"
+                                                    Grid.Column="1"
+                                                    Maximum="3"
+                                                    Minimum="0.2"
+                                                    Value="1"
+                                                    Speedup="True"
+                                                    Interval="0.05"
+                                                    StringFormat="0.00"
+                                                    Margin="5,0,0,5"
+                                                    ValueChanged="NumericPlaybackSpeed_ValueChanged" />
 
-                            <TextBox x:Name="textBoxLoopStart"
-                                     Margin="0,0,5,0"
-                                     IsEnabled="False"
-                                     TextChanged="TextBoxLoop_TextChanged" />
-                            <TextBox x:Name="textBoxLoopEnd"
-                                     Grid.Column="1"
-                                     Margin="5,0,0,0"
-                                     IsEnabled="False"
-                                     TextChanged="TextBoxLoop_TextChanged" />
-
-                            <CheckBox x:Name="checkBoxLoopTime"
-                                      Content="Loop specific time"
-                                      Foreground="White"
-                                      Grid.Row="1"
-                                      Grid.ColumnSpan="2"
-                                      Margin="0,10,0,0"
-                                      IsEnabled="False"
-                                      Checked="CheckBoxLoopTime_Checked"
-                                      Unchecked="CheckBoxLoopTime_Unchecked" />
-                        </Grid>
-
-                        <CheckBox x:Name="checkBoxLoop"
-                                  Content="Loop Media"
-                                  Grid.Row="2"
-                                  Grid.Column="1"
-                                  VerticalContentAlignment="Center"
-                                  Foreground="White"
-                                  Margin="5,0,10,10"
-                                  Checked="CheckBoxLoop_Checked"
-                                  Unchecked="CheckBoxLoop_Unchecked" />
-                    </Grid>
-
-                    <Label Content="Theme Settings"
-                           HorizontalContentAlignment="Center"
-                           FontSize="18"
-                           Margin="0,10"/>
-                    <Grid Margin="10,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="1*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                        </Grid.RowDefinitions>
-
-                        <Label Content="Theme:"
-                               VerticalContentAlignment="Center"/>
-                        <ComboBox x:Name="comboBoxTheme"
-                                  Grid.Column="1"
-                                  Margin="10,0,0,5"
-                                  ItemsSource="{x:Static metro:ThemeManager.BaseColors}"
-                                  SelectionChanged="ComboBox_SelectionChanged"
-                                  SelectedIndex="{Binding Theme, Source={x:Static properties:Settings.Default}, Mode=TwoWay}" />
-
-                        <Label Content="Color:"
-                               VerticalContentAlignment="Center"
-                               Grid.Row="1" />
-                        <ComboBox x:Name="comboBoxColor"
+                            <Label Content="Loop:"
+                                   Grid.Row="1"
+                                   Margin="0,5,5,5" />
+                            <Grid Grid.Column="1"
                                   Grid.Row="1"
-                                  Grid.Column="1"
-                                  Margin="10,5,0,0"
-                                  ItemsSource="{x:Static metro:ThemeManager.ColorSchemes}"
-                                  DisplayMemberPath="Name"
-                                  SelectedIndex="{Binding Color, Source={x:Static properties:Settings.Default}, Mode=TwoWay}"
-                                  SelectionChanged="ComboBox_SelectionChanged" />
-                    </Grid>
+                                  Margin="5,5,0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="1*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBox x:Name="textBoxLoopStart"
+                                         IsEnabled="False"
+                                         Text="0:00"
+                                         HorizontalContentAlignment="Center"
+                                         VerticalContentAlignment="Center"
+                                         Margin="0,0,5,5"
+                                         TextChanged="TextBoxLoop_TextChanged" />
+                                <TextBox x:Name="textBoxLoopEnd"
+                                         Grid.Column="1"
+                                         IsEnabled="False"
+                                         Text="0:00"
+                                         HorizontalContentAlignment="Center"
+                                         VerticalContentAlignment="Center"
+                                         Margin="5,0,0,5"
+                                         TextChanged="TextBoxLoop_TextChanged" />
+
+                                <CheckBox x:Name="checkBoxLoopTime"
+                                          Content="Loop specific time"
+                                          Grid.Row="1"
+                                          Grid.ColumnSpan="2"
+                                          IsEnabled="False"
+                                          Margin="0,5,0,0"
+                                          Checked="CheckBoxLoopTime_Checked"
+                                          Unchecked="CheckBoxLoopTime_Unchecked" />
+                            </Grid>
+
+                            <CheckBox x:Name="checkBoxLoop"
+                                      Content="Loop Media"
+                                      Grid.Row="2"
+                                      Grid.Column="1"
+                                      VerticalContentAlignment="Center"
+                                      Margin="5,5,0,0"
+                                      Checked="CheckBoxLoop_Checked"
+                                      Unchecked="CheckBoxLoop_Unchecked" />
+                        </Grid>
+                    </GroupBox>
+
+                    <GroupBox Header="Theme Settings">
+                        <Grid Margin="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+
+                            <Label Content="Theme:"
+                                   VerticalContentAlignment="Center"
+                                   Margin="0,0,5,5" />
+                            <ComboBox x:Name="comboBoxTheme"
+                                      Grid.Column="1"
+                                      Margin="5,0,0,5"
+                                      ItemsSource="{x:Static metro:ThemeManager.BaseColors}"
+                                      SelectionChanged="ComboBox_SelectionChanged"
+                                      SelectedIndex="{Binding Theme, Source={x:Static properties:Settings.Default}, Mode=TwoWay}" />
+
+                            <Label Content="Color:"
+                                   VerticalContentAlignment="Center"
+                                   Grid.Row="1"
+                                   Margin="0,5,5,0" />
+                            <ComboBox x:Name="comboBoxColor"
+                                      Grid.Row="1"
+                                      Grid.Column="1"
+                                      Margin="5,5,0,0"
+                                      ItemsSource="{x:Static metro:ThemeManager.ColorSchemes}"
+                                      DisplayMemberPath="Name"
+                                      SelectedIndex="{Binding Color, Source={x:Static properties:Settings.Default}, Mode=TwoWay}"
+                                      SelectionChanged="ComboBox_SelectionChanged" />
+                        </Grid>
+                    </GroupBox>
                 </StackPanel>
+            </Controls:Flyout>
+
+            <Controls:Flyout x:Name="flyoutQueue"
+                             Header="Queue"
+                             Position="Right"
+                             Theme="Adapt"
+                             Width="300"
+                             IsModal="True">
+                <Grid x:Name="gridFlyoutQueue">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <DataGrid x:Name="dataGridQueue"
+                              ItemsSource="{Binding Path=Queue}"
+                              SelectionMode="Single"
+                              AutoGenerateColumns="False"
+                              CanUserSortColumns="False"
+                              CanUserResizeColumns="False"
+                              CanUserReorderColumns="False"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled"
+                              SelectionChanged="DataGridQueue_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name"
+                                                Binding="{Binding Path=Name}"
+                                                Width="1*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="{x:Type TextBlock}"
+                                           BasedOn="{StaticResource MahApps.Styles.TextBlock}">
+                                        <Setter Property="TextTrimming"
+                                                Value="CharacterEllipsis" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Duration"
+                                                Binding="{Binding Path=Duration}"
+                                                Width="85" />
+                        </DataGrid.Columns>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu x:Name="dataGridQueueContextMenu"
+                                         Opened="DataGridQueueContextMenu_Opened">
+                                <MenuItem x:Name="menuItemQueueRemove"
+                                          Header="Remove"
+                                          Click="MenuItemQueueRemove_Click" />
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                    </DataGrid>
+
+                    <Button x:Name="buttonClearQueue"
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Content="Clear Queue"
+                            Height="30"
+                            Margin="10"
+                            Click="ButtonClearQueue_Click" />
+                </Grid>
             </Controls:Flyout>
         </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>
 
     <UserControl x:Name="masterUserControl"
-                 Margin="0,0,0,10"/>
+                 Margin="0,0,0,10" />
 </Controls:MetroWindow>
