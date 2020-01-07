@@ -88,6 +88,7 @@
                                                     Interval="0.05"
                                                     StringFormat="0.00"
                                                     Margin="5,0,0,5"
+                                                    InterceptManualEnter="False"
                                                     ValueChanged="NumericPlaybackSpeed_ValueChanged" />
 
                             <Label Content="Loop specific time:"
