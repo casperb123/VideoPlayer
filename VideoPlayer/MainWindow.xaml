@@ -213,13 +213,21 @@
                                         <Setter Property="TextTrimming"
                                                 Value="CharacterEllipsis" />
                                         <Setter Property="Margin"
-                                                Value="10,0" />
+                                                Value="10,0,0,0" />
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
                             <DataGridTextColumn Header="Duration"
                                                 Binding="{Binding Path=Duration}"
-                                                Width="85" />
+                                                Width="85">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="{x:Type TextBlock}"
+                                           BasedOn="{StaticResource MahApps.Styles.TextBlock}">
+                                        <Setter Property="Margin"
+                                                Value="10,0,10,0" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
                         </DataGrid.Columns>
                         <DataGrid.ContextMenu>
                             <ContextMenu x:Name="dataGridQueueContextMenu"
