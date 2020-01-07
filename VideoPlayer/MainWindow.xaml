@@ -188,7 +188,9 @@
                              Theme="Adapt"
                              Width="300"
                              IsPinned="False">
-                <Grid x:Name="gridFlyoutQueue">
+                <Grid x:Name="gridFlyoutQueue"
+                      AllowDrop="True"
+                      Drop="GridFlyoutQueue_Drop">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*" />
                         <RowDefinition Height="auto" />

@@ -166,5 +166,17 @@ namespace VideoPlayer
             ViewModel.UserControl.ViewModel.LoopSpecificTime = false;
             ViewModel.UserControl.ViewModel.SetSelection(0, 0);
         }
+
+        private async void GridFlyoutQueue_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                List<Media> medias = new List<Media>();
+                files.ToList().ForEach(x => medias.Add(new Media(x)));
+
+                await ViewModel.AddMediasToQueue(medias);
+            }
+        }
     }
 }
