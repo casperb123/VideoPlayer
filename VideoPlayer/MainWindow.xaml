@@ -212,6 +212,8 @@
                                            BasedOn="{StaticResource MahApps.Styles.TextBlock}">
                                         <Setter Property="TextTrimming"
                                                 Value="CharacterEllipsis" />
+                                        <Setter Property="Margin"
+                                                Value="10,0" />
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
