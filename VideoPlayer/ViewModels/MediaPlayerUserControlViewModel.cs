@@ -153,11 +153,11 @@ namespace VideoPlayer.ViewModels
 
         public void ResetControls()
         {
-            userControl.textBoxLoopStart.IsEnabled = false;
-            userControl.textBoxLoopEnd.IsEnabled = false;
+            MainWindow.textBoxLoopStart.IsEnabled = false;
+            MainWindow.textBoxLoopEnd.IsEnabled = false;
             ResetLoop();
-            userControl.checkBoxLoopTime.IsEnabled = false;
-            userControl.checkBoxLoopTime.IsChecked = false;
+            MainWindow.checkBoxLoopTime.IsEnabled = false;
+            MainWindow.checkBoxLoopTime.IsChecked = false;
             userControl.sliderProgress.IsEnabled = false;
         }
 
@@ -188,21 +188,6 @@ namespace VideoPlayer.ViewModels
             }
 
             return false;
-        }
-
-        public void ToggleSettings()
-        {
-            userControl.gridSettings.IsEnabled = !userControl.gridSettings.IsEnabled;
-
-            if (userControl.gridSettings.IsEnabled)
-            {
-                userControl.gridSettings.Visibility = Visibility.Visible;
-                userControl.gridSettings.Focus();
-            }
-            else
-            {
-                userControl.gridSettings.Visibility = Visibility.Hidden;
-            }
         }
 
         public void ChangeSpeed(double speed)
@@ -328,16 +313,16 @@ namespace VideoPlayer.ViewModels
             if (loopStart == 0 && loopEnd == 0 ||
                 Math.Abs(loopStart - value) < Math.Abs(loopEnd - value) && loopEnd > 0)
             {
-                userControl.textBoxLoopStart.Text = ConvertSecondsToTime(value);
+                MainWindow.textBoxLoopStart.Text = ConvertSecondsToTime(value);
             }
             else if (loopEnd == 0)
             {
-                userControl.textBoxLoopEnd.Text = ConvertSecondsToTime(value);
-                userControl.checkBoxLoopTime.IsChecked = true;
+                MainWindow.textBoxLoopEnd.Text = ConvertSecondsToTime(value);
+                MainWindow.checkBoxLoopTime.IsChecked = true;
             }
             else
             {
-                userControl.textBoxLoopEnd.Text = ConvertSecondsToTime(value);
+                MainWindow.textBoxLoopEnd.Text = ConvertSecondsToTime(value);
             }
         }
 
@@ -349,9 +334,9 @@ namespace VideoPlayer.ViewModels
 
         public void ResetLoop()
         {
-            userControl.textBoxLoopStart.Text = "0:00";
-            userControl.textBoxLoopEnd.Text = "0:00";
-            userControl.checkBoxLoopTime.IsChecked = false;
+            MainWindow.textBoxLoopStart.Text = "0:00";
+            MainWindow.textBoxLoopEnd.Text = "0:00";
+            MainWindow.checkBoxLoopTime.IsChecked = false;
         }
 
         public async Task PreviousTrack()

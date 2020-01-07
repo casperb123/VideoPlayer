@@ -147,9 +147,9 @@ namespace VideoPlayer.UserControls
 
         private async void Player_MediaOpened(object sender, MediaOpenedEventArgs e)
         {
-            textBoxLoopStart.IsEnabled = true;
-            textBoxLoopEnd.IsEnabled = true;
-            checkBoxLoopTime.IsEnabled = true;
+            ViewModel.MainWindow.textBoxLoopStart.IsEnabled = true;
+            ViewModel.MainWindow.textBoxLoopEnd.IsEnabled = true;
+            ViewModel.MainWindow.checkBoxLoopTime.IsEnabled = true;
             sliderProgress.IsEnabled = true;
 
             await ViewModel.Play();
@@ -246,12 +246,6 @@ namespace VideoPlayer.UserControls
             Focus();
         }
 
-        private void ButtonSettings_Click(object sender, RoutedEventArgs e)
-        {
-            ViewModel.ToggleSettings();
-            Focus();
-        }
-
         private void CheckBoxLoop_Checked(object sender, RoutedEventArgs e)
         {
             ViewModel.LoopVideo = true;
@@ -268,14 +262,14 @@ namespace VideoPlayer.UserControls
         {
             if (!IsLoaded) return;
 
-            ViewModel.SetLoopTime(textBoxLoopStart.Text, textBoxLoopEnd.Text);
+            ViewModel.SetLoopTime(ViewModel.MainWindow.textBoxLoopStart.Text, ViewModel.MainWindow.textBoxLoopEnd.Text);
         }
 
         private void CheckBoxLoopTime_Checked(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded) return;
 
-            ViewModel.SetLoopTime(textBoxLoopStart.Text, textBoxLoopEnd.Text);
+            ViewModel.SetLoopTime(ViewModel.MainWindow.textBoxLoopStart.Text, ViewModel.MainWindow.textBoxLoopEnd.Text);
             ViewModel.LoopSpecificTime = true;
         }
 
