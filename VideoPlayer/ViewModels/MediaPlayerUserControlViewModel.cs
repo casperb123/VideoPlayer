@@ -53,10 +53,10 @@ namespace VideoPlayer.ViewModels
                         userControl.sliderProgress.Value >= loopEnd)
                     {
                         ProgressTimer.Stop();
+                        await userControl.player.Pause();
                         Seeking = true;
 
                         int pos = Convert.ToInt32(loopStart);
-                        await userControl.player.Pause();
                         await Seek(new TimeSpan(0, 0, 0, pos, 0));
                     }
                 }
@@ -273,18 +273,18 @@ namespace VideoPlayer.ViewModels
                     loopStart < loopEnd)
                 {
                     SetSelection(loopStart, loopEnd);
-                    userControl.hyperLinkResetLoop.IsEnabled = true;
+                    userControl.buttonResetLoop.IsEnabled = true;
                 }
                 else
                 {
-                    userControl.hyperLinkResetLoop.IsEnabled = false;
+                    userControl.buttonResetLoop.IsEnabled = false;
                 }
             }
             else
             {
                 loopEnd = 0;
                 loopStart = 0;
-                userControl.hyperLinkResetLoop.IsEnabled = false;
+                userControl.buttonResetLoop.IsEnabled = false;
             }
         }
 
@@ -393,22 +393,6 @@ namespace VideoPlayer.ViewModels
             else
             {
                 userControl.buttonSkipBackwards.IsEnabled = false;
-            }
-        }
-
-        private async void OnHotkeyHandler(Hotkey hotkey)
-        {
-            if (hotkey.Key == Key.MediaNextTrack)
-            {
-                MainWindow.dataGridQueue.SelectedIndex++;
-            }
-            else if (hotkey.Key == Key.MediaPreviousTrack)
-            {
-                await PreviousTrack();
-            }
-            else if (hotkey.Key == Key.MediaPlayPause)
-            {
-                MediaPlayerUserControl.PlayPauseCmd.Execute(null, userControl.buttonPlayPause);
             }
         }
     }

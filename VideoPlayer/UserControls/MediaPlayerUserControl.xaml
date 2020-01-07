@@ -53,16 +53,24 @@
                                MouseLeftButtonUp="Player_MouseLeftButtonUp" />
         </Grid>
 
-        <TextBlock VerticalAlignment="Bottom"
-                   Grid.Row="2"
-                   Margin="10,10,0,0"
-                   HorizontalAlignment="Left">
-                <Hyperlink x:Name="hyperLinkResetLoop"
-                           IsEnabled="False"
-                           Click="HyperLinkResetLoop_Click">
-                    Reset Loop
-                </Hyperlink>
-        </TextBlock>
+        <Button x:Name="buttonResetLoop"
+                Grid.Row="2"
+                BorderThickness="0"
+                IsEnabled="False"
+                Width="40"
+                Height="40"
+                Margin="10,10,0,0"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Left"
+                ToolTip="Reset loop"
+                Click="ButtonResetLoop_Click">
+            <materialDesign:PackIcon x:Name="iconResetLoop"
+                                     Kind="RemoveCircle"
+                                     Width="30"
+                                     Height="30"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center" />
+        </Button>
 
         <StackPanel Grid.Row="2"
                     Orientation="Horizontal"
@@ -74,6 +82,7 @@
                     Width="40"
                     Height="40"
                     Margin="5,0"
+                    ToolTip="Stop the player"
                     Click="ButtonStop_Click">
                 <materialDesign:PackIcon x:Name="iconStop"
                                          Kind="Stop"
@@ -89,6 +98,7 @@
                     Width="40"
                     Height="40"
                     Margin="5,0"
+                    ToolTip="Previous track"
                     Click="ButtonSkipBackwards_Click">
                 <materialDesign:PackIcon x:Name="iconSkipBackwards"
                                          Kind="SkipBackward"
@@ -104,6 +114,7 @@
                     Width="40"
                     Height="40"
                     Margin="5,0"
+                    ToolTip="Play/Pause the player"
                     Click="ButtonPlayPause_Click">
                 <materialDesign:PackIcon x:Name="iconPlayPause"
                                          Kind="Play"
@@ -119,6 +130,7 @@
                     Width="40"
                     Height="40"
                     Margin="5,0"
+                    ToolTip="Next track"
                     Click="ButtonSkipForward_Click">
                 <materialDesign:PackIcon x:Name="iconSkipForward"
                                          Kind="SkipForward"
@@ -133,6 +145,7 @@
                     Width="40"
                     Height="40"
                     Margin="5,0"
+                    ToolTip="Open a media file"
                     Click="ButtonAddToQueue_Click">
                 <materialDesign:PackIcon x:Name="iconAddToQueue"
                                          Kind="Queue"
@@ -152,6 +165,7 @@
                     BorderThickness="0"
                     Height="40"
                     Margin="0,0,5,0"
+                    ToolTip="Open the queue"
                     Click="ButtonQueue_Click">
                 <materialDesign:PackIcon x:Name="iconQueue"
                                          Kind="QueueMusic"
@@ -166,6 +180,7 @@
                     Width="40"
                     Height="40"
                     Margin="5,0,10,0"
+                    ToolTip="Mute/Unmute the player"
                     Click="ButtonMuteUnmute_Click">
                 <materialDesign:PackIcon x:Name="iconVolume"
                                          Kind="VolumeHigh"

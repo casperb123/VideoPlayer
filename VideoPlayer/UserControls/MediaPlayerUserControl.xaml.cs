@@ -281,11 +281,6 @@ namespace VideoPlayer.UserControls
             ViewModel.SetSelection(0, 0);
         }
 
-        private void HyperLinkResetLoop_Click(object sender, RoutedEventArgs e)
-        {
-            ViewModel.ResetLoop();
-        }
-
         private async void MediaFile_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -340,6 +335,11 @@ namespace VideoPlayer.UserControls
         private async void ButtonSkipBackwards_Click(object sender, RoutedEventArgs e)
         {
             await ViewModel.PreviousTrack();
+        }
+
+        private void ButtonResetLoop_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ResetLoop();
         }
     }
 }

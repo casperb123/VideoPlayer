@@ -129,16 +129,6 @@ namespace VideoPlayer
             ViewModel.Queue.Remove(media);
         }
 
-        private void MetroWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (!gridFlyoutQueue.IsMouseOver)
-                flyoutQueue.IsOpen = false;
-            if (!stackPanelFlyoutSettings.IsMouseOver)
-                flyoutSettings.IsOpen = false;
-            if (!stackPanelFlyoutCredits.IsMouseOver)
-                flyoutCredits.IsOpen = false;
-        }
-
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             ProcessStartInfo processStartInfo = new ProcessStartInfo(e.Uri.ToString())
