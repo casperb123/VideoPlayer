@@ -43,17 +43,17 @@ namespace VideoPlayer
             ViewModel = new MainWindowViewModel(this);
             DataContext = ViewModel;
 
+            ViewModel.UserControl = new MediaPlayerUserControl(this);
+            masterUserControl.Content = ViewModel.UserControl;
+
             string[] cmdLine = Environment.GetCommandLineArgs();
-            if (cmdLine.Length >= 2)
+            List<string> filePaths = cmdLine.Where(x => validExtensions.Contains(Path.GetExtension(x))).ToList();
+            if (filePaths.Count > 0)
             {
-                List<string> filePaths = cmdLine.Where(x => validExtensions.Contains(Path.GetExtension(x))).ToList();
                 List<Media> medias = new List<Media>();
                 filePaths.ForEach(x => medias.Add(new Media(x)));
                 ViewModel.AddMediasToQueue(medias).ConfigureAwait(false);
             }
-
-            ViewModel.UserControl = new MediaPlayerUserControl(this);
-            masterUserControl.Content = ViewModel.UserControl;
         }
 
         private void ButtonWindowSettings_Click(object sender, RoutedEventArgs e)
