@@ -156,8 +156,8 @@ namespace VideoPlayer.ViewModels
             MainWindow.textBoxLoopStart.IsEnabled = false;
             MainWindow.textBoxLoopEnd.IsEnabled = false;
             ResetLoop();
-            MainWindow.checkBoxLoopTime.IsEnabled = false;
-            MainWindow.checkBoxLoopTime.IsChecked = false;
+            MainWindow.toggleSwitchLoopTime.IsEnabled = false;
+            MainWindow.toggleSwitchLoopTime.IsChecked = false;
             userControl.sliderProgress.IsEnabled = false;
         }
 
@@ -318,7 +318,7 @@ namespace VideoPlayer.ViewModels
             else if (loopEnd == 0)
             {
                 MainWindow.textBoxLoopEnd.Text = ConvertSecondsToTime(value);
-                MainWindow.checkBoxLoopTime.IsChecked = true;
+                MainWindow.toggleSwitchLoopTime.IsChecked = true;
             }
             else
             {
@@ -336,7 +336,7 @@ namespace VideoPlayer.ViewModels
         {
             MainWindow.textBoxLoopStart.Text = "0:00";
             MainWindow.textBoxLoopEnd.Text = "0:00";
-            MainWindow.checkBoxLoopTime.IsChecked = false;
+            MainWindow.toggleSwitchLoopTime.IsChecked = false;
         }
 
         public async Task PreviousTrack()

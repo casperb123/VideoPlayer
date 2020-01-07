@@ -87,34 +87,6 @@ namespace VideoPlayer
             ViewModel.UserControl.ViewModel.SetLoopTime(textBoxLoopStart.Text, textBoxLoopEnd.Text);
         }
 
-        private void CheckBoxLoopTime_Checked(object sender, RoutedEventArgs e)
-        {
-            if (!IsLoaded) return;
-
-            ViewModel.UserControl.ViewModel.SetLoopTime(textBoxLoopStart.Text, textBoxLoopEnd.Text);
-            ViewModel.UserControl.ViewModel.LoopSpecificTime = true;
-        }
-
-        private void CheckBoxLoopTime_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (!IsLoaded) return;
-
-            ViewModel.UserControl.ViewModel.LoopSpecificTime = false;
-            ViewModel.UserControl.ViewModel.SetSelection(0, 0);
-        }
-
-        private void CheckBoxLoop_Checked(object sender, RoutedEventArgs e)
-        {
-            ViewModel.UserControl.ViewModel.LoopVideo = true;
-            Focus();
-        }
-
-        private void CheckBoxLoop_Unchecked(object sender, RoutedEventArgs e)
-        {
-            ViewModel.UserControl.ViewModel.LoopVideo = false;
-            Focus();
-        }
-
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!IsLoaded) return;
@@ -175,6 +147,34 @@ namespace VideoPlayer
                 Verb = "open"
             };
             Process.Start(processStartInfo);
+        }
+
+        private void ToggleSwitchLoop_Checked(object sender, RoutedEventArgs e)
+        {
+            ViewModel.UserControl.ViewModel.LoopVideo = true;
+            Focus();
+        }
+
+        private void ToggleSwitchLoop_Unchecked(object sender, RoutedEventArgs e)
+        {
+            ViewModel.UserControl.ViewModel.LoopVideo = false;
+            Focus();
+        }
+
+        private void ToggleSwitchLoopTime_Checked(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded) return;
+
+            ViewModel.UserControl.ViewModel.SetLoopTime(textBoxLoopStart.Text, textBoxLoopEnd.Text);
+            ViewModel.UserControl.ViewModel.LoopSpecificTime = true;
+        }
+
+        private void ToggleSwitchLoopTime_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded) return;
+
+            ViewModel.UserControl.ViewModel.LoopSpecificTime = false;
+            ViewModel.UserControl.ViewModel.SetSelection(0, 0);
         }
     }
 }

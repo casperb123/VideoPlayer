@@ -149,7 +149,7 @@ namespace VideoPlayer.UserControls
         {
             ViewModel.MainWindow.textBoxLoopStart.IsEnabled = true;
             ViewModel.MainWindow.textBoxLoopEnd.IsEnabled = true;
-            ViewModel.MainWindow.checkBoxLoopTime.IsEnabled = true;
+            ViewModel.MainWindow.toggleSwitchLoopTime.IsEnabled = true;
             sliderProgress.IsEnabled = true;
 
             await ViewModel.Play();
