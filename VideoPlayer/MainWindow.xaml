@@ -280,7 +280,6 @@
                               CanUserReorderColumns="False"
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled"
-                              SelectionChanged="DataGridPlaylists_SelectionChanged"
                               MouseDoubleClick="DataGridPlaylists_MouseDoubleClick">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name"

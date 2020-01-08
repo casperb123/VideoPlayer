@@ -215,8 +215,7 @@ namespace VideoPlayer
 
         private async void DataGridPlaylists_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!dataGridPlaylistsContextMenu.IsOpen && dataGridPlaylists.SelectedIndex != -1)
-                await ViewModel.ChangePlaylist();
+            
         }
 
         private void ButtonAddMediasToPlaylist_Click(object sender, RoutedEventArgs e)
@@ -290,10 +289,10 @@ namespace VideoPlayer
             }
         }
 
-        private void DataGridPlaylists_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private async void DataGridPlaylists_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (ViewModel.SelectedPlaylist != null)
-                flyoutPlaylist.IsOpen = true;
+                await ViewModel.ChangePlaylist();
         }
     }
 }
