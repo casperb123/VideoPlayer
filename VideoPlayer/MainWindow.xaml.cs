@@ -213,11 +213,6 @@ namespace VideoPlayer
             }
         }
 
-        private async void DataGridPlaylists_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            
-        }
-
         private void ButtonAddMediasToPlaylist_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
