@@ -12,6 +12,7 @@ namespace VideoPlayer.Entities
     {
         private string source;
         private string duration;
+        private string name;
 
         public Uri Uri { get; private set; }
 
@@ -39,16 +40,20 @@ namespace VideoPlayer.Entities
 
         public string Name
         {
-            get
+            get => name;
+            set
             {
-                return Path.GetFileNameWithoutExtension(source);
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ArgumentException("The name can't be null of empty");
+
+                name = value;
             }
         }
 
         public string Duration
         {
             get => duration;
-            set
+            private set
             {
                 if (string.IsNullOrWhiteSpace(value))
                     throw new ArgumentException("The duration can't be null or empty");
@@ -60,6 +65,7 @@ namespace VideoPlayer.Entities
         public Media(string source)
         {
             Source = source;
+            Name = Path.GetFileNameWithoutExtension(Source);
 
             string runningPath = AppDomain.CurrentDomain.BaseDirectory;
             string ffmpegPath = $@"{Path.GetFullPath(Path.Combine(runningPath, @"..\..\..\"))}ffmpeg";

@@ -400,7 +400,7 @@ namespace VideoPlayer.ViewModels
         {
             List<Media> medias = new List<Media>();
             filePaths.ToList().ForEach(x => medias.Add(new Media(x)));
-            Playlist playlist = new Playlist(medias, name);
+            Playlist playlist = new Playlist(name, medias);
 
             return playlist;
         }

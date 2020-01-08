@@ -4,14 +4,13 @@ using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Navigation;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
@@ -45,9 +44,14 @@ namespace VideoPlayer
             InitializeComponent();
             ViewModel = new MainWindowViewModel(this);
             DataContext = ViewModel;
-
             ViewModel.UserControl = new MediaPlayerUserControl(this);
             masterUserControl.Content = ViewModel.UserControl;
+
+            Task.Run(async () =>
+            {
+                ICollection<Playlist> playlists = await ViewModel.GetPlaylists();
+                playlists.ToList().ForEach(x => ViewModel.Playlists.Add(x));
+            });
 
             string[] cmdLine = Environment.GetCommandLineArgs();
             List<string> filePaths = cmdLine.Where(x => validExtensions.Contains(Path.GetExtension(x))).ToList();
@@ -211,7 +215,8 @@ namespace VideoPlayer
 
         private async void DataGridPlaylists_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            await ViewModel.ChangePlaylist();
+            if (!dataGridPlaylistsContextMenu.IsOpen && dataGridPlaylists.SelectedIndex != -1)
+                await ViewModel.ChangePlaylist();
         }
 
         private void ButtonAddMediasToPlaylist_Click(object sender, RoutedEventArgs e)
@@ -233,9 +238,11 @@ namespace VideoPlayer
             }
         }
 
-        private void MenuItemPlaylistsRemove_Click(object sender, RoutedEventArgs e)
+        private async void MenuItemPlaylistsRemove_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.RemovePlaylist();
+            MessageDialogResult result = await this.ShowMessageAsync("Delete playlist", $"Are you sure that you want to delete the playlist '{ViewModel.SelectedPlaylist.Name}'?", MessageDialogStyle.AffirmativeAndNegative);
+            if (result == MessageDialogResult.Affirmative)
+                ViewModel.RemovePlaylist();
         }
 
         private void MenuItemPlaylistsEdit_Click(object sender, RoutedEventArgs e)
@@ -249,31 +256,13 @@ namespace VideoPlayer
 
             if (name != null)
             {
-                OpenFileDialog openFileDialog = new OpenFileDialog
-                {
-                    Title = "Select video file(s)",
-                    DefaultExt = ".avi",
-                    Filter = "Media Files|*.mpg;*.avi;*.wma;*.mov;*.wav;*.mp2;*.mp3;*.mp4|All Files|*.*",
-                    Multiselect = true
-                };
+                Playlist playlist = new Playlist(name);
+                var (isValid, message) = await playlist.Save();
 
-                if (openFileDialog.ShowDialog() == true)
-                {
-                    List<string> fileNames = openFileDialog.FileNames.ToList();
-                    List<Media> medias = new List<Media>();
-                    fileNames.ForEach(x => medias.Add(new Media(x)));
-
-                    Playlist playlist = new Playlist(medias, name);
-                    var playlistSave = await playlist.Save();
-
-                    if (!playlistSave.isValid)
-                        await this.ShowMessageAsync("Error saving playlist", playlistSave.message);
-                    else
-                    {
-                        ViewModel.Playlists.Add(playlist);
-                        await this.ShowMessageAsync("Playlist saved", $"The playlist {playlist.Name} has been saved");
-                    }
-                }
+                if (!isValid)
+                    await this.ShowMessageAsync("Error saving playlist", message);
+                else
+                    ViewModel.Playlists.Add(playlist);
             }
         }
 
@@ -282,10 +271,29 @@ namespace VideoPlayer
             flyoutPlaylists.IsPinned = flyoutPlaylist.IsOpen;
         }
 
-        private void DataGridPlaylists_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        private void DataGridPlaylistContextMenu_Opened(object sender, RoutedEventArgs e)
         {
-            dataGridPlaylistsContextMenu.IsOpen = true;
-            e.Handled = true;
+            if (ViewModel.SelectedPlaylistMedia is null)
+                menuItemPlaylistRemove.IsEnabled = false;
+            else
+                menuItemPlaylistRemove.IsEnabled = true;
+        }
+
+        private async void MenuItemPlaylistRemove_Click(object sender, RoutedEventArgs e)
+        {
+            MessageDialogResult result = await this.ShowMessageAsync("Remove media", $"Are you sure that you want to remove the media '{ViewModel.SelectedPlaylistMedia.Name}' from the playlist '{ViewModel.SelectedPlaylist.Name}'?", MessageDialogStyle.AffirmativeAndNegative);
+            if (result == MessageDialogResult.Affirmative)
+            {
+                ViewModel.SelectedPlaylist.Medias.Remove(ViewModel.SelectedPlaylistMedia);
+                ViewModel.SelectedPlaylist.UpdateMediaCount();
+                await ViewModel.SelectedPlaylist.Save(true);
+            }
+        }
+
+        private void DataGridPlaylists_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (ViewModel.SelectedPlaylist != null)
+                flyoutPlaylist.IsOpen = true;
         }
     }
 }

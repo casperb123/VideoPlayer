@@ -111,6 +111,7 @@ namespace VideoPlayer.ViewModels
             this.mainWindow = mainWindow;
             queue = new ObservableCollection<Media>();
             oldQueue = new ObservableCollection<Media>();
+            this.playlists = new ObservableCollection<Playlist>();
             ChangeTheme(mainWindow.comboBoxTheme.SelectedItem.ToString(), mainWindow.comboBoxColor.SelectedItem as ColorScheme);
 
             Hotkey nextTrackHotkey = new Hotkey(Key.MediaNextTrack, KeyModifier.None, OnHotkeyHandler, true);
@@ -122,24 +123,6 @@ namespace VideoPlayer.ViewModels
                 previousTrackHotkey,
                 playPauseHotkey
             };
-
-            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
-            string playlistsPath = $@"{runningPath}\Playlists";
-            string[] files = Directory.GetFiles(playlistsPath, "*.playlist");
-            List<Playlist> playlists = new List<Playlist>();
-            files.ToList().ForEach(async x =>
-                playlists.Add(
-                    UserControl.ViewModel.GetPlaylist(
-                        Path.GetFileNameWithoutExtension(x),
-                        await File.ReadAllLinesAsync(x)
-                    )
-                )
-            );
-
-            if (playlists.Count == 0)
-                this.playlists = new ObservableCollection<Playlist>();
-            else
-                this.playlists = new ObservableCollection<Playlist>(playlists);
         }
 
         public void ChangeTheme(string theme, ColorScheme color)
@@ -168,9 +151,11 @@ namespace VideoPlayer.ViewModels
                 await AddToQueue(media);
         }
 
-        public void AddMediasToPlaylist(ICollection<Media> medias)
+        public async void AddMediasToPlaylist(ICollection<Media> medias)
         {
             medias.ToList().ForEach(x => SelectedPlaylist.Medias.Add(x));
+            SelectedPlaylist.UpdateMediaCount();
+            await SelectedPlaylist.Save(true);
         }
 
         private async void OnHotkeyHandler(Hotkey hotkey)
@@ -207,6 +192,36 @@ namespace VideoPlayer.ViewModels
             SelectedPlaylist = null;
             if (File.Exists(file))
                 File.Delete(file);
+        }
+
+        public async Task<ICollection<Playlist>> GetPlaylists()
+        {
+            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
+            string playlistsPath = $@"{runningPath}\Playlists";
+            if (!Directory.Exists(playlistsPath))
+                Directory.CreateDirectory(playlistsPath);
+            string[] files = Directory.GetFiles(playlistsPath, "*.playlist");
+            List<Playlist> playlists = new List<Playlist>();
+            foreach (string file in files)
+            {
+                string[] filePaths = await File.ReadAllLinesAsync(file);
+                Playlist playlist = UserControl.ViewModel.GetPlaylist(Path.GetFileNameWithoutExtension(file), filePaths);
+                playlists.Add(playlist);
+            }
+
+            return playlists;
+        }
+
+        public void RenamePlaylist(Playlist playlist, string name)
+        {
+            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
+            string playlistsPath = $@"{runningPath}\Playlists";
+            string file = $@"{playlistsPath}\{playlist.Name}.playlist";
+            if (File.Exists(file))
+            {
+                string newFile = $@"{playlistsPath}\{name}.playlist";
+                File.Move(file, newFile);
+            }
         }
     }
 }

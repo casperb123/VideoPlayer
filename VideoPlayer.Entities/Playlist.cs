@@ -13,6 +13,8 @@ namespace VideoPlayer.Entities
     {
         private string name;
         private ObservableCollection<Media> medias;
+        private int mediaCount;
+        private string nameAndCount;
 
         public ObservableCollection<Media> Medias
         {
@@ -40,19 +42,26 @@ namespace VideoPlayer.Entities
             }
         }
 
-        public string NameAndMedias
+        public string NameAndCount
         {
-            get
+            get => nameAndCount;
+            set
             {
-                return $"{Name} ({Medias.Count})";
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ArgumentException("The value can't be null of empty");
+
+                nameAndCount = value;
+                OnPropertyChanged(nameof(NameAndCount));
             }
         }
 
         public int MediaCount
         {
-            get
+            get => mediaCount;
+            set
             {
-                return Medias.Count;
+                mediaCount = value;
+                OnPropertyChanged(nameof(MediaCount));
             }
         }
 
@@ -64,29 +73,40 @@ namespace VideoPlayer.Entities
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        public Playlist(ICollection<Media> medias)
+        public Playlist(string name, ICollection<Media> medias)
+            : this(name)
         {
-            this.medias = new ObservableCollection<Media>(medias);
+            medias.ToList().ForEach(x => Medias.Add(x));
+            NameAndCount = $"{Name} ({Medias.Count})";
+            MediaCount = Medias.Count;
         }
 
-        public Playlist(ICollection<Media> medias, string name)
-            : this(medias)
+        public Playlist(string name)
         {
             Name = name;
+            medias = new ObservableCollection<Media>();
+            NameAndCount = $"{Name} ({Medias.Count})";
+            MediaCount = Medias.Count;
         }
 
-        public async Task<(bool isValid, string message)> Save()
+        public async Task<(bool isValid, string message)> Save(bool update = false)
         {
             string runningPath = AppDomain.CurrentDomain.BaseDirectory;
             string playlistsPath = $@"{runningPath}\Playlists";
             string file = $@"{playlistsPath}\{Name}.playlist";
 
-            if (File.Exists(file))
+            if (File.Exists(file) && update == false)
                 return (false, "A playlist with that name already exists");
 
             string[] playlistPaths = Medias.ToList().Select(x => x.Source).ToArray();
             await File.WriteAllLinesAsync($@"{playlistsPath}\{Name}.playlist", playlistPaths);
             return (true, null);
+        }
+
+        public void UpdateMediaCount()
+        {
+            MediaCount = Medias.Count;
+            NameAndCount = $"{Name} ({Medias.Count})";
         }
     }
 }

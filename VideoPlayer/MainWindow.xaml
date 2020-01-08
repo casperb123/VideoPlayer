@@ -7,7 +7,6 @@
                       xmlns:metro="clr-namespace:MahApps.Metro;assembly=MahApps.Metro"
                       xmlns:properties="clr-namespace:VideoPlayer.Properties"
                       xmlns:local="clr-namespace:VideoPlayer"
-                      xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                       mc:Ignorable="d"
                       Title="Video Player"
                       Width="825"
@@ -192,10 +191,6 @@
                 <Grid x:Name="gridFlyoutQueue"
                       AllowDrop="True"
                       Drop="GridFlyoutQueue_Drop">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" />
-                        <ColumnDefinition Width="1*" />
-                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="1*" />
@@ -204,11 +199,9 @@
 
                     <Label Content="{Binding Path=Playlist.NameAndMedias}"
                            HorizontalContentAlignment="Center"
-                           FontSize="18"
-                           Grid.ColumnSpan="2" />
+                           FontSize="18" />
                     <DataGrid x:Name="dataGridQueue"
                               Grid.Row="1"
-                              Grid.ColumnSpan="2"
                               ItemsSource="{Binding Path=Queue}"
                               SelectionMode="Single"
                               AutoGenerateColumns="False"
@@ -221,7 +214,8 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name"
                                                 Binding="{Binding Path=Name}"
-                                                Width="1*">
+                                                Width="1*"
+                                                IsReadOnly="True">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="{x:Type TextBlock}"
                                            BasedOn="{StaticResource MahApps.Styles.TextBlock}">
@@ -234,7 +228,8 @@
                             </DataGridTextColumn>
                             <DataGridTextColumn Header="Duration"
                                                 Binding="{Binding Path=Duration}"
-                                                Width="85">
+                                                Width="85"
+                                                IsReadOnly="True">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="{x:Type TextBlock}"
                                            BasedOn="{StaticResource MahApps.Styles.TextBlock}">
@@ -257,7 +252,7 @@
                     <Button x:Name="buttonClearQueue"
                             Grid.Row="2"
                             Content="Clear Queue"
-                            Height="30"
+                            Height="35"
                             Margin="10,10,5,10"
                             Click="ButtonClearQueue_Click" />
                 </Grid>
@@ -285,11 +280,13 @@
                               CanUserReorderColumns="False"
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled"
-                              SelectionChanged="DataGridPlaylists_SelectionChanged">
+                              SelectionChanged="DataGridPlaylists_SelectionChanged"
+                              MouseDoubleClick="DataGridPlaylists_MouseDoubleClick">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name"
                                                 Binding="{Binding Path=Name}"
-                                                Width="1*">
+                                                Width="1*"
+                                                IsReadOnly="True">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="{x:Type TextBlock}"
                                            BasedOn="{StaticResource MahApps.Styles.TextBlock}">
@@ -302,7 +299,8 @@
                             </DataGridTextColumn>
                             <DataGridTextColumn Header="Medias"
                                                 Binding="{Binding Path=MediaCount}"
-                                                Width="85">
+                                                Width="85"
+                                                IsReadOnly="True">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="{x:Type TextBlock}"
                                            BasedOn="{StaticResource MahApps.Styles.TextBlock}">
@@ -328,14 +326,14 @@
                     <Button x:Name="buttonAddNewPlaylist"
                             Grid.Row="1"
                             Content="Add new playlist"
-                            Height="30"
+                            Height="35"
                             Margin="5,10,10,10"
                             Click="ButtonAddNewPlaylist_Click"/>
                 </Grid>
             </Controls:Flyout>
 
             <Controls:Flyout x:Name="flyoutPlaylist"
-                             Header="{Binding Path=SelectedPlaylist.NameAndMedias}"
+                             Header="{Binding Path=SelectedPlaylist.NameAndCount}"
                              Position="Right"
                              Theme="Adapt"
                              Width="300"
@@ -358,7 +356,8 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name"
                                                 Binding="{Binding Path=Name}"
-                                                Width="1*">
+                                                Width="1*"
+                                                IsReadOnly="True">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="{x:Type TextBlock}"
                                            BasedOn="{StaticResource MahApps.Styles.TextBlock}">
@@ -371,7 +370,8 @@
                             </DataGridTextColumn>
                             <DataGridTextColumn Header="Duration"
                                                 Binding="{Binding Path=Duration}"
-                                                Width="85">
+                                                Width="85"
+                                                IsReadOnly="True">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="{x:Type TextBlock}"
                                            BasedOn="{StaticResource MahApps.Styles.TextBlock}">
@@ -381,12 +381,20 @@
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
                         </DataGrid.Columns>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu x:Name="dataGridPlaylistContextMenu"
+                                         Opened="DataGridPlaylistContextMenu_Opened">
+                                <MenuItem x:Name="menuItemPlaylistRemove"
+                                          Header="Remove"
+                                          Click="MenuItemPlaylistRemove_Click" />
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
                     </DataGrid>
 
                     <Button x:Name="buttonAddMediasToPlaylist"
                             Grid.Row="1"
                             Content="Add new media(s)"
-                            Height="30"
+                            Height="35"
                             Margin="10,10,5,10"
                             Click="ButtonAddMediasToPlaylist_Click" />
                 </Grid>
