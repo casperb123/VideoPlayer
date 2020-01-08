@@ -13,6 +13,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
+using System.IO;
 
 namespace VideoPlayer.UserControls
 {
@@ -286,10 +287,23 @@ namespace VideoPlayer.UserControls
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                List<Media> medias = new List<Media>();
-                files.ToList().ForEach(x => medias.Add(new Media(x)));
 
-                await ViewModel.MainWindow.ViewModel.AddMediasToQueue(medias);
+                if (Path.GetExtension(files[0]) == ".playlist")
+                {
+                    string name = Path.GetFileNameWithoutExtension(files[0]);
+                    string[] filePaths = await File.ReadAllLinesAsync(files[0]);
+                    Playlist playlist = ViewModel.GetPlaylist(name, filePaths);
+                    ViewModel.MainWindow.ViewModel.SelectedPlaylist = playlist;
+
+                    await ViewModel.MainWindow.ViewModel.AddMediasToQueue(playlist.Medias);
+                }
+                else
+                {
+                    List<Media> medias = new List<Media>();
+                    files.ToList().ForEach(x => medias.Add(new Media(x)));
+
+                    await ViewModel.MainWindow.ViewModel.AddMediasToQueue(medias);
+                }
             }
         }
 
@@ -340,6 +354,11 @@ namespace VideoPlayer.UserControls
         private void ButtonResetLoop_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.ResetLoop();
+        }
+
+        private void ButtonPlaylists_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.MainWindow.flyoutPlaylists.IsOpen = true;
         }
     }
 }

@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,6 +20,9 @@ namespace VideoPlayer.ViewModels
         private ObservableCollection<Media> queue;
         private ObservableCollection<Media> oldQueue;
         private Media selectedMedia;
+        private ObservableCollection<Playlist> playlists;
+        private Playlist selectedPlaylist;
+        private Media selectedPlaylistMedia;
 
         public MediaPlayerUserControl UserControl;
         public List<Hotkey> Hotkeys;
@@ -55,16 +60,50 @@ namespace VideoPlayer.ViewModels
             set
             {
                 if (value is null)
-                    throw new ArgumentNullException("The old queue can't be null");
+                    throw new NullReferenceException("The old queue can't be null");
 
                 oldQueue = value;
+                OnPropertyChanged(nameof(OldQueue));
+            }
+        }
+
+        public ObservableCollection<Playlist> Playlists
+        {
+            get => playlists;
+            set
+            {
+                if (value is null)
+                    throw new NullReferenceException("The playlists can't be null");
+
+                playlists = value;
+                OnPropertyChanged(nameof(Playlists));
+            }
+        }
+
+        public Playlist SelectedPlaylist
+        {
+            get => selectedPlaylist;
+            set
+            {
+                selectedPlaylist = value;
+                OnPropertyChanged(nameof(SelectedPlaylist));
+            }
+        }
+
+        public Media SelectedPlaylistMedia
+        {
+            get => selectedPlaylistMedia;
+            set
+            {
+                selectedPlaylistMedia = value;
+                OnPropertyChanged(nameof(SelectedPlaylistMedia));
             }
         }
 
         private void OnPropertyChanged(string prop)
         {
             if (prop != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
         public MainWindowViewModel(MainWindow mainWindow)
@@ -83,6 +122,24 @@ namespace VideoPlayer.ViewModels
                 previousTrackHotkey,
                 playPauseHotkey
             };
+
+            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
+            string playlistsPath = $@"{runningPath}\Playlists";
+            string[] files = Directory.GetFiles(playlistsPath, "*.playlist");
+            List<Playlist> playlists = new List<Playlist>();
+            files.ToList().ForEach(async x =>
+                playlists.Add(
+                    UserControl.ViewModel.GetPlaylist(
+                        Path.GetFileNameWithoutExtension(x),
+                        await File.ReadAllLinesAsync(x)
+                    )
+                )
+            );
+
+            if (playlists.Count == 0)
+                this.playlists = new ObservableCollection<Playlist>();
+            else
+                this.playlists = new ObservableCollection<Playlist>(playlists);
         }
 
         public void ChangeTheme(string theme, ColorScheme color)
@@ -105,12 +162,15 @@ namespace VideoPlayer.ViewModels
             }
         }
 
-        public async Task AddMediasToQueue(List<Media> medias)
+        public async Task AddMediasToQueue(ICollection<Media> medias)
         {
             foreach (Media media in medias)
-            {
                 await AddToQueue(media);
-            }
+        }
+
+        public void AddMediasToPlaylist(ICollection<Media> medias)
+        {
+            medias.ToList().ForEach(x => SelectedPlaylist.Medias.Add(x));
         }
 
         private async void OnHotkeyHandler(Hotkey hotkey)
@@ -127,6 +187,26 @@ namespace VideoPlayer.ViewModels
             {
                 MediaPlayerUserControl.PlayPauseCmd.Execute(null, UserControl.buttonPlayPause);
             }
+        }
+
+        public async Task ChangePlaylist()
+        {
+            Queue.Clear();
+            OldQueue.Clear();
+            await UserControl.ViewModel.Stop(true);
+            await AddMediasToQueue(SelectedPlaylist.Medias);
+        }
+
+        public void RemovePlaylist()
+        {
+            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
+            string playlistsPath = $@"{runningPath}\Playlists";
+            string file = $@"{playlistsPath}\{SelectedPlaylist.Name}.playlist";
+
+            Playlists.Remove(SelectedPlaylist);
+            SelectedPlaylist = null;
+            if (File.Exists(file))
+                File.Delete(file);
         }
     }
 }

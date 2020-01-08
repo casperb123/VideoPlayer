@@ -395,5 +395,14 @@ namespace VideoPlayer.ViewModels
                 userControl.buttonSkipBackwards.IsEnabled = false;
             }
         }
+
+        public Playlist GetPlaylist(string name, string[] filePaths)
+        {
+            List<Media> medias = new List<Media>();
+            filePaths.ToList().ForEach(x => medias.Add(new Media(x)));
+            Playlist playlist = new Playlist(medias, name);
+
+            return playlist;
+        }
     }
 }

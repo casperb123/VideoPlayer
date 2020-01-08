@@ -7,6 +7,7 @@
                       xmlns:metro="clr-namespace:MahApps.Metro;assembly=MahApps.Metro"
                       xmlns:properties="clr-namespace:VideoPlayer.Properties"
                       xmlns:local="clr-namespace:VideoPlayer"
+                      xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                       mc:Ignorable="d"
                       Title="Video Player"
                       Width="825"
@@ -94,7 +95,7 @@
                             <Label Content="Loop specific time:"
                                    Grid.Row="1"
                                    VerticalContentAlignment="Center"
-                                   Margin="0,0,5,0"/>
+                                   Margin="0,0,5,0" />
                             <Grid Grid.Column="1"
                                   Grid.Row="1"
                                   Margin="5,5,0,0">
@@ -134,7 +135,7 @@
                             <Label Content="Loop:"
                                    Grid.Row="3"
                                    VerticalAlignment="Center"
-                                   Margin="0,0,5,0"/>
+                                   Margin="0,0,5,0" />
                             <Controls:ToggleSwitch x:Name="toggleSwitchLoop"
                                                    Grid.Row="3"
                                                    Grid.Column="1"
@@ -162,7 +163,7 @@
                                       Grid.Column="1"
                                       Margin="5,0,0,5"
                                       ItemsSource="{x:Static metro:ThemeManager.BaseColors}"
-                                      SelectionChanged="ComboBox_SelectionChanged"
+                                      SelectionChanged="ComboBoxThemeSettings_SelectionChanged"
                                       SelectedIndex="{Binding Theme, Source={x:Static properties:Settings.Default}, Mode=TwoWay}" />
 
                             <Label Content="Color:"
@@ -176,7 +177,7 @@
                                       ItemsSource="{x:Static metro:ThemeManager.ColorSchemes}"
                                       DisplayMemberPath="Name"
                                       SelectedIndex="{Binding Color, Source={x:Static properties:Settings.Default}, Mode=TwoWay}"
-                                      SelectionChanged="ComboBox_SelectionChanged" />
+                                      SelectionChanged="ComboBoxThemeSettings_SelectionChanged" />
                         </Grid>
                     </GroupBox>
                 </StackPanel>
@@ -191,12 +192,23 @@
                 <Grid x:Name="gridFlyoutQueue"
                       AllowDrop="True"
                       Drop="GridFlyoutQueue_Drop">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
                         <RowDefinition Height="1*" />
                         <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
 
+                    <Label Content="{Binding Path=Playlist.NameAndMedias}"
+                           HorizontalContentAlignment="Center"
+                           FontSize="18"
+                           Grid.ColumnSpan="2" />
                     <DataGrid x:Name="dataGridQueue"
+                              Grid.Row="1"
+                              Grid.ColumnSpan="2"
                               ItemsSource="{Binding Path=Queue}"
                               SelectionMode="Single"
                               AutoGenerateColumns="False"
@@ -244,11 +256,139 @@
 
                     <Button x:Name="buttonClearQueue"
                             Grid.Row="2"
-                            Grid.Column="1"
                             Content="Clear Queue"
                             Height="30"
-                            Margin="10"
+                            Margin="10,10,5,10"
                             Click="ButtonClearQueue_Click" />
+                </Grid>
+            </Controls:Flyout>
+
+            <Controls:Flyout x:Name="flyoutPlaylists"
+                             Header="Playlists"
+                             Position="Right"
+                             Theme="Adapt"
+                             Width="300"
+                             IsPinned="False">
+                <Grid x:Name="gridFlyoutPlaylists">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <DataGrid x:Name="dataGridPlaylists"
+                              ItemsSource="{Binding Path=Playlists}"
+                              SelectedItem="{Binding Path=SelectedPlaylist}"
+                              SelectionMode="Single"
+                              AutoGenerateColumns="False"
+                              CanUserSortColumns="False"
+                              CanUserResizeColumns="False"
+                              CanUserReorderColumns="False"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled"
+                              SelectionChanged="DataGridPlaylists_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name"
+                                                Binding="{Binding Path=Name}"
+                                                Width="1*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="{x:Type TextBlock}"
+                                           BasedOn="{StaticResource MahApps.Styles.TextBlock}">
+                                        <Setter Property="TextTrimming"
+                                                Value="CharacterEllipsis" />
+                                        <Setter Property="Margin"
+                                                Value="10,0,0,0" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Medias"
+                                                Binding="{Binding Path=MediaCount}"
+                                                Width="85">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="{x:Type TextBlock}"
+                                           BasedOn="{StaticResource MahApps.Styles.TextBlock}">
+                                        <Setter Property="Margin"
+                                                Value="10,0,10,0" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu x:Name="dataGridPlaylistsContextMenu"
+                                         Opened="DataGridPlaylistsContextMenu_Opened">
+                                <MenuItem x:Name="menuItemPlaylistsRemove"
+                                          Header="Remove"
+                                          Click="MenuItemPlaylistsRemove_Click"/>
+                                <MenuItem x:Name="menuItemPlaylistsEdit"
+                                          Header="Edit"
+                                          Click="MenuItemPlaylistsEdit_Click"/>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                    </DataGrid>
+
+                    <Button x:Name="buttonAddNewPlaylist"
+                            Grid.Row="1"
+                            Content="Add new playlist"
+                            Height="30"
+                            Margin="5,10,10,10"
+                            Click="ButtonAddNewPlaylist_Click"/>
+                </Grid>
+            </Controls:Flyout>
+
+            <Controls:Flyout x:Name="flyoutPlaylist"
+                             Header="{Binding Path=SelectedPlaylist.NameAndMedias}"
+                             Position="Right"
+                             Theme="Adapt"
+                             Width="300"
+                             IsPinned="False" 
+                             IsOpenChanged="FlyoutPlaylist_IsOpenChanged">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <DataGrid x:Name="dataGridPlaylist"
+                              ItemsSource="{Binding Path=SelectedPlaylist.Medias}"
+                              SelectedItem="{Binding Path=SelectedPlaylistMedia}"
+                              SelectionMode="Extended"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="True"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name"
+                                                Binding="{Binding Path=Name}"
+                                                Width="1*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="{x:Type TextBlock}"
+                                           BasedOn="{StaticResource MahApps.Styles.TextBlock}">
+                                        <Setter Property="TextTrimming"
+                                                Value="CharacterEllipsis" />
+                                        <Setter Property="Margin"
+                                                Value="10,0,0,0" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Duration"
+                                                Binding="{Binding Path=Duration}"
+                                                Width="85">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="{x:Type TextBlock}"
+                                           BasedOn="{StaticResource MahApps.Styles.TextBlock}">
+                                        <Setter Property="Margin"
+                                                Value="10,0,10,0" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Button x:Name="buttonAddMediasToPlaylist"
+                            Grid.Row="1"
+                            Content="Add new media(s)"
+                            Height="30"
+                            Margin="10,10,5,10"
+                            Click="ButtonAddMediasToPlaylist_Click" />
                 </Grid>
             </Controls:Flyout>
         </Controls:FlyoutsControl>

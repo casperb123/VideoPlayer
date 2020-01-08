@@ -43,7 +43,7 @@ namespace VideoPlayer.Entities
         {
             int virtualKeyCode = KeyInterop.VirtualKeyFromKey(Key);
             Id = virtualKeyCode + ((int)KeyModifiers * 0x10000);
-            bool result = RegisterHotKey(IntPtr.Zero, Id, (UInt32)KeyModifiers, (UInt32)virtualKeyCode);
+            bool result = RegisterHotKey(IntPtr.Zero, Id, (uint)KeyModifiers, (uint)virtualKeyCode);
 
             if (_dictHotKeyToCalBackProc == null)
             {
@@ -60,8 +60,7 @@ namespace VideoPlayer.Entities
         // ******************************************************************
         public void Unregister()
         {
-            Hotkey hotKey;
-            if (_dictHotKeyToCalBackProc.TryGetValue(Id, out hotKey))
+            if (_dictHotKeyToCalBackProc.TryGetValue(Id, out _))
             {
                 UnregisterHotKey(IntPtr.Zero, Id);
             }
@@ -74,9 +73,7 @@ namespace VideoPlayer.Entities
             {
                 if (msg.message == WmHotKey)
                 {
-                    Hotkey hotKey;
-
-                    if (_dictHotKeyToCalBackProc.TryGetValue((int)msg.wParam, out hotKey))
+                    if (_dictHotKeyToCalBackProc.TryGetValue((int)msg.wParam, out Hotkey hotKey))
                     {
                         if (hotKey.Action != null)
                         {
