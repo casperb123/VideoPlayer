@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -204,8 +205,13 @@ namespace VideoPlayer.ViewModels
             List<Playlist> playlists = new List<Playlist>();
             foreach (string file in files)
             {
-                string[] filePaths = await File.ReadAllLinesAsync(file);
-                Playlist playlist = UserControl.ViewModel.GetPlaylist(Path.GetFileNameWithoutExtension(file), filePaths);
+                BinaryFormatter formatter = new BinaryFormatter();
+                MemoryStream stream = new MemoryStream();
+                byte[] bytes = await File.ReadAllBytesAsync(file);
+                stream.Write(bytes, 0, bytes.Length);
+                stream.Position = 0;
+                ICollection<Media> medias = formatter.Deserialize(stream) as ICollection<Media>;
+                Playlist playlist = new Playlist(Path.GetFileNameWithoutExtension(file), medias);
                 playlists.Add(playlist);
             }
 

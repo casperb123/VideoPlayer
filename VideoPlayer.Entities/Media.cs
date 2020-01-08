@@ -8,6 +8,7 @@ using System.Windows;
 
 namespace VideoPlayer.Entities
 {
+    [Serializable]
     public class Media
     {
         private string source;

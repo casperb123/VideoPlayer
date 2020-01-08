@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace VideoPlayer.Entities
 {
@@ -99,7 +100,10 @@ namespace VideoPlayer.Entities
                 return (false, "A playlist with that name already exists");
 
             string[] playlistPaths = Medias.ToList().Select(x => x.Source).ToArray();
-            await File.WriteAllLinesAsync($@"{playlistsPath}\{Name}.playlist", playlistPaths);
+            BinaryFormatter formatter = new BinaryFormatter();
+            MemoryStream stream = new MemoryStream();
+            formatter.Serialize(stream, Medias);
+            await File.WriteAllBytesAsync($@"{playlistsPath}\{Name}.playlist", stream.ToArray());
             return (true, null);
         }
 
