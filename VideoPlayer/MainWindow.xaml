@@ -325,12 +325,12 @@
                         </DataGrid.ContextMenu>
                     </DataGrid>
 
-                    <Button x:Name="buttonAddNewPlaylist"
+                    <Button x:Name="buttonCreateNewPlaylist"
                             Grid.Row="1"
-                            Content="Add new playlist"
+                            Content="Create new playlist"
                             Height="35"
                             Margin="5,10,10,10"
-                            Click="ButtonAddNewPlaylist_Click"/>
+                            Click="ButtonCreateNewPlaylist_Click"/>
                 </Grid>
             </Controls:Flyout>
 

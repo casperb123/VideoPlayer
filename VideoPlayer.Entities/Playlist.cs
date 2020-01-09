@@ -96,7 +96,7 @@ namespace VideoPlayer.Entities
             string file = $@"{playlistsPath}\{Name}.playlist";
 
             if (File.Exists(file) && update == false)
-                return (false, "A playlist with that name already exists");
+                return (false, $"A playlist with the name '{Name}' already exists");
 
             string[] playlistPaths = Medias.ToList().Select(x => x.Source).ToArray();
             BinaryFormatter formatter = new BinaryFormatter();

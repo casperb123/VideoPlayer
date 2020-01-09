@@ -244,7 +244,7 @@ namespace VideoPlayer
             flyoutPlaylist.IsOpen = true;
         }
 
-        private async void ButtonAddNewPlaylist_Click(object sender, RoutedEventArgs e)
+        private async void ButtonCreateNewPlaylist_Click(object sender, RoutedEventArgs e)
         {
             string name = await this.ShowInputAsync("Create playlist", "Please write the name of the playlist");
 
@@ -254,7 +254,7 @@ namespace VideoPlayer
                 var (isValid, message) = await playlist.Save();
 
                 if (!isValid)
-                    await this.ShowMessageAsync("Error saving playlist", message);
+                    await this.ShowMessageAsync("Error creating playlist", message);
                 else
                     ViewModel.Playlists.Add(playlist);
             }
