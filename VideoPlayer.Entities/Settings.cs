@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -64,7 +65,7 @@ namespace VideoPlayer.Entities
 		{
 			Color = 1;
 			Theme = 0;
-			Salt = Protect(Guid.NewGuid().ToByteArray());
+			Salt = Protect(Encoding.ASCII.GetBytes(Environment.UserName));
 			Save().ConfigureAwait(false);
 		}
 
