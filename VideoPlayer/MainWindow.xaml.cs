@@ -217,11 +217,13 @@ namespace VideoPlayer
             {
                 menuItemPlaylistsRemove.IsEnabled = false;
                 menuItemPlaylistsEdit.IsEnabled = false;
+                menuItemPlaylistsAddToQueue.IsEnabled = false;
             }
             else
             {
                 menuItemPlaylistsRemove.IsEnabled = true;
                 menuItemPlaylistsEdit.IsEnabled = true;
+                menuItemPlaylistsAddToQueue.IsEnabled = true;
             }
         }
 
