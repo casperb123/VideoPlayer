@@ -1,7 +1,5 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Globalization;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -11,8 +9,6 @@ using MaterialDesignThemes.Wpf;
 using VideoPlayer.Entities;
 using System.Linq;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows.Data;
 using System.IO;
 
 namespace VideoPlayer.UserControls

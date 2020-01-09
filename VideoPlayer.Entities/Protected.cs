@@ -1,32 +1,19 @@
 ﻿using System;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace VideoPlayer.Entities
 {
     public class Protected
     {
-        private readonly byte[] salt;
-
-        public Protected()
-        {
-            if (GlobalSettings.Settings is null)
-                return;
-
-            if (GlobalSettings.Settings.Salt is null || GlobalSettings.Settings.Salt.Length <= 0)
-            {
-                salt = Guid.NewGuid().ToByteArray();
-                GlobalSettings.Settings.Salt = salt;
-                GlobalSettings.Settings.Save().ConfigureAwait(false);
-            }
-            else
-                salt = GlobalSettings.Settings.Salt;
-        }
-
         protected byte[] Protect(byte[] data)
         {
             try
             {
-                return ProtectedData.Protect(data, salt, DataProtectionScope.CurrentUser);
+                if (GlobalSettings.Settings is null)
+                    return ProtectedData.Protect(data, Encoding.ASCII.GetBytes(Environment.UserName), DataProtectionScope.CurrentUser);
+                else
+                    return ProtectedData.Protect(data, GlobalSettings.Settings.Salt, DataProtectionScope.CurrentUser);
             }
             catch (CryptographicException)
             {
@@ -42,7 +29,7 @@ namespace VideoPlayer.Entities
         {
             try
             {
-                return ProtectedData.Unprotect(data, salt, DataProtectionScope.CurrentUser);
+                return ProtectedData.Unprotect(data, GlobalSettings.Settings.Salt, DataProtectionScope.CurrentUser);
             }
             catch (CryptographicException)
             {

@@ -47,8 +47,9 @@ namespace VideoPlayer
             if (File.Exists(file))
                 GlobalSettings.Settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(file));
             else
+            {
                 GlobalSettings.Settings = new Settings();
-
+            }
             InitializeComponent();
             ViewModel = new MainWindowViewModel(this);
             DataContext = ViewModel;
