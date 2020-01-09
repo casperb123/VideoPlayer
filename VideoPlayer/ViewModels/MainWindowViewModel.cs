@@ -163,7 +163,7 @@ namespace VideoPlayer.ViewModels
         {
             medias.ToList().ForEach(x => SelectedPlaylist.Medias.Add(x));
             SelectedPlaylist.UpdateMediaCount();
-            await SelectedPlaylist.Save(true);
+            await SavePlaylists();
         }
 
         private async void OnHotkeyHandler(Hotkey hotkey)
@@ -205,23 +205,14 @@ namespace VideoPlayer.ViewModels
         public async Task<ICollection<Playlist>> GetPlaylists()
         {
             string runningPath = AppDomain.CurrentDomain.BaseDirectory;
-            string playlistsPath = $@"{runningPath}\Playlists";
-            if (!Directory.Exists(playlistsPath))
-                Directory.CreateDirectory(playlistsPath);
-            string[] files = Directory.GetFiles(playlistsPath, "*.playlist");
-            List<Playlist> playlists = new List<Playlist>();
-            foreach (string file in files)
-            {
-                BinaryFormatter formatter = new BinaryFormatter();
-                MemoryStream stream = new MemoryStream();
-                byte[] bytes = Unprotect(await File.ReadAllBytesAsync(file));
-                stream.Write(bytes, 0, bytes.Length);
-                stream.Position = 0;
-                Playlist playlist = formatter.Deserialize(stream) as Playlist;
-                playlists.Add(playlist);
-            }
+            string file = $@"{runningPath}\Playlists.bin";
+            BinaryFormatter formatter = new BinaryFormatter();
+            MemoryStream stream = new MemoryStream();
+            byte[] bytes = Unprotect(await File.ReadAllBytesAsync(file));
 
-            playlists = playlists.OrderBy(x => x.Index).ToList();
+            stream.Write(bytes, 0, bytes.Length);
+            stream.Position = 0;
+            ICollection<Playlist> playlists = formatter.Deserialize(stream) as ICollection<Playlist>;
             return playlists;
         }
 
@@ -267,9 +258,15 @@ namespace VideoPlayer.ViewModels
             return curIndex;
         }
 
-        public void SavePlaylists()
+        public async Task SavePlaylists()
         {
-            Playlists.ToList().ForEach(async x => await x.Save(true));
+            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
+            string file = $@"{runningPath}\Playlists.bin";
+
+            BinaryFormatter formatter = new BinaryFormatter();
+            MemoryStream stream = new MemoryStream();
+            formatter.Serialize(stream, Playlists);
+            await File.WriteAllBytesAsync(file, Protect(stream.ToArray()));
         }
     }
 }

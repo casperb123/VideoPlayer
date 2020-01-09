@@ -60,7 +60,6 @@ namespace VideoPlayer
             Task.Run(async () =>
             {
                 ICollection<Playlist> playlists = await ViewModel.GetPlaylists();
-                playlists = playlists.OrderBy(x => x.Index).ToList();
                 playlists.ToList().ForEach(x => ViewModel.Playlists.Add(x));
             });
 
@@ -264,15 +263,8 @@ namespace VideoPlayer
             if (name != null)
             {
                 Playlist playlist = new Playlist(name);
-                var (isValid, message) = await playlist.Save();
-
-                if (!isValid)
-                    await this.ShowMessageAsync("Error creating playlist", message);
-                else
-                {
-                    ViewModel.Playlists.Add(playlist);
-                    playlist.Index = ViewModel.Playlists.Count - 1;
-                }
+                ViewModel.Playlists.Add(playlist);
+                await ViewModel.SavePlaylists();
             }
         }
 
@@ -298,7 +290,7 @@ namespace VideoPlayer
             {
                 ViewModel.SelectedPlaylist.Medias.Remove(ViewModel.SelectedPlaylistMedia);
                 ViewModel.SelectedPlaylist.UpdateMediaCount();
-                await ViewModel.SelectedPlaylist.Save(true);
+                await ViewModel.SavePlaylists();
             }
         }
 
@@ -326,7 +318,7 @@ namespace VideoPlayer
                 dataGridPlaylists.SelectedItem = selectedPlaylist;
         }
 
-        private void DataGridPlaylists_Drop(object sender, DragEventArgs e)
+        private async void DataGridPlaylists_Drop(object sender, DragEventArgs e)
         {
             if (ViewModel.PlaylistsRowIndex < 0)
                 return;
@@ -338,9 +330,7 @@ namespace VideoPlayer
             Playlist otherPlaylist = ViewModel.Playlists[index];
             ViewModel.Playlists.RemoveAt(ViewModel.PlaylistsRowIndex);
             ViewModel.Playlists.Insert(index, changedPlaylist);
-            otherPlaylist.Index = ViewModel.PlaylistsRowIndex;
-            changedPlaylist.Index = index;
-            ViewModel.SavePlaylists();
+            await ViewModel.SavePlaylists();
         }
 
         private void DataGridPlaylist_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -355,7 +345,7 @@ namespace VideoPlayer
                 dataGridPlaylist.SelectedItem = selectedMedia;
         }
 
-        private void DataGridPlaylist_Drop(object sender, DragEventArgs e)
+        private async void DataGridPlaylist_Drop(object sender, DragEventArgs e)
         {
             if (ViewModel.PlaylistRowIndex < 0)
                 return;
@@ -366,7 +356,7 @@ namespace VideoPlayer
             Media changedMedia = ViewModel.SelectedPlaylist.Medias[ViewModel.PlaylistRowIndex];
             ViewModel.SelectedPlaylist.Medias.RemoveAt(ViewModel.PlaylistRowIndex);
             ViewModel.SelectedPlaylist.Medias.Insert(index, changedMedia);
-            ViewModel.SavePlaylists();
+            await ViewModel.SavePlaylists();
         }
 
         private void DataGridQueue_Drop(object sender, DragEventArgs e)
