@@ -289,5 +289,11 @@ namespace VideoPlayer
             if (ViewModel.SelectedPlaylist != null)
                 await ViewModel.ChangePlaylist();
         }
+
+        private async void MenuItemPlaylistsAddToQueue_Click(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel.SelectedPlaylist != null)
+                await ViewModel.AddMediasToQueue(ViewModel.SelectedPlaylist.Medias);
+        }
     }
 }

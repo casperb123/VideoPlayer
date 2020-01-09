@@ -312,12 +312,15 @@
                         <DataGrid.ContextMenu>
                             <ContextMenu x:Name="dataGridPlaylistsContextMenu"
                                          Opened="DataGridPlaylistsContextMenu_Opened">
-                                <MenuItem x:Name="menuItemPlaylistsRemove"
-                                          Header="Remove"
-                                          Click="MenuItemPlaylistsRemove_Click"/>
+                                <MenuItem x:Name="menuItemPlaylistsAddToQueue"
+                                          Header="Add to queue"
+                                          Click="MenuItemPlaylistsAddToQueue_Click" />
                                 <MenuItem x:Name="menuItemPlaylistsEdit"
                                           Header="Edit"
                                           Click="MenuItemPlaylistsEdit_Click"/>
+                                <MenuItem x:Name="menuItemPlaylistsRemove"
+                                          Header="Remove"
+                                          Click="MenuItemPlaylistsRemove_Click"/>
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                     </DataGrid>

@@ -6,7 +6,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -15,7 +14,7 @@ using VideoPlayer.UserControls;
 
 namespace VideoPlayer.ViewModels
 {
-    public class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : Protected, INotifyPropertyChanged
     {
         private readonly MainWindow mainWindow;
         private ObservableCollection<Media> queue;
@@ -207,7 +206,7 @@ namespace VideoPlayer.ViewModels
             {
                 BinaryFormatter formatter = new BinaryFormatter();
                 MemoryStream stream = new MemoryStream();
-                byte[] bytes = await File.ReadAllBytesAsync(file);
+                byte[] bytes = Unprotect(await File.ReadAllBytesAsync(file));
                 stream.Write(bytes, 0, bytes.Length);
                 stream.Position = 0;
                 ICollection<Media> medias = formatter.Deserialize(stream) as ICollection<Media>;

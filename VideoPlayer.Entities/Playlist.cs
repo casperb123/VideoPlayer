@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
@@ -10,7 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace VideoPlayer.Entities
 {
-    public class Playlist : INotifyPropertyChanged
+    public class Playlist : Protected, INotifyPropertyChanged
     {
         private string name;
         private ObservableCollection<Media> medias;
@@ -103,7 +102,7 @@ namespace VideoPlayer.Entities
             BinaryFormatter formatter = new BinaryFormatter();
             MemoryStream stream = new MemoryStream();
             formatter.Serialize(stream, Medias);
-            await File.WriteAllBytesAsync($@"{playlistsPath}\{Name}.playlist", stream.ToArray());
+            await File.WriteAllBytesAsync($@"{playlistsPath}\{Name}.playlist", Protect(stream.ToArray()));
             return (true, null);
         }
 
