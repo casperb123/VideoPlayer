@@ -2,6 +2,7 @@
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -41,6 +42,13 @@ namespace VideoPlayer
 
         public MainWindow()
         {
+            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
+            string file = $@"{runningPath}\Settings.json";
+            if (File.Exists(file))
+                GlobalSettings.Settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(file));
+            else
+                GlobalSettings.Settings = new Settings();
+
             InitializeComponent();
             ViewModel = new MainWindowViewModel(this);
             DataContext = ViewModel;
@@ -94,11 +102,13 @@ namespace VideoPlayer
             ViewModel.UserControl.ViewModel.SetLoopTime(textBoxLoopStart.Text, textBoxLoopEnd.Text);
         }
 
-        private void ComboBoxThemeSettings_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void ComboBoxThemeSettings_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!IsLoaded) return;
 
-            ViewModel.ChangeTheme(comboBoxTheme.SelectedItem.ToString(), comboBoxColor.SelectedItem as ColorScheme);
+            int theme = GlobalSettings.Settings.Theme;
+            int color = GlobalSettings.Settings.Color;
+            await ViewModel.ChangeTheme(comboBoxTheme.SelectedItem.ToString(), comboBoxColor.SelectedItem as ColorScheme);
         }
 
         private async void DataGridQueue_SelectionChanged(object sender, SelectionChangedEventArgs e)

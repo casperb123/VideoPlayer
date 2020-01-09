@@ -5,7 +5,7 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:metro="clr-namespace:MahApps.Metro;assembly=MahApps.Metro"
-                      xmlns:properties="clr-namespace:VideoPlayer.Properties"
+                      xmlns:entities="clr-namespace:VideoPlayer.Entities;assembly=VideoPlayer.Entities"
                       xmlns:local="clr-namespace:VideoPlayer"
                       mc:Ignorable="d"
                       Title="Video Player"
@@ -162,8 +162,8 @@
                                       Grid.Column="1"
                                       Margin="5,0,0,5"
                                       ItemsSource="{x:Static metro:ThemeManager.BaseColors}"
-                                      SelectionChanged="ComboBoxThemeSettings_SelectionChanged"
-                                      SelectedIndex="{Binding Theme, Source={x:Static properties:Settings.Default}, Mode=TwoWay}" />
+                                      SelectedIndex="{Binding Path=Theme, Source={x:Static entities:GlobalSettings.Settings}}"
+                                      SelectionChanged="ComboBoxThemeSettings_SelectionChanged" />
 
                             <Label Content="Color:"
                                    VerticalContentAlignment="Center"
@@ -175,7 +175,7 @@
                                       Margin="5,5,0,0"
                                       ItemsSource="{x:Static metro:ThemeManager.ColorSchemes}"
                                       DisplayMemberPath="Name"
-                                      SelectedIndex="{Binding Color, Source={x:Static properties:Settings.Default}, Mode=TwoWay}"
+                                      SelectedIndex="{Binding Path=Color, Source={x:Static entities:GlobalSettings.Settings}}"
                                       SelectionChanged="ComboBoxThemeSettings_SelectionChanged" />
                         </Grid>
                     </GroupBox>

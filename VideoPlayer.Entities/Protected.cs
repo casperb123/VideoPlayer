@@ -9,14 +9,17 @@ namespace VideoPlayer.Entities
 
         public Protected()
         {
-            if (string.IsNullOrEmpty(Settings.Default.Salt))
+            if (GlobalSettings.Settings is null)
+                return;
+
+            if (GlobalSettings.Settings.Salt is null || GlobalSettings.Settings.Salt.Length <= 0)
             {
                 salt = Guid.NewGuid().ToByteArray();
-                Settings.Default.Salt = Convert.ToBase64String(salt);
-                Settings.Default.Save();
+                GlobalSettings.Settings.Salt = salt;
+                GlobalSettings.Settings.Save().ConfigureAwait(false);
             }
             else
-                salt = Convert.FromBase64String(Settings.Default.Salt);
+                salt = GlobalSettings.Settings.Salt;
         }
 
         protected byte[] Protect(byte[] data)

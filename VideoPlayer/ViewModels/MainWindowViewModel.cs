@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,6 +9,9 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
@@ -111,8 +115,9 @@ namespace VideoPlayer.ViewModels
             this.mainWindow = mainWindow;
             queue = new ObservableCollection<Media>();
             oldQueue = new ObservableCollection<Media>();
-            this.playlists = new ObservableCollection<Playlist>();
-            ChangeTheme(mainWindow.comboBoxTheme.SelectedItem.ToString(), mainWindow.comboBoxColor.SelectedItem as ColorScheme);
+            playlists = new ObservableCollection<Playlist>();
+
+            ChangeTheme(mainWindow.comboBoxTheme.SelectedItem.ToString(), mainWindow.comboBoxColor.SelectedItem as ColorScheme).ConfigureAwait(false);
 
             Hotkey nextTrackHotkey = new Hotkey(Key.MediaNextTrack, KeyModifier.None, OnHotkeyHandler, true);
             Hotkey previousTrackHotkey = new Hotkey(Key.MediaPreviousTrack, KeyModifier.None, OnHotkeyHandler, true);
@@ -125,10 +130,10 @@ namespace VideoPlayer.ViewModels
             };
         }
 
-        public void ChangeTheme(string theme, ColorScheme color)
+        public async Task ChangeTheme(string theme, ColorScheme color)
         {
             ThemeManager.ChangeTheme(Application.Current, theme, color.Name);
-            Properties.Settings.Default.Save();
+            await GlobalSettings.Settings.Save();
         }
 
         public async Task AddToQueue(Media media)
