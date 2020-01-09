@@ -8,7 +8,10 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
 
@@ -26,7 +29,11 @@ namespace VideoPlayer.ViewModels
 
         public MediaPlayerUserControl UserControl;
         public List<Hotkey> Hotkeys;
+        public int PlaylistsRowIndex;
+        public int PlaylistRowIndex;
+        public int QueueRowIndex;
 
+        public delegate Point GetPosition(IInputElement element);
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Media SelectedMedia
@@ -210,11 +217,11 @@ namespace VideoPlayer.ViewModels
                 byte[] bytes = Unprotect(await File.ReadAllBytesAsync(file));
                 stream.Write(bytes, 0, bytes.Length);
                 stream.Position = 0;
-                ICollection<Media> medias = formatter.Deserialize(stream) as ICollection<Media>;
-                Playlist playlist = new Playlist(Path.GetFileNameWithoutExtension(file), medias);
+                Playlist playlist = formatter.Deserialize(stream) as Playlist;
                 playlists.Add(playlist);
             }
 
+            playlists = playlists.OrderBy(x => x.Index).ToList();
             return playlists;
         }
 
@@ -228,6 +235,41 @@ namespace VideoPlayer.ViewModels
                 string newFile = $@"{playlistsPath}\{name}.playlist";
                 File.Move(file, newFile);
             }
+        }
+
+        private bool GetMouseTargetRow(Visual target, GetPosition position)
+        {
+            Rect rect = VisualTreeHelper.GetDescendantBounds(target);
+            Point point = position((IInputElement)target);
+            return rect.Contains(point);
+        }
+
+        private DataGridRow GetRowItem(DataGrid dataGrid, int index)
+        {
+            if (dataGrid.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
+                return null;
+            return dataGrid.ItemContainerGenerator.ContainerFromIndex(index) as DataGridRow;
+        }
+
+        public int GetCurrentRowIndex(DataGrid dataGrid, GetPosition position)
+        {
+            int curIndex = -1;
+            for (int i = 0; i < dataGrid.Items.Count; i++)
+            {
+                DataGridRow row = GetRowItem(dataGrid, i);
+                if (GetMouseTargetRow(row, position))
+                {
+                    curIndex = i;
+                    break;
+                }
+            }
+
+            return curIndex;
+        }
+
+        public void SavePlaylists()
+        {
+            Playlists.ToList().ForEach(async x => await x.Save(true));
         }
     }
 }

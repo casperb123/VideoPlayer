@@ -4,6 +4,7 @@ using System.Text;
 
 namespace VideoPlayer.Entities
 {
+    [Serializable]
     public class Protected
     {
         protected byte[] Protect(byte[] data)

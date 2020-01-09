@@ -210,7 +210,12 @@
                               CanUserReorderColumns="False"
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled"
-                              SelectionChanged="DataGridQueue_SelectionChanged">
+                              AllowDrop="True"
+                              ToolTip="Right click and drag to move medias"
+                              SelectionChanged="DataGridQueue_SelectionChanged"
+                              Drop="DataGridQueue_Drop"
+                              PreviewMouseRightButtonDown="DataGridQueue_PreviewMouseRightButtonDown"
+                              PreviewMouseRightButtonUp="DataGridQueue_PreviewMouseRightButtonUp">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name"
                                                 Binding="{Binding Path=Name}"
@@ -263,7 +268,8 @@
                              Position="Right"
                              Theme="Adapt"
                              Width="300"
-                             IsPinned="False">
+                             IsPinned="False"
+                             IsOpenChanged="FlyoutPlaylists_IsOpenChanged">
                 <Grid x:Name="gridFlyoutPlaylists">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*" />
@@ -280,7 +286,11 @@
                               CanUserReorderColumns="False"
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled"
-                              MouseDoubleClick="DataGridPlaylists_MouseDoubleClick">
+                              AllowDrop="True"
+                              ToolTip="Left click and drag to move playlists"
+                              MouseDoubleClick="DataGridPlaylists_MouseDoubleClick"
+                              PreviewMouseLeftButtonDown="DataGridPlaylists_PreviewMouseLeftButtonDown"
+                              Drop="DataGridPlaylists_Drop">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name"
                                                 Binding="{Binding Path=Name}"
@@ -354,7 +364,11 @@
                               AutoGenerateColumns="False"
                               CanUserReorderColumns="True"
                               VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollBarVisibility="Disabled">
+                              HorizontalScrollBarVisibility="Disabled"
+                              AllowDrop="True"
+                              ToolTip="Left click and drag to move medias"
+                              PreviewMouseLeftButtonDown="DataGridPlaylist_PreviewMouseLeftButtonDown"
+                              Drop="DataGridPlaylist_Drop">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name"
                                                 Binding="{Binding Path=Name}"

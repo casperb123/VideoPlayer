@@ -12,6 +12,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Navigation;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
@@ -25,8 +28,6 @@ namespace VideoPlayer
     public partial class MainWindow : MetroWindow
     {
         public MainWindowViewModel ViewModel;
-
-        public static Process FFmpegProcess;
 
         private readonly string[] validExtensions = new string[]
         {
@@ -59,6 +60,7 @@ namespace VideoPlayer
             Task.Run(async () =>
             {
                 ICollection<Playlist> playlists = await ViewModel.GetPlaylists();
+                playlists = playlists.OrderBy(x => x.Index).ToList();
                 playlists.ToList().ForEach(x => ViewModel.Playlists.Add(x));
             });
 
@@ -267,13 +269,18 @@ namespace VideoPlayer
                 if (!isValid)
                     await this.ShowMessageAsync("Error creating playlist", message);
                 else
+                {
                     ViewModel.Playlists.Add(playlist);
+                    playlist.Index = ViewModel.Playlists.Count - 1;
+                }
             }
         }
 
         private void FlyoutPlaylist_IsOpenChanged(object sender, RoutedEventArgs e)
         {
             flyoutPlaylists.IsPinned = flyoutPlaylist.IsOpen;
+            if (!flyoutPlaylist.IsOpen)
+                dataGridPlaylist.SelectedItem = null;
         }
 
         private void DataGridPlaylistContextMenu_Opened(object sender, RoutedEventArgs e)
@@ -295,7 +302,7 @@ namespace VideoPlayer
             }
         }
 
-        private async void DataGridPlaylists_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private async void DataGridPlaylists_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (ViewModel.SelectedPlaylist != null)
                 await ViewModel.ChangePlaylist();
@@ -305,6 +312,95 @@ namespace VideoPlayer
         {
             if (ViewModel.SelectedPlaylist != null)
                 await ViewModel.AddMediasToQueue(ViewModel.SelectedPlaylist.Medias);
+        }
+
+        private void DataGridPlaylists_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.PlaylistsRowIndex = ViewModel.GetCurrentRowIndex(dataGridPlaylists, e.GetPosition);
+            if (ViewModel.PlaylistsRowIndex < 0)
+                return;
+            dataGridPlaylists.SelectedIndex = ViewModel.PlaylistsRowIndex;
+            if (!(dataGridPlaylists.Items[ViewModel.PlaylistsRowIndex] is Playlist selectedPlaylist))
+                return;
+            if (DragDrop.DoDragDrop(dataGridPlaylists, selectedPlaylist, DragDropEffects.Move) != DragDropEffects.None)
+                dataGridPlaylists.SelectedItem = selectedPlaylist;
+        }
+
+        private void DataGridPlaylists_Drop(object sender, DragEventArgs e)
+        {
+            if (ViewModel.PlaylistsRowIndex < 0)
+                return;
+            int index = ViewModel.GetCurrentRowIndex(dataGridPlaylists, e.GetPosition);
+            if (index < 0 || index == ViewModel.PlaylistsRowIndex)
+                return;
+
+            Playlist changedPlaylist = ViewModel.Playlists[ViewModel.PlaylistsRowIndex];
+            Playlist otherPlaylist = ViewModel.Playlists[index];
+            ViewModel.Playlists.RemoveAt(ViewModel.PlaylistsRowIndex);
+            ViewModel.Playlists.Insert(index, changedPlaylist);
+            otherPlaylist.Index = ViewModel.PlaylistsRowIndex;
+            changedPlaylist.Index = index;
+            ViewModel.SavePlaylists();
+        }
+
+        private void DataGridPlaylist_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.PlaylistRowIndex = ViewModel.GetCurrentRowIndex(dataGridPlaylist, e.GetPosition);
+            if (ViewModel.PlaylistRowIndex < 0)
+                return;
+            dataGridPlaylist.SelectedIndex = ViewModel.PlaylistRowIndex;
+            if (!(dataGridPlaylist.Items[ViewModel.PlaylistRowIndex] is Media selectedMedia))
+                return;
+            if (DragDrop.DoDragDrop(dataGridPlaylist, selectedMedia, DragDropEffects.Move) != DragDropEffects.None)
+                dataGridPlaylist.SelectedItem = selectedMedia;
+        }
+
+        private void DataGridPlaylist_Drop(object sender, DragEventArgs e)
+        {
+            if (ViewModel.PlaylistRowIndex < 0)
+                return;
+            int index = ViewModel.GetCurrentRowIndex(dataGridPlaylist, e.GetPosition);
+            if (index < 0 || index == ViewModel.PlaylistRowIndex)
+                return;
+
+            Media changedMedia = ViewModel.SelectedPlaylist.Medias[ViewModel.PlaylistRowIndex];
+            ViewModel.SelectedPlaylist.Medias.RemoveAt(ViewModel.PlaylistRowIndex);
+            ViewModel.SelectedPlaylist.Medias.Insert(index, changedMedia);
+            ViewModel.SavePlaylists();
+        }
+
+        private void DataGridQueue_Drop(object sender, DragEventArgs e)
+        {
+            if (ViewModel.QueueRowIndex < 0)
+                return;
+            int index = ViewModel.GetCurrentRowIndex(dataGridQueue, e.GetPosition);
+            if (index < 0 || index == ViewModel.QueueRowIndex)
+                return;
+
+            Media changedMedia = ViewModel.Queue[ViewModel.QueueRowIndex];
+            ViewModel.Queue.RemoveAt(ViewModel.QueueRowIndex);
+            ViewModel.Queue.Insert(index, changedMedia);
+        }
+
+        private void DataGridQueue_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void DataGridQueue_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.QueueRowIndex = ViewModel.GetCurrentRowIndex(dataGridQueue, e.GetPosition);
+            if (ViewModel.QueueRowIndex < 0)
+                return;
+            if (!(dataGridQueue.Items[ViewModel.QueueRowIndex] is Media selectedMedia))
+                return;
+            DragDrop.DoDragDrop(dataGridQueue, selectedMedia, DragDropEffects.Move);
+        }
+
+        private void FlyoutPlaylists_IsOpenChanged(object sender, RoutedEventArgs e)
+        {
+            if (!flyoutPlaylists.IsOpen)
+                dataGridPlaylists.SelectedItem = null;
         }
     }
 }
