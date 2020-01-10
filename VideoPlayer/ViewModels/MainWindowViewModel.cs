@@ -10,10 +10,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
+using Application = System.Windows.Application;
 
 namespace VideoPlayer.ViewModels
 {
@@ -122,20 +124,14 @@ namespace VideoPlayer.ViewModels
 
             ChangeTheme(mainWindow.comboBoxTheme.SelectedItem.ToString(), mainWindow.comboBoxColor.SelectedItem as ColorScheme).ConfigureAwait(false);
 
-            Hotkey nextTrackHotkey = new Hotkey(Key.MediaNextTrack, KeyModifier.None, OnHotkeyHandler, true);
-            Hotkey previousTrackHotkey = new Hotkey(Key.MediaPreviousTrack, KeyModifier.None, OnHotkeyHandler, true);
-            Hotkey mediaPlayPauseHotkey = new Hotkey(Key.MediaPlayPause, KeyModifier.None, OnHotkeyHandler, true);
-            Hotkey spacePlayPauseHotkey = new Hotkey(Key.Space, KeyModifier.None, OnHotkeyHandler, true);
-            Hotkey skipForwardHotkey = new Hotkey(Key.Right, KeyModifier.None, OnHotkeyHandler, true);
-            Hotkey skipBackwardsHotkey = new Hotkey(Key.Left, KeyModifier.None, OnHotkeyHandler, true);
+            Hotkey nextTrackHotkey = new Hotkey(Key.MediaNextTrack, KeyModifier.None, OnHotkeyHandler);
+            Hotkey previousTrackHotkey = new Hotkey(Key.MediaPreviousTrack, KeyModifier.None, OnHotkeyHandler);
+            Hotkey mediaPlayPauseHotkey = new Hotkey(Key.MediaPlayPause, KeyModifier.None, OnHotkeyHandler);
             Hotkeys = new List<Hotkey>
             {
                 nextTrackHotkey,
                 previousTrackHotkey,
-                mediaPlayPauseHotkey,
-                spacePlayPauseHotkey,
-                skipForwardHotkey,
-                skipBackwardsHotkey
+                mediaPlayPauseHotkey
             };
         }
 
@@ -172,7 +168,7 @@ namespace VideoPlayer.ViewModels
             await SavePlaylists();
         }
 
-        private async void OnHotkeyHandler(Hotkey hotkey)
+        public async void OnHotkeyHandler(Hotkey hotkey)
         {
             if (hotkey.Key == Key.MediaNextTrack)
                 mainWindow.dataGridQueue.SelectedIndex++;
@@ -180,12 +176,6 @@ namespace VideoPlayer.ViewModels
                 await UserControl.ViewModel.PreviousTrack();
             else if (hotkey.Key == Key.MediaPlayPause)
                 await UserControl.ViewModel.PlayPause();
-            else if (hotkey.Key == Key.Space && mainWindow.IsActive)
-                await UserControl.ViewModel.PlayPause();
-            else if (hotkey.Key == Key.Right && mainWindow.IsActive)
-                await UserControl.ViewModel.SkipForward(5);
-            else if (hotkey.Key == Key.Left && mainWindow.IsActive)
-                await UserControl.ViewModel.SkipBackwards(5);
         }
 
         public async Task ChangePlaylist()

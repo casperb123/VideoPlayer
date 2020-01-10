@@ -12,7 +12,7 @@ namespace VideoPlayer.Entities
         private static Dictionary<int, Hotkey> _dictHotKeyToCalBackProc;
 
         [DllImport("user32.dll")]
-        private static extern bool RegisterHotKey(IntPtr hWnd, int id, UInt32 fsModifiers, UInt32 vlc);
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vlc);
 
         [DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);

@@ -31,7 +31,7 @@ namespace VideoPlayer.UserControls
             DataContext = ViewModel;
         }
 
-        private async void ButtonPlayPause_Click(object sender, RoutedEventArgs e)
+        public async void ButtonPlayPause_Click(object sender, RoutedEventArgs e)
         {
             await ViewModel.PlayPause();
             Focus();
