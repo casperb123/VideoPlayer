@@ -314,11 +314,7 @@ namespace VideoPlayer.UserControls
             if (!ViewModel.IsFullscreen)
                 return;
 
-            gridControls.IsEnabled = true;
-            gridControls.Visibility = Visibility.Visible;
-            ViewModel.ControlsTimer.Stop();
-            ViewModel.ControlsTimer.Start();
-            Mouse.OverrideCursor = Cursors.Arrow;
+            ViewModel.ShowControlsInFullscreen();
         }
 
         private void ButtonFullscreen_Click(object sender, RoutedEventArgs e)

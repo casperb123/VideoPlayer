@@ -59,13 +59,7 @@ namespace VideoPlayer.ViewModels
             {
                 Interval = TimeSpan.FromSeconds(1.5)
             };
-            ControlsTimer.Tick += (s, e) =>
-            {
-                userControl.gridControls.IsEnabled = false;
-                userControl.gridControls.Visibility = Visibility.Hidden;
-                ControlsTimer.Stop();
-                Mouse.OverrideCursor = Cursors.None;
-            };
+            ControlsTimer.Tick += ControlsTimer_Tick;
         }
 
         private async void ProgressTimer_Tick(object sender, EventArgs e)
@@ -89,6 +83,18 @@ namespace VideoPlayer.ViewModels
                 if (!Seeking)
                     userControl.sliderProgress.Value = userControl.player.Position.TotalSeconds;
             }
+        }
+
+        private void ControlsTimer_Tick(object sender, EventArgs e)
+        {
+            if (userControl.player.IsPlaying)
+            {
+                userControl.gridControls.IsEnabled = false;
+                userControl.gridControls.Visibility = Visibility.Hidden;
+                Mouse.OverrideCursor = Cursors.None;
+            }
+
+            ControlsTimer.Stop();
         }
 
         public async Task Seek(TimeSpan timeSpan)
@@ -432,6 +438,11 @@ namespace VideoPlayer.ViewModels
 
         public async Task SkipForward(int value)
         {
+            if (IsFullscreen)
+            {
+                ShowControlsInFullscreen();
+            }
+
             int pos = Convert.ToInt32(userControl.sliderProgress.Value + value);
             await userControl.player.Seek(new TimeSpan(0, 0, 0, pos, 0));
             userControl.sliderProgress.Value = userControl.player.Position.TotalSeconds;
@@ -439,6 +450,11 @@ namespace VideoPlayer.ViewModels
 
         public async Task SkipBackwards(int value)
         {
+            if (IsFullscreen)
+            {
+                ShowControlsInFullscreen();
+            }
+
             int pos = Convert.ToInt32(userControl.sliderProgress.Value - value);
             await userControl.player.Seek(new TimeSpan(0, 0, 0, pos, 0));
             userControl.sliderProgress.Value = userControl.player.Position.TotalSeconds;
@@ -448,6 +464,11 @@ namespace VideoPlayer.ViewModels
         {
             if (userControl.player.IsOpen)
             {
+                if (IsFullscreen)
+                {
+                    ShowControlsInFullscreen();
+                }
+
                 if (userControl.player.IsPlaying)
                 {
                     await Pause();
@@ -501,6 +522,15 @@ namespace VideoPlayer.ViewModels
             userControl.gridControls.Opacity = 1;
             Mouse.OverrideCursor = null;
             userControl.iconFullscreen.Kind = PackIconKind.Fullscreen;
+        }
+
+        public void ShowControlsInFullscreen()
+        {
+            userControl.gridControls.IsEnabled = true;
+            userControl.gridControls.Visibility = Visibility.Visible;
+            ControlsTimer.Stop();
+            ControlsTimer.Start();
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
     }
 }
