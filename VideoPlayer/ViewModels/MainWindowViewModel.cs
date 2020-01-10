@@ -16,6 +16,7 @@ using System.Windows.Media;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
 using Application = System.Windows.Application;
+using MessageBox = System.Windows.MessageBox;
 
 namespace VideoPlayer.ViewModels
 {

@@ -438,6 +438,5 @@
         </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>
 
-    <UserControl x:Name="masterUserControl"
-                 Margin="0,0,0,10" />
+    <UserControl x:Name="masterUserControl" />
 </Controls:MetroWindow>

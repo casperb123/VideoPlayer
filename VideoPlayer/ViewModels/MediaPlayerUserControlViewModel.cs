@@ -10,6 +10,10 @@ using MaterialDesignThemes.Wpf;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Windows.Controls;
+using MahApps.Metro;
+using Theme = MahApps.Metro.Theme;
 
 namespace VideoPlayer.ViewModels
 {
@@ -18,6 +22,7 @@ namespace VideoPlayer.ViewModels
         private readonly MediaPlayerUserControl userControl;
         private double loopStart;
         private double loopEnd;
+        private Theme currentTheme;
 
         public readonly MainWindow MainWindow;
         public bool DarkTheme;
@@ -27,17 +32,40 @@ namespace VideoPlayer.ViewModels
         public bool LoopVideo;
         public bool LoopSpecificTime;
         public DispatcherTimer ProgressTimer;
-        
+        public bool IsFullscreen;
+        public DispatcherTimer DoubleClickTimer;
+        public DispatcherTimer ControlsTimer;
+
+        [DllImport("user32.dll")]
+        private static extern uint GetDoubleClickTime();
+
         public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl, MainWindow mainWindow)
         {
             userControl = mediaPlayerUserControl;
             MainWindow = mainWindow;
+            DoubleClickTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(GetDoubleClickTime())
+            };
+            DoubleClickTimer.Tick += (s, e) => DoubleClickTimer.Stop();
 
             ProgressTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromMilliseconds(300)
             };
             ProgressTimer.Tick += ProgressTimer_Tick;
+
+            ControlsTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1.5)
+            };
+            ControlsTimer.Tick += (s, e) =>
+            {
+                userControl.gridControls.IsEnabled = false;
+                userControl.gridControls.Visibility = Visibility.Hidden;
+                ControlsTimer.Stop();
+                Mouse.OverrideCursor = Cursors.None;
+            };
         }
 
         private async void ProgressTimer_Tick(object sender, EventArgs e)
@@ -429,6 +457,50 @@ namespace VideoPlayer.ViewModels
                     await Play();
                 }
             }
+        }
+
+        public void EnterFullscreen()
+        {
+            Theme theme = ThemeManager.DetectTheme(Application.Current);
+            if (theme.BaseColorScheme == "Light")
+            {
+                currentTheme = theme;
+                ThemeManager.ChangeTheme(Application.Current, "Dark", currentTheme.ColorScheme);
+            }
+
+            MainWindow.ShowTitleBar = false;
+            MainWindow.ShowCloseButton = false;
+            MainWindow.ShowMaxRestoreButton = false;
+            MainWindow.ShowMinButton = false;
+            MainWindow.WindowState = WindowState.Maximized;
+            userControl.gridMediaElementBackground.SetValue(Grid.RowSpanProperty, 3);
+            userControl.gridControls.Opacity = 0.7;
+            IsFullscreen = true;
+            ControlsTimer.Start();
+            userControl.iconFullscreen.Kind = PackIconKind.FullscreenExit;
+        }
+
+        public void ExitFullscreen()
+        {
+            if (currentTheme != null)
+            {
+                ThemeManager.ChangeTheme(Application.Current, currentTheme);
+                currentTheme = null;
+            }
+
+            IsFullscreen = false;
+            ControlsTimer.Stop();
+            MainWindow.ShowTitleBar = true;
+            MainWindow.ShowCloseButton = true;
+            MainWindow.ShowMaxRestoreButton = true;
+            MainWindow.ShowMinButton = true;
+            MainWindow.WindowState = WindowState.Normal;
+            userControl.gridMediaElementBackground.ClearValue(Grid.RowSpanProperty);
+            userControl.gridControls.IsEnabled = true;
+            userControl.gridControls.Visibility = Visibility.Visible;
+            userControl.gridControls.Opacity = 1;
+            Mouse.OverrideCursor = Cursors.Arrow;
+            userControl.iconFullscreen.Kind = PackIconKind.Fullscreen;
         }
     }
 }

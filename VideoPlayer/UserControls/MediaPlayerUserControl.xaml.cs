@@ -10,6 +10,7 @@ using VideoPlayer.Entities;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Threading;
 
 namespace VideoPlayer.UserControls
 {
@@ -246,19 +247,6 @@ namespace VideoPlayer.UserControls
             }
         }
 
-        private async void Player_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (player.Source is null || !player.IsOpen) return;
-            if (player.IsPlaying)
-            {
-                await ViewModel.Stop();
-            }
-            else
-            {
-                await ViewModel.Play();
-            }
-        }
-
         private void NumericPlaybackSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             if (!IsLoaded || !e.NewValue.HasValue) return;
@@ -298,6 +286,47 @@ namespace VideoPlayer.UserControls
         private void ButtonPlaylists_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.MainWindow.flyoutPlaylists.IsOpen = true;
+        }
+
+        private async void GridMediaElementBackground_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (!player.IsOpen)
+                return;
+
+            if (!ViewModel.DoubleClickTimer.IsEnabled)
+            {
+                ViewModel.DoubleClickTimer.Start();
+                await ViewModel.PlayPause();
+            }
+            else
+            {
+                if (ViewModel.IsFullscreen)
+                    ViewModel.ExitFullscreen();
+                else
+                    ViewModel.EnterFullscreen();
+
+                await ViewModel.PlayPause();
+            }
+        }
+
+        private void UserControl_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!ViewModel.IsFullscreen)
+                return;
+
+            gridControls.IsEnabled = true;
+            gridControls.Visibility = Visibility.Visible;
+            ViewModel.ControlsTimer.Stop();
+            ViewModel.ControlsTimer.Start();
+            Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        private void ButtonFullscreen_Click(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel.IsFullscreen)
+                ViewModel.ExitFullscreen();
+            else
+                ViewModel.EnterFullscreen();
         }
     }
 }

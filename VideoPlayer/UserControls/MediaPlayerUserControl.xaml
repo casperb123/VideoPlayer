@@ -11,235 +11,262 @@
              xmlns:entities="clr-namespace:VideoPlayer.Entities;assembly=VideoPlayer.Entities"
              mc:Ignorable="d"
              d:DesignHeight="535"
-             d:DesignWidth="980">
+             d:DesignWidth="980"
+             MouseMove="UserControl_MouseMove">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
-            <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
         <Grid x:Name="gridMediaElementBackground"
               AllowDrop="True"
               Background="Black"
-              Drop="MediaFile_Drop">
+              Drop="MediaFile_Drop"
+              Panel.ZIndex="0"
+              MouseLeftButtonUp="GridMediaElementBackground_MouseLeftButtonUp">
             <ffme:MediaElement x:Name="player"
                                LoadedBehavior="Manual"
                                UnloadedBehavior="Manual"
                                ScrubbingEnabled="True"
+                               Panel.ZIndex="1"
                                MediaEnded="Player_MediaEnded"
-                               MediaOpened="Player_MediaOpened"
-                               MouseLeftButtonUp="Player_MouseLeftButtonUp" />
+                               MediaOpened="Player_MediaOpened" />
         </Grid>
 
-        <Button x:Name="buttonResetLoop"
-                Grid.Row="2"
-                BorderThickness="0"
-                IsEnabled="False"
-                Width="40"
-                Height="40"
-                Margin="10,10,0,0"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Left"
-                ToolTip="Reset loop"
-                Focusable="False"
-                Click="ButtonResetLoop_Click">
-            <materialDesign:PackIcon x:Name="iconResetLoop"
-                                     Kind="RemoveCircle"
-                                     Width="30"
-                                     Height="30"
-                                     HorizontalAlignment="Center"
-                                     VerticalAlignment="Center" />
-        </Button>
-
-        <StackPanel Grid.Row="2"
-                    Orientation="Horizontal"
-                    Margin="0,10,0,0"
-                    HorizontalAlignment="Center">
-            <Button x:Name="buttonStop"
-                    BorderThickness="0"
-                    IsEnabled="False"
-                    Width="40"
-                    Height="40"
-                    Margin="5,0"
-                    ToolTip="Stop the player"
-                    Focusable="False"
-                    Click="ButtonStop_Click">
-                <materialDesign:PackIcon x:Name="iconStop"
-                                         Kind="Stop"
-                                         Width="40"
-                                         Height="40"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center" />
-            </Button>
-
-            <Button x:Name="buttonSkipBackwards"
-                    BorderThickness="0"
-                    IsEnabled="False"
-                    Width="40"
-                    Height="40"
-                    Margin="5,0"
-                    ToolTip="Previous track"
-                    Focusable="False"
-                    Click="ButtonSkipBackwards_Click">
-                <materialDesign:PackIcon x:Name="iconSkipBackwards"
-                                         Kind="SkipBackward"
-                                         Width="35"
-                                         Height="35"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center" />
-            </Button>
-
-            <Button x:Name="buttonPlayPause"
-                    BorderThickness="0"
-                    IsEnabled="False"
-                    Width="40"
-                    Height="40"
-                    Margin="5,0"
-                    ToolTip="Play/Pause the player"
-                    Focusable="False"
-                    Click="ButtonPlayPause_Click">
-                <materialDesign:PackIcon x:Name="iconPlayPause"
-                                         Kind="Play"
-                                         Width="35"
-                                         Height="35"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center" />
-            </Button>
-
-            <Button x:Name="buttonSkipForward"
-                    BorderThickness="0"
-                    IsEnabled="False"
-                    Width="40"
-                    Height="40"
-                    Margin="5,0"
-                    ToolTip="Next track"
-                    Focusable="False"
-                    Click="ButtonSkipForward_Click">
-                <materialDesign:PackIcon x:Name="iconSkipForward"
-                                         Kind="SkipForward"
-                                         Width="35"
-                                         Height="35"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center" />
-            </Button>
-
-            <Button x:Name="buttonAddToQueue"
-                    BorderThickness="0"
-                    Width="40"
-                    Height="40"
-                    Margin="5,0"
-                    ToolTip="Open a media file"
-                    Focusable="False"
-                    Click="ButtonAddToQueue_Click">
-                <materialDesign:PackIcon x:Name="iconAddToQueue"
-                                         Kind="Queue"
-                                         Width="25"
-                                         Height="25"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center" />
-            </Button>
-        </StackPanel>
-
-        <StackPanel Orientation="Horizontal"
-                    Grid.Row="2"
-                    HorizontalAlignment="Right"
-                    Margin="0,10,0,0">
-            <Button x:Name="buttonQueue"
-                    HorizontalAlignment="Right"
-                    BorderThickness="0"
-                    Height="40"
-                    Margin="0,0,5,0"
-                    ToolTip="Open the queue"
-                    Focusable="False"
-                    Click="ButtonQueue_Click">
-                <materialDesign:PackIcon x:Name="iconQueue"
-                                         Kind="QueueMusic"
-                                         Width="30"
-                                         Height="30"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center" />
-            </Button>
-            <Button x:Name="buttonPlaylists"
-                    BorderThickness="0"
-                    Height="40"
-                    Width="40"
-                    Margin="5,0"
-                    ToolTip="Open the playlists"
-                    Focusable="False"
-                    Click="ButtonPlaylists_Click">
-                <materialDesign:PackIcon x:Name="iconPlaylists"
-                                         Kind="PlaylistPlay"
-                                         Width="30"
-                                         Height="30"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center" />
-            </Button>
-            <Button x:Name="buttonMuteUnmute"
-                    BorderThickness="0"
-                    HorizontalAlignment="Right"
-                    Width="40"
-                    Height="40"
-                    Margin="5,0,10,0"
-                    ToolTip="Mute/Unmute the player"
-                    Focusable="False"
-                    Click="ButtonMuteUnmute_Click">
-                <materialDesign:PackIcon x:Name="iconVolume"
-                                         Kind="VolumeHigh"
-                                         Width="30"
-                                         Height="30"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center" />
-            </Button>
-        </StackPanel>
-
-        <Grid Grid.Row="1"
-              Margin="10,5,10,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="180" />
-            </Grid.ColumnDefinitions>
+        <Grid x:Name="gridControls"
+              Grid.Row="1"
+              Background="{DynamicResource MahApps.Brushes.Window.Background}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="20" />
-                <RowDefinition Height="1*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock x:Name="textBlockDuration"
-                       Text="0:00 / 0:00"
-                       VerticalAlignment="Center" />
-            <entities:CustomSlider x:Name="sliderProgress"
-                                   Style="{StaticResource MahApps.Styles.Slider}"
-                                   Grid.Column="0"
-                                   Grid.Row="1"
-                                   IsMoveToPointEnabled="True"
-                                   IsSelectionRangeEnabled="True"
-                                   Margin="0,0,10,0"
-                                   TickPlacement="BottomRight"
-                                   IsEnabled="False"
-                                   Focusable="False"
-                                   ValueChanged="SliderProgress_ValueChanged"
-                                   PreviewMouseLeftButtonDown="SliderProgress_PreviewMouseLeftButtonDown"
-                                   PreviewMouseLeftButtonUp="SliderProgress_PreviewMouseLeftButtonUp"
-                                   PreviewMouseRightButtonUp="SliderProgress_PreviewMouseRightButtonUp" />
+            <StackPanel Grid.Row="1"
+                        Orientation="Horizontal"
+                        Margin="10,10,0,10"
+                        HorizontalAlignment="Left">
+                <Button x:Name="buttonResetLoop"
+                        BorderThickness="0"
+                        IsEnabled="False"
+                        Width="40"
+                        Height="40"
+                        ToolTip="Reset loop"
+                        Focusable="False"
+                        Margin="0,0,5,0"
+                        Click="ButtonResetLoop_Click">
+                    <materialDesign:PackIcon x:Name="iconResetLoop"
+                                             Kind="RemoveCircle"
+                                             Width="30"
+                                             Height="30"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center" />
+                </Button>
+                <Button x:Name="buttonFullscreen"
+                        BorderThickness="0"
+                        Width="40"
+                        Height="40"
+                        ToolTip="Enter/exit fullscreen"
+                        Focusable="False"
+                        Margin="5,0,0,0"
+                        Click="ButtonFullscreen_Click">
+                    <materialDesign:PackIcon x:Name="iconFullscreen"
+                                             Kind="Fullscreen"
+                                             Width="35"
+                                             Height="35"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center" />
+                </Button>
+            </StackPanel>
 
-            <TextBlock Text="Volume"
-                       TextAlignment="Center"
-                       Grid.Column="1"
-                       VerticalAlignment="Center" />
-            <entities:CustomSlider x:Name="sliderVolume"
-                                   Style="{StaticResource MahApps.Styles.Slider}"
-                                   Grid.Column="1"
-                                   Grid.Row="1"
-                                   Minimum="0"
-                                   Maximum="1"
-                                   Value="1"
-                                   IsMoveToPointEnabled="True"
-                                   TickPlacement="BottomRight"
-                                   TickFrequency=".04"
-                                   Focusable="False"
-                                   PreviewMouseLeftButtonDown="SliderVolume_PreviewMouseLeftButtonDown"
-                                   PreviewMouseLeftButtonUp="SliderVolume_PreviewMouseLeftButtonUp"
-                                   ValueChanged="SliderVolume_ValueChanged" />
+            <StackPanel Grid.Row="1"
+                        Orientation="Horizontal"
+                        Margin="0,10,0,10"
+                        HorizontalAlignment="Center">
+                <Button x:Name="buttonStop"
+                        BorderThickness="0"
+                        IsEnabled="False"
+                        Width="40"
+                        Height="40"
+                        Margin="5,0"
+                        ToolTip="Stop the player"
+                        Focusable="False"
+                        Click="ButtonStop_Click">
+                    <materialDesign:PackIcon x:Name="iconStop"
+                                             Kind="Stop"
+                                             Width="40"
+                                             Height="40"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center" />
+                </Button>
+
+                <Button x:Name="buttonSkipBackwards"
+                        BorderThickness="0"
+                        IsEnabled="False"
+                        Width="40"
+                        Height="40"
+                        Margin="5,0"
+                        ToolTip="Previous track"
+                        Focusable="False"
+                        Click="ButtonSkipBackwards_Click">
+                    <materialDesign:PackIcon x:Name="iconSkipBackwards"
+                                             Kind="SkipBackward"
+                                             Width="35"
+                                             Height="35"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center" />
+                </Button>
+
+                <Button x:Name="buttonPlayPause"
+                        BorderThickness="0"
+                        IsEnabled="False"
+                        Width="40"
+                        Height="40"
+                        Margin="5,0"
+                        ToolTip="Play/Pause the player"
+                        Focusable="False"
+                        Click="ButtonPlayPause_Click">
+                    <materialDesign:PackIcon x:Name="iconPlayPause"
+                                             Kind="Play"
+                                             Width="35"
+                                             Height="35"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center" />
+                </Button>
+
+                <Button x:Name="buttonSkipForward"
+                        BorderThickness="0"
+                        IsEnabled="False"
+                        Width="40"
+                        Height="40"
+                        Margin="5,0"
+                        ToolTip="Next track"
+                        Focusable="False"
+                        Click="ButtonSkipForward_Click">
+                    <materialDesign:PackIcon x:Name="iconSkipForward"
+                                             Kind="SkipForward"
+                                             Width="35"
+                                             Height="35"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center" />
+                </Button>
+
+                <Button x:Name="buttonAddToQueue"
+                        BorderThickness="0"
+                        Width="40"
+                        Height="40"
+                        Margin="5,0"
+                        ToolTip="Open a media file"
+                        Focusable="False"
+                        Click="ButtonAddToQueue_Click">
+                    <materialDesign:PackIcon x:Name="iconAddToQueue"
+                                             Kind="Queue"
+                                             Width="25"
+                                             Height="25"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center" />
+                </Button>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                        Grid.Row="1"
+                        HorizontalAlignment="Right"
+                        Margin="0,10,0,10">
+                <Button x:Name="buttonQueue"
+                        HorizontalAlignment="Right"
+                        BorderThickness="0"
+                        Height="40"
+                        Margin="0,0,5,0"
+                        ToolTip="Open the queue"
+                        Focusable="False"
+                        Click="ButtonQueue_Click">
+                    <materialDesign:PackIcon x:Name="iconQueue"
+                                             Kind="QueueMusic"
+                                             Width="30"
+                                             Height="30"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center" />
+                </Button>
+                <Button x:Name="buttonPlaylists"
+                        BorderThickness="0"
+                        Height="40"
+                        Width="40"
+                        Margin="5,0"
+                        ToolTip="Open the playlists"
+                        Focusable="False"
+                        Click="ButtonPlaylists_Click">
+                    <materialDesign:PackIcon x:Name="iconPlaylists"
+                                             Kind="PlaylistPlay"
+                                             Width="30"
+                                             Height="30"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center" />
+                </Button>
+                <Button x:Name="buttonMuteUnmute"
+                        BorderThickness="0"
+                        HorizontalAlignment="Right"
+                        Width="40"
+                        Height="40"
+                        Margin="5,0,10,0"
+                        ToolTip="Mute/Unmute the player"
+                        Focusable="False"
+                        Click="ButtonMuteUnmute_Click">
+                    <materialDesign:PackIcon x:Name="iconVolume"
+                                             Kind="VolumeHigh"
+                                             Width="30"
+                                             Height="30"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center" />
+                </Button>
+            </StackPanel>
+
+            <Grid Margin="10,5,10,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="180" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+
+                <TextBlock x:Name="textBlockDuration"
+                           Text="0:00 / 0:00"
+                           VerticalAlignment="Center" />
+                <entities:CustomSlider x:Name="sliderProgress"
+                                       Style="{StaticResource MahApps.Styles.Slider}"
+                                       Grid.Column="0"
+                                       Grid.Row="1"
+                                       IsMoveToPointEnabled="True"
+                                       IsSelectionRangeEnabled="True"
+                                       Margin="0,0,10,0"
+                                       TickPlacement="BottomRight"
+                                       IsEnabled="False"
+                                       Focusable="False"
+                                       ValueChanged="SliderProgress_ValueChanged"
+                                       PreviewMouseLeftButtonDown="SliderProgress_PreviewMouseLeftButtonDown"
+                                       PreviewMouseLeftButtonUp="SliderProgress_PreviewMouseLeftButtonUp"
+                                       PreviewMouseRightButtonUp="SliderProgress_PreviewMouseRightButtonUp" />
+
+                <TextBlock Text="Volume"
+                           TextAlignment="Center"
+                           Grid.Column="1"
+                           VerticalAlignment="Center" />
+                <entities:CustomSlider x:Name="sliderVolume"
+                                       Style="{StaticResource MahApps.Styles.Slider}"
+                                       Grid.Column="1"
+                                       Grid.Row="1"
+                                       Minimum="0"
+                                       Maximum="1"
+                                       Value="1"
+                                       IsMoveToPointEnabled="True"
+                                       TickPlacement="BottomRight"
+                                       TickFrequency=".04"
+                                       Focusable="False"
+                                       PreviewMouseLeftButtonDown="SliderVolume_PreviewMouseLeftButtonDown"
+                                       PreviewMouseLeftButtonUp="SliderVolume_PreviewMouseLeftButtonUp"
+                                       ValueChanged="SliderVolume_ValueChanged" />
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>
