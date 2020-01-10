@@ -23,6 +23,7 @@ namespace VideoPlayer.ViewModels
         private double loopStart;
         private double loopEnd;
         private Theme currentTheme;
+        private WindowState oldState;
 
         public readonly MainWindow MainWindow;
         public bool DarkTheme;
@@ -493,8 +494,9 @@ namespace VideoPlayer.ViewModels
             MainWindow.ShowCloseButton = false;
             MainWindow.ShowMaxRestoreButton = false;
             MainWindow.ShowMinButton = false;
-            MainWindow.WindowState = WindowState.Normal;
-            MainWindow.WindowState = WindowState.Maximized;
+            oldState = MainWindow.WindowState;
+            if (oldState != WindowState.Maximized)
+                MainWindow.WindowState = WindowState.Maximized;
             userControl.gridMediaElementBackground.SetValue(Grid.RowSpanProperty, 3);
             userControl.gridControls.Opacity = 0.7;
             IsFullscreen = true;
@@ -516,7 +518,7 @@ namespace VideoPlayer.ViewModels
             MainWindow.ShowCloseButton = true;
             MainWindow.ShowMaxRestoreButton = true;
             MainWindow.ShowMinButton = true;
-            MainWindow.WindowState = WindowState.Normal;
+            MainWindow.WindowState = oldState;
             userControl.gridMediaElementBackground.ClearValue(Grid.RowSpanProperty);
             userControl.gridControls.IsEnabled = true;
             userControl.gridControls.Visibility = Visibility.Visible;
