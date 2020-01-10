@@ -12,27 +12,6 @@
              mc:Ignorable="d"
              d:DesignHeight="535"
              d:DesignWidth="980">
-    <UserControl.CommandBindings>
-        <CommandBinding Command="{x:Static local:MediaPlayerUserControl.PlayPauseCmd}"
-                        CanExecute="CommandCanExecute"
-                        Executed="PlayPauseExecuted" />
-        <CommandBinding Command="{x:Static local:MediaPlayerUserControl.SkipForwardCmd}"
-                        CanExecute="CommandCanExecute"
-                        Executed="SkipForwardExecuted" />
-        <CommandBinding Command="{x:Static local:MediaPlayerUserControl.SkipBackwardCmd}"
-                        CanExecute="CommandCanExecute"
-                        Executed="SkipBackwardExecuted" />
-    </UserControl.CommandBindings>
-
-    <UserControl.InputBindings>
-        <KeyBinding Command="{x:Static local:MediaPlayerUserControl.PlayPauseCmd}"
-                    Key="Space" />
-        <KeyBinding Command="{x:Static local:MediaPlayerUserControl.SkipForwardCmd}"
-                    Key="Right" />
-        <KeyBinding Command="{x:Static local:MediaPlayerUserControl.SkipBackwardCmd}"
-                    Key="Left" />
-    </UserControl.InputBindings>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />

@@ -20,20 +20,8 @@ namespace VideoPlayer.UserControls
     {
         public readonly MediaPlayerUserControlViewModel ViewModel;
 
-        public static RoutedUICommand PlayPauseCmd;
-        public static RoutedUICommand SkipForwardCmd;
-        public static RoutedUICommand SkipBackwardCmd;
-        public static RoutedUICommand NextTrackCmd;
-        public static RoutedUICommand PreviousTrackCmd;
-
         public MediaPlayerUserControl(MainWindow mainWindow)
         {
-            PlayPauseCmd = new RoutedUICommand("Toggle playing", "PlayPause", typeof(MediaPlayerUserControl));
-            SkipForwardCmd = new RoutedUICommand("Skip forward", "SkipForward", typeof(MediaPlayerUserControl));
-            SkipBackwardCmd = new RoutedUICommand("Skip backwards", "SkipBackard", typeof(MediaPlayerUserControl));
-            NextTrackCmd = new RoutedUICommand("Next track", "NextTrack", typeof(MediaPlayerUserControl));
-            PreviousTrackCmd = new RoutedUICommand("Previous track", "PreviousTrack", typeof(MediaPlayerUserControl));
-
             InitializeComponent();
 
             sliderProgress.AddHandler(PreviewMouseLeftButtonDownEvent, new MouseButtonEventHandler(SliderProgress_PreviewMouseLeftButtonDown), true);
@@ -43,54 +31,9 @@ namespace VideoPlayer.UserControls
             DataContext = ViewModel;
         }
 
-        private void CommandCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private async void ButtonPlayPause_Click(object sender, RoutedEventArgs e)
         {
-            e.CanExecute = true;
-            e.Handled = true;
-        }
-
-        private async void PlayPauseExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (player.Source != null)
-            {
-                if (player.IsPlaying)
-                {
-                    await ViewModel.Pause();
-                }
-                else
-                {
-                    await ViewModel.Play();
-                }
-            }
-        }
-
-        private void SkipForwardExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            int pos = Convert.ToInt32(sliderProgress.Value + 5);
-            player.Position = new TimeSpan(0, 0, 0, pos, 0);
-            sliderProgress.Value = player.Position.TotalSeconds;
-        }
-
-        private void SkipBackwardExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            int pos = Convert.ToInt32(sliderProgress.Value - 5);
-            player.Position = new TimeSpan(0, 0, 0, pos, 0);
-            sliderProgress.Value = player.Position.TotalSeconds;
-        }
-
-        private void NextTrackExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            ViewModel.MainWindow.dataGridQueue.SelectedIndex++;
-        }
-
-        private async void PreviousTrackExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            await ViewModel.PreviousTrack();
-        }
-
-        private void ButtonPlayPause_Click(object sender, RoutedEventArgs e)
-        {
-            PlayPauseCmd.Execute(null, sender as Button);
+            await ViewModel.PlayPause();
             Focus();
         }
 

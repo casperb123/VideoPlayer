@@ -124,12 +124,18 @@ namespace VideoPlayer.ViewModels
 
             Hotkey nextTrackHotkey = new Hotkey(Key.MediaNextTrack, KeyModifier.None, OnHotkeyHandler, true);
             Hotkey previousTrackHotkey = new Hotkey(Key.MediaPreviousTrack, KeyModifier.None, OnHotkeyHandler, true);
-            Hotkey playPauseHotkey = new Hotkey(Key.MediaPlayPause, KeyModifier.None, OnHotkeyHandler, true);
+            Hotkey mediaPlayPauseHotkey = new Hotkey(Key.MediaPlayPause, KeyModifier.None, OnHotkeyHandler, true);
+            Hotkey spacePlayPauseHotkey = new Hotkey(Key.Space, KeyModifier.None, OnHotkeyHandler, true);
+            Hotkey skipForwardHotkey = new Hotkey(Key.Right, KeyModifier.None, OnHotkeyHandler, true);
+            Hotkey skipBackwardsHotkey = new Hotkey(Key.Left, KeyModifier.None, OnHotkeyHandler, true);
             Hotkeys = new List<Hotkey>
             {
                 nextTrackHotkey,
                 previousTrackHotkey,
-                playPauseHotkey
+                mediaPlayPauseHotkey,
+                spacePlayPauseHotkey,
+                skipForwardHotkey,
+                skipBackwardsHotkey
             };
         }
 
@@ -169,17 +175,17 @@ namespace VideoPlayer.ViewModels
         private async void OnHotkeyHandler(Hotkey hotkey)
         {
             if (hotkey.Key == Key.MediaNextTrack)
-            {
                 mainWindow.dataGridQueue.SelectedIndex++;
-            }
             else if (hotkey.Key == Key.MediaPreviousTrack)
-            {
                 await UserControl.ViewModel.PreviousTrack();
-            }
             else if (hotkey.Key == Key.MediaPlayPause)
-            {
-                MediaPlayerUserControl.PlayPauseCmd.Execute(null, UserControl.buttonPlayPause);
-            }
+                await UserControl.ViewModel.PlayPause();
+            else if (hotkey.Key == Key.Space && mainWindow.IsActive)
+                await UserControl.ViewModel.PlayPause();
+            else if (hotkey.Key == Key.Right && mainWindow.IsActive)
+                await UserControl.ViewModel.SkipForward(5);
+            else if (hotkey.Key == Key.Left && mainWindow.IsActive)
+                await UserControl.ViewModel.SkipBackwards(5);
         }
 
         public async Task ChangePlaylist()

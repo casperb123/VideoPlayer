@@ -31,10 +31,7 @@ namespace VideoPlayer.ViewModels
         public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl, MainWindow mainWindow)
         {
             userControl = mediaPlayerUserControl;
-            this.MainWindow = mainWindow;
-
-            userControl.Focusable = true;
-            userControl.Loaded += (s, e) => Keyboard.Focus(userControl);
+            MainWindow = mainWindow;
 
             ProgressTimer = new DispatcherTimer
             {
@@ -45,7 +42,7 @@ namespace VideoPlayer.ViewModels
 
         private async void ProgressTimer_Tick(object sender, EventArgs e)
         {
-            if (userControl.player.IsPlaying)
+            if (userControl.player.IsOpen && userControl.player.IsPlaying)
             {
                 if (LoopSpecificTime && loopEnd > loopStart)
                 {
@@ -403,6 +400,35 @@ namespace VideoPlayer.ViewModels
             Playlist playlist = new Playlist(name, medias);
 
             return playlist;
+        }
+
+        public async Task SkipForward(int value)
+        {
+            int pos = Convert.ToInt32(userControl.sliderProgress.Value + value);
+            await userControl.player.Seek(new TimeSpan(0, 0, 0, pos, 0));
+            userControl.sliderProgress.Value = userControl.player.Position.TotalSeconds;
+        }
+
+        public async Task SkipBackwards(int value)
+        {
+            int pos = Convert.ToInt32(userControl.sliderProgress.Value - value);
+            await userControl.player.Seek(new TimeSpan(0, 0, 0, pos, 0));
+            userControl.sliderProgress.Value = userControl.player.Position.TotalSeconds;
+        }
+
+        public async Task PlayPause()
+        {
+            if (userControl.player.IsOpen)
+            {
+                if (userControl.player.IsPlaying)
+                {
+                    await Pause();
+                }
+                else
+                {
+                    await Play();
+                }
+            }
         }
     }
 }
