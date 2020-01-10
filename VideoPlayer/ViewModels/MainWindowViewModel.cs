@@ -136,32 +136,6 @@ namespace VideoPlayer.ViewModels
         public async Task ChangeTheme(string theme, ColorScheme color)
         {
             ThemeManager.ChangeTheme(Application.Current, theme, color.Name);
-
-            if (theme == "Dark")
-            {
-                UserControl.buttonResetLoop.BorderThickness = new Thickness(0);
-                UserControl.buttonStop.BorderThickness = new Thickness(0);
-                UserControl.buttonSkipBackwards.BorderThickness = new Thickness(0);
-                UserControl.buttonPlayPause.BorderThickness = new Thickness(0);
-                UserControl.buttonSkipForward.BorderThickness = new Thickness(0);
-                UserControl.buttonAddToQueue.BorderThickness = new Thickness(0);
-                UserControl.buttonQueue.BorderThickness = new Thickness(0);
-                UserControl.buttonPlaylists.BorderThickness = new Thickness(0);
-                UserControl.buttonMuteUnmute.BorderThickness = new Thickness(0);
-            }
-            else
-            {
-                UserControl.buttonResetLoop.BorderThickness = new Thickness(2);
-                UserControl.buttonStop.BorderThickness = new Thickness(2);
-                UserControl.buttonSkipBackwards.BorderThickness = new Thickness(2);
-                UserControl.buttonPlayPause.BorderThickness = new Thickness(2);
-                UserControl.buttonSkipForward.BorderThickness = new Thickness(2);
-                UserControl.buttonAddToQueue.BorderThickness = new Thickness(2);
-                UserControl.buttonQueue.BorderThickness = new Thickness(2);
-                UserControl.buttonPlaylists.BorderThickness = new Thickness(2);
-                UserControl.buttonMuteUnmute.BorderThickness = new Thickness(2);
-            }
-
             await GlobalSettings.Settings.Save();
         }
 
