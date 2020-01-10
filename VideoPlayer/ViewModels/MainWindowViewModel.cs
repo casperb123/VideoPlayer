@@ -186,16 +186,10 @@ namespace VideoPlayer.ViewModels
             await AddMediasToQueue(SelectedPlaylist.Medias);
         }
 
-        public void RemovePlaylist()
+        public async Task RemovePlaylist()
         {
-            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
-            string playlistsPath = $@"{runningPath}\Playlists";
-            string file = $@"{playlistsPath}\{SelectedPlaylist.Name}.playlist";
-
             Playlists.Remove(SelectedPlaylist);
-            SelectedPlaylist = null;
-            if (File.Exists(file))
-                File.Delete(file);
+            await SavePlaylists();
         }
 
         public async Task<ICollection<Playlist>> GetPlaylists()

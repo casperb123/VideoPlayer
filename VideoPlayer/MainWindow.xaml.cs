@@ -250,7 +250,7 @@ namespace VideoPlayer
         {
             MessageDialogResult result = await this.ShowMessageAsync("Delete playlist", $"Are you sure that you want to delete the playlist '{ViewModel.SelectedPlaylist.Name}'?", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
-                ViewModel.RemovePlaylist();
+                await ViewModel.RemovePlaylist();
         }
 
         private void MenuItemPlaylistsEdit_Click(object sender, RoutedEventArgs e)
