@@ -42,6 +42,7 @@
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Left"
                 ToolTip="Reset loop"
+                Focusable="False"
                 Click="ButtonResetLoop_Click">
             <materialDesign:PackIcon x:Name="iconResetLoop"
                                      Kind="RemoveCircle"
@@ -62,6 +63,7 @@
                     Height="40"
                     Margin="5,0"
                     ToolTip="Stop the player"
+                    Focusable="False"
                     Click="ButtonStop_Click">
                 <materialDesign:PackIcon x:Name="iconStop"
                                          Kind="Stop"
@@ -78,6 +80,7 @@
                     Height="40"
                     Margin="5,0"
                     ToolTip="Previous track"
+                    Focusable="False"
                     Click="ButtonSkipBackwards_Click">
                 <materialDesign:PackIcon x:Name="iconSkipBackwards"
                                          Kind="SkipBackward"
@@ -94,6 +97,7 @@
                     Height="40"
                     Margin="5,0"
                     ToolTip="Play/Pause the player"
+                    Focusable="False"
                     Click="ButtonPlayPause_Click">
                 <materialDesign:PackIcon x:Name="iconPlayPause"
                                          Kind="Play"
@@ -110,6 +114,7 @@
                     Height="40"
                     Margin="5,0"
                     ToolTip="Next track"
+                    Focusable="False"
                     Click="ButtonSkipForward_Click">
                 <materialDesign:PackIcon x:Name="iconSkipForward"
                                          Kind="SkipForward"
@@ -125,6 +130,7 @@
                     Height="40"
                     Margin="5,0"
                     ToolTip="Open a media file"
+                    Focusable="False"
                     Click="ButtonAddToQueue_Click">
                 <materialDesign:PackIcon x:Name="iconAddToQueue"
                                          Kind="Queue"
@@ -145,6 +151,7 @@
                     Height="40"
                     Margin="0,0,5,0"
                     ToolTip="Open the queue"
+                    Focusable="False"
                     Click="ButtonQueue_Click">
                 <materialDesign:PackIcon x:Name="iconQueue"
                                          Kind="QueueMusic"
@@ -159,6 +166,7 @@
                     Width="40"
                     Margin="5,0"
                     ToolTip="Open the playlists"
+                    Focusable="False"
                     Click="ButtonPlaylists_Click">
                 <materialDesign:PackIcon x:Name="iconPlaylists"
                                          Kind="PlaylistPlay"
@@ -174,6 +182,7 @@
                     Height="40"
                     Margin="5,0,10,0"
                     ToolTip="Mute/Unmute the player"
+                    Focusable="False"
                     Click="ButtonMuteUnmute_Click">
                 <materialDesign:PackIcon x:Name="iconVolume"
                                          Kind="VolumeHigh"
@@ -207,6 +216,7 @@
                                    Margin="0,0,10,0"
                                    TickPlacement="BottomRight"
                                    IsEnabled="False"
+                                   Focusable="False"
                                    ValueChanged="SliderProgress_ValueChanged"
                                    PreviewMouseLeftButtonDown="SliderProgress_PreviewMouseLeftButtonDown"
                                    PreviewMouseLeftButtonUp="SliderProgress_PreviewMouseLeftButtonUp"
@@ -226,6 +236,7 @@
                                    IsMoveToPointEnabled="True"
                                    TickPlacement="BottomRight"
                                    TickFrequency=".04"
+                                   Focusable="False"
                                    PreviewMouseLeftButtonDown="SliderVolume_PreviewMouseLeftButtonDown"
                                    PreviewMouseLeftButtonUp="SliderVolume_PreviewMouseLeftButtonUp"
                                    ValueChanged="SliderVolume_ValueChanged" />

@@ -14,16 +14,27 @@
                       Height="600"
                       MinHeight="600"
                       Closing="MetroWindow_Closing">
+    <Controls:MetroWindow.CommandBindings>
+        <CommandBinding Command="{x:Static local:MainWindow.PlayPauseCommand}"
+                        Executed="PlayPause_Executed" />
+        <CommandBinding Command="{x:Static local:MainWindow.SkipForwardCommand}"
+                        Executed="SkipForward_Executed" />
+        <CommandBinding Command="{x:Static local:MainWindow.SkipBackwardsCommand}"
+                        Executed="SkipBackwards_Executed" />
+    </Controls:MetroWindow.CommandBindings>
+    
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button x:Name="buttonWindowCredits"
                     Content="Credits"
                     Cursor="Hand"
+                    Focusable="False"
                     Click="ButtonWindowCredits_Click" />
 
             <Button x:Name="buttonWindowSettings"
                     Content="Settings"
                     Cursor="Hand"
+                    Focusable="False"
                     Click="ButtonWindowSettings_Click" />
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
@@ -45,12 +56,14 @@
                     <TextBlock>
                         Icon made by
                         <Hyperlink NavigateUri="https://www.flaticon.com/authors/bqlqn"
-                                   RequestNavigate="Hyperlink_RequestNavigate">
+                                   RequestNavigate="Hyperlink_RequestNavigate"
+                                   Focusable="False">
                             bqlqn
                         </Hyperlink>
                         from
                         <Hyperlink NavigateUri="https://www.flaticon.com"
-                                   RequestNavigate="Hyperlink_RequestNavigate">
+                                   RequestNavigate="Hyperlink_RequestNavigate"
+                                   Focusable="False">
                             www.flaticon.com
                         </Hyperlink>
                     </TextBlock>
@@ -128,6 +141,7 @@
                                                    Grid.Column="1"
                                                    IsEnabled="False"
                                                    Margin="5,0,0,0"
+                                                   Focusable="False"
                                                    Checked="ToggleSwitchLoopTime_Checked"
                                                    Unchecked="ToggleSwitchLoopTime_Unchecked" />
 
@@ -139,6 +153,7 @@
                                                    Grid.Row="3"
                                                    Grid.Column="1"
                                                    Margin="5,0,0,0"
+                                                   Focusable="False"
                                                    Checked="ToggleSwitchLoop_Checked"
                                                    Unchecked="ToggleSwitchLoop_Unchecked" />
                         </Grid>
@@ -163,6 +178,7 @@
                                       Margin="5,0,0,5"
                                       ItemsSource="{x:Static metro:ThemeManager.BaseColors}"
                                       SelectedIndex="{Binding Path=Theme, Source={x:Static entities:GlobalSettings.Settings}}"
+                                      Focusable="False"
                                       SelectionChanged="ComboBoxThemeSettings_SelectionChanged" />
 
                             <Label Content="Color:"
@@ -176,6 +192,7 @@
                                       ItemsSource="{x:Static metro:ThemeManager.ColorSchemes}"
                                       DisplayMemberPath="Name"
                                       SelectedIndex="{Binding Path=Color, Source={x:Static entities:GlobalSettings.Settings}}"
+                                      Focusable="False"
                                       SelectionChanged="ComboBoxThemeSettings_SelectionChanged" />
                         </Grid>
                     </GroupBox>
@@ -259,6 +276,7 @@
                             Content="Clear Queue"
                             Height="35"
                             Margin="10,10,5,10"
+                            Focusable="False"
                             Click="ButtonClearQueue_Click" />
                 </Grid>
             </Controls:Flyout>
@@ -327,10 +345,10 @@
                                           Click="MenuItemPlaylistsAddToQueue_Click" />
                                 <MenuItem x:Name="menuItemPlaylistsEdit"
                                           Header="Edit"
-                                          Click="MenuItemPlaylistsEdit_Click"/>
+                                          Click="MenuItemPlaylistsEdit_Click" />
                                 <MenuItem x:Name="menuItemPlaylistsRemove"
                                           Header="Remove"
-                                          Click="MenuItemPlaylistsRemove_Click"/>
+                                          Click="MenuItemPlaylistsRemove_Click" />
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                     </DataGrid>
@@ -340,7 +358,8 @@
                             Content="Create new playlist"
                             Height="35"
                             Margin="5,10,10,10"
-                            Click="ButtonCreateNewPlaylist_Click"/>
+                            Focusable="False"
+                            Click="ButtonCreateNewPlaylist_Click" />
                 </Grid>
             </Controls:Flyout>
 
@@ -349,7 +368,7 @@
                              Position="Right"
                              Theme="Adapt"
                              Width="300"
-                             IsPinned="False" 
+                             IsPinned="False"
                              IsOpenChanged="FlyoutPlaylist_IsOpenChanged">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -412,6 +431,7 @@
                             Content="Add new media(s)"
                             Height="35"
                             Margin="10,10,5,10"
+                            Focusable="False"
                             Click="ButtonAddMediasToPlaylist_Click" />
                 </Grid>
             </Controls:Flyout>

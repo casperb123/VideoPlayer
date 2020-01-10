@@ -28,6 +28,9 @@ namespace VideoPlayer
     public partial class MainWindow : MetroWindow
     {
         public MainWindowViewModel ViewModel;
+        public static RoutedCommand PlayPauseCommand = new RoutedCommand();
+        public static RoutedCommand SkipForwardCommand = new RoutedCommand();
+        public static RoutedCommand SkipBackwardsCommand = new RoutedCommand();
 
         private readonly string[] validExtensions = new string[]
         {
@@ -51,11 +54,13 @@ namespace VideoPlayer
             {
                 GlobalSettings.Settings = new Settings();
             }
+
             InitializeComponent();
             ViewModel = new MainWindowViewModel(this);
             DataContext = ViewModel;
             ViewModel.UserControl = new MediaPlayerUserControl(this);
             masterUserControl.Content = ViewModel.UserControl;
+            ViewModel.ChangeTheme(comboBoxTheme.SelectedItem.ToString(), comboBoxColor.SelectedItem as ColorScheme).ConfigureAwait(false);
 
             Task.Run(async () =>
             {
@@ -71,6 +76,25 @@ namespace VideoPlayer
                 filePaths.ForEach(x => medias.Add(new Media(x)));
                 ViewModel.AddMediasToQueue(medias).ConfigureAwait(false);
             }
+
+            PlayPauseCommand.InputGestures.Add(new KeyGesture(Key.Space));
+            SkipForwardCommand.InputGestures.Add(new KeyGesture(Key.Right));
+            SkipBackwardsCommand.InputGestures.Add(new KeyGesture(Key.Left));
+        }
+
+        private async void PlayPause_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            await ViewModel.UserControl.ViewModel.PlayPause();
+        }
+
+        private async void SkipForward_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            await ViewModel.UserControl.ViewModel.SkipForward(5);
+        }
+
+        private async void SkipBackwards_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            await ViewModel.UserControl.ViewModel.SkipBackwards(5);
         }
 
         private void ButtonWindowSettings_Click(object sender, RoutedEventArgs e)
