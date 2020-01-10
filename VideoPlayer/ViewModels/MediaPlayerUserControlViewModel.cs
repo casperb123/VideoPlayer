@@ -499,7 +499,7 @@ namespace VideoPlayer.ViewModels
             userControl.gridControls.IsEnabled = true;
             userControl.gridControls.Visibility = Visibility.Visible;
             userControl.gridControls.Opacity = 1;
-            Mouse.OverrideCursor = Cursors.Arrow;
+            Mouse.OverrideCursor = null;
             userControl.iconFullscreen.Kind = PackIconKind.Fullscreen;
         }
     }
