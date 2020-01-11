@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DeviceId;
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -61,9 +62,15 @@ namespace VideoPlayer.Entities
 
 		public Settings()
 		{
+			string deviceId = new DeviceIdBuilder()
+				.AddMachineName()
+				.AddProcessorId()
+				.AddMotherboardSerialNumber()
+				.ToString();
+
 			Color = 1;
 			Theme = 0;
-			Salt = Protect(Encoding.ASCII.GetBytes(Environment.UserName));
+			Salt = Protect(Encoding.ASCII.GetBytes(deviceId));
 		}
 
 		public async Task Save()
