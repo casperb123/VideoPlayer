@@ -8,78 +8,70 @@ using System.Threading.Tasks;
 
 namespace VideoPlayer.Entities
 {
-    public class Settings : Protected, INotifyPropertyChanged
+    public class Settings : INotifyPropertyChanged
     {
-		private int theme;
-		private int color;
-		private byte[] salt;
+        private int theme;
+        private int color;
 
-		public event PropertyChangedEventHandler PropertyChanged;
+        public static Settings CurrentSettings = GetSettings();
+        public event PropertyChangedEventHandler PropertyChanged;
 
-		public byte[] Salt
-		{
-			get => salt;
-			set
-			{
-				if (value is null || value.Length <= 0)
-					throw new NullReferenceException("The salt can't be null or empty");
+        public int Color
+        {
+            get => color;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException(nameof(Color), "The color can't be lower than 0");
 
-				salt = value;
-			}
-		}
+                color = value;
+                OnPropertyChanged(nameof(Color));
+            }
+        }
 
-		public int Color
-		{
-			get => color;
-			set
-			{
-				if (value < 0)
-					throw new ArgumentOutOfRangeException(nameof(Color), "The color can't be lower than 0");
+        public int Theme
+        {
+            get => theme;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException(nameof(Theme), "The theme can't be lower than 0");
 
-				color = value;
-				OnPropertyChanged(nameof(Color));
-			}
-		}
+                theme = value;
+                OnPropertyChanged(nameof(Theme));
+            }
+        }
 
-		public int Theme
-		{
-			get => theme;
-			set
-			{
-				if (value < 0)
-					throw new ArgumentOutOfRangeException(nameof(Theme), "The theme can't be lower than 0");
+        private void OnPropertyChanged(string prop)
+        {
+            if (prop != null)
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
 
-				theme = value;
-				OnPropertyChanged(nameof(Theme));
-			}
-		}
+        public Settings()
+        {
+            Color = 1;
+            Theme = 0;
+        }
 
-		private void OnPropertyChanged(string prop)
-		{
-			if (prop != null)
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-		}
+        public async Task Save()
+        {
+            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
+            string file = $@"{runningPath}\Settings.json";
+            string json = JsonConvert.SerializeObject(this, Formatting.Indented);
 
-		public Settings()
-		{
-			string deviceId = new DeviceIdBuilder()
-				.AddMachineName()
-				.AddProcessorId()
-				.AddMotherboardSerialNumber()
-				.ToString();
+            await File.WriteAllTextAsync(file, json);
+        }
 
-			Color = 1;
-			Theme = 0;
-			Salt = Protect(Encoding.ASCII.GetBytes(deviceId));
-		}
+        private static Settings GetSettings()
+        {
+            string runningPath = Environment.CurrentDirectory;
+            string settingsFile = $@"{runningPath}\Settings.json";
 
-		public async Task Save()
-		{
-			string runningPath = AppDomain.CurrentDomain.BaseDirectory;
-			string file = $@"{runningPath}\Settings.json";
-			string json = JsonConvert.SerializeObject(this, Formatting.Indented);
+            if (!File.Exists(settingsFile))
+                return new Settings();
 
-			await File.WriteAllTextAsync(file, json);
-		}
-	}
+            return JsonConvert.DeserializeObject<Settings>(File.ReadAllText(settingsFile));
+        }
+    }
 }

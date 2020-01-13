@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DeviceId;
+using Newtonsoft.Json;
+using System;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -11,10 +13,11 @@ namespace VideoPlayer.Entities
         {
             try
             {
-                if (GlobalSettings.Settings is null)
-                    return ProtectedData.Protect(data, Encoding.ASCII.GetBytes(Environment.UserName), DataProtectionScope.CurrentUser);
-                else
-                    return ProtectedData.Protect(data, GlobalSettings.Settings.Salt, DataProtectionScope.CurrentUser);
+                string deviceId = new DeviceIdBuilder()
+                        .AddSystemUUID()
+                        .ToString();
+
+                return ProtectedData.Protect(data, Encoding.ASCII.GetBytes(deviceId), DataProtectionScope.CurrentUser);
             }
             catch (CryptographicException)
             {
@@ -30,7 +33,11 @@ namespace VideoPlayer.Entities
         {
             try
             {
-                return ProtectedData.Unprotect(data, GlobalSettings.Settings.Salt, DataProtectionScope.CurrentUser);
+                string deviceId = new DeviceIdBuilder()
+                        .AddSystemUUID()
+                        .ToString();
+
+                return ProtectedData.Unprotect(data, Encoding.ASCII.GetBytes(deviceId), DataProtectionScope.CurrentUser);
             }
             catch (CryptographicException)
             {

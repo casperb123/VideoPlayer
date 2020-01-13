@@ -12,9 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Navigation;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
@@ -28,6 +26,8 @@ namespace VideoPlayer
     public partial class MainWindow : MetroWindow
     {
         public MainWindowViewModel ViewModel;
+        public Settings Settings;
+
         public static RoutedCommand PlayPauseCommand = new RoutedCommand();
         public static RoutedCommand SkipForwardCommand = new RoutedCommand();
         public static RoutedCommand SkipBackwardsCommand = new RoutedCommand();
@@ -46,20 +46,12 @@ namespace VideoPlayer
 
         public MainWindow()
         {
-            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
-            string file = $@"{runningPath}\Settings.json";
-            if (File.Exists(file))
-                GlobalSettings.Settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(file));
-            else
-            {
-                GlobalSettings.Settings = new Settings();
-            }
-
             InitializeComponent();
             ViewModel = new MainWindowViewModel(this);
             DataContext = ViewModel;
             ViewModel.UserControl = new MediaPlayerUserControl(this);
             masterUserControl.Content = ViewModel.UserControl;
+
             ViewModel.ChangeTheme(comboBoxTheme.SelectedItem.ToString(), comboBoxColor.SelectedItem as ColorScheme).ConfigureAwait(false);
 
             Task.Run(async () =>
@@ -132,8 +124,6 @@ namespace VideoPlayer
         {
             if (!IsLoaded) return;
 
-            int theme = GlobalSettings.Settings.Theme;
-            int color = GlobalSettings.Settings.Color;
             await ViewModel.ChangeTheme(comboBoxTheme.SelectedItem.ToString(), comboBoxColor.SelectedItem as ColorScheme);
         }
 
@@ -315,7 +305,6 @@ namespace VideoPlayer
             if (result == MessageDialogResult.Affirmative)
             {
                 ViewModel.SelectedPlaylist.Medias.Remove(ViewModel.SelectedPlaylistMedia);
-                ViewModel.SelectedPlaylist.UpdateMediaCount();
                 await ViewModel.SavePlaylists();
             }
         }

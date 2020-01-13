@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,13 +11,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
-using Application = System.Windows.Application;
-using MessageBox = System.Windows.MessageBox;
 
 namespace VideoPlayer.ViewModels
 {
@@ -137,7 +135,7 @@ namespace VideoPlayer.ViewModels
         public async Task ChangeTheme(string theme, ColorScheme color)
         {
             ThemeManager.ChangeTheme(Application.Current, theme, color.Name);
-            await GlobalSettings.Settings.Save();
+            await Settings.CurrentSettings.Save();
         }
 
         public async Task AddToQueue(Media media)
@@ -163,7 +161,7 @@ namespace VideoPlayer.ViewModels
         public async void AddMediasToPlaylist(ICollection<Media> medias)
         {
             medias.ToList().ForEach(x => SelectedPlaylist.Medias.Add(x));
-            SelectedPlaylist.UpdateMediaCount();
+            //SelectedPlaylist.UpdateMediaCount();
             await SavePlaylists();
         }
 
@@ -201,7 +199,9 @@ namespace VideoPlayer.ViewModels
 
             stream.Write(bytes, 0, bytes.Length);
             stream.Position = 0;
-            ICollection<Playlist> playlists = formatter.Deserialize(stream) as ICollection<Playlist>;
+            ICollection<Playlist> loadedPlaylists = formatter.Deserialize(stream) as ICollection<Playlist>;
+            List<Playlist> playlists = new List<Playlist>();
+            loadedPlaylists.ToList().ForEach(x => playlists.Add(new Playlist(x.Name, x.Medias)));
             return playlists;
         }
 

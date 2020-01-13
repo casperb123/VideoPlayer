@@ -5,8 +5,8 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:metro="clr-namespace:MahApps.Metro;assembly=MahApps.Metro"
-                      xmlns:entities="clr-namespace:VideoPlayer.Entities;assembly=VideoPlayer.Entities"
                       xmlns:local="clr-namespace:VideoPlayer"
+                      xmlns:entities="clr-namespace:VideoPlayer.Entities;assembly=VideoPlayer.Entities"
                       mc:Ignorable="d"
                       Title="Video Player"
                       Width="825"
@@ -177,7 +177,7 @@
                                       Grid.Column="1"
                                       Margin="5,0,0,5"
                                       ItemsSource="{x:Static metro:ThemeManager.BaseColors}"
-                                      SelectedIndex="{Binding Path=Theme, Source={x:Static entities:GlobalSettings.Settings}}"
+                                      SelectedIndex="{Binding Path=Theme, Source={x:Static entities:Settings.CurrentSettings}}"
                                       Focusable="False"
                                       SelectionChanged="ComboBoxThemeSettings_SelectionChanged" />
 
@@ -191,7 +191,7 @@
                                       Margin="5,5,0,0"
                                       ItemsSource="{x:Static metro:ThemeManager.ColorSchemes}"
                                       DisplayMemberPath="Name"
-                                      SelectedIndex="{Binding Path=Color, Source={x:Static entities:GlobalSettings.Settings}}"
+                                      SelectedIndex="{Binding Path=Color, Source={x:Static entities:Settings.CurrentSettings}}"
                                       Focusable="False"
                                       SelectionChanged="ComboBoxThemeSettings_SelectionChanged" />
                         </Grid>
@@ -214,7 +214,7 @@
                         <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
 
-                    <Label Content="{Binding Path=Playlist.NameAndMedias}"
+                    <Label Content="{Binding Path=SelectedPlaylist.NameAndMedias}"
                            HorizontalContentAlignment="Center"
                            FontSize="18" />
                     <DataGrid x:Name="dataGridQueue"
@@ -325,7 +325,7 @@
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
                             <DataGridTextColumn Header="Medias"
-                                                Binding="{Binding Path=MediaCount}"
+                                                Binding="{Binding Path=Medias.Count}"
                                                 Width="85"
                                                 IsReadOnly="True">
                                 <DataGridTextColumn.ElementStyle>
@@ -364,7 +364,7 @@
             </Controls:Flyout>
 
             <Controls:Flyout x:Name="flyoutPlaylist"
-                             Header="{Binding Path=SelectedPlaylist.NameAndCount}"
+                             Header="{Binding Path=SelectedPlaylist.NameAndCount, Mode=OneWay}"
                              Position="Right"
                              Theme="Adapt"
                              Width="300"

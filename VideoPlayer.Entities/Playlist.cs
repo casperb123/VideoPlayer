@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Collections.Specialized;
 
 namespace VideoPlayer.Entities
 {
@@ -14,7 +15,6 @@ namespace VideoPlayer.Entities
     {
         private string name;
         private ObservableCollection<Media> medias;
-        private int mediaCount;
         private string nameAndCount;
 
         public ObservableCollection<Media> Medias
@@ -40,6 +40,7 @@ namespace VideoPlayer.Entities
 
                 name = value;
                 OnPropertyChanged(nameof(Name));
+                NameAndCount = $"{Name} ({Medias.Count})";
             }
         }
 
@@ -56,16 +57,6 @@ namespace VideoPlayer.Entities
             }
         }
 
-        public int MediaCount
-        {
-            get => mediaCount;
-            set
-            {
-                mediaCount = value;
-                OnPropertyChanged(nameof(MediaCount));
-            }
-        }
-
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -78,23 +69,20 @@ namespace VideoPlayer.Entities
         public Playlist(string name, ICollection<Media> medias)
             : this(name)
         {
+            Medias.CollectionChanged += Medias_CollectionChanged;
             medias.ToList().ForEach(x => Medias.Add(x));
+        }
+
+        private void Medias_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(Medias.Count));
             NameAndCount = $"{Name} ({Medias.Count})";
-            MediaCount = Medias.Count;
         }
 
         public Playlist(string name)
         {
-            Name = name;
             medias = new ObservableCollection<Media>();
-            NameAndCount = $"{Name} ({Medias.Count})";
-            MediaCount = Medias.Count;
-        }
-
-        public void UpdateMediaCount()
-        {
-            MediaCount = Medias.Count;
-            NameAndCount = $"{Name} ({Medias.Count})";
+            Name = name;
         }
     }
 }
