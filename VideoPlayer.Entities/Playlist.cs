@@ -69,20 +69,20 @@ namespace VideoPlayer.Entities
         public Playlist(string name, ICollection<Media> medias)
             : this(name)
         {
-            Medias.CollectionChanged += Medias_CollectionChanged;
             medias.ToList().ForEach(x => Medias.Add(x));
+        }
+
+        public Playlist(string name)
+        {
+            medias = new ObservableCollection<Media>();
+            Medias.CollectionChanged += Medias_CollectionChanged;
+            Name = name;
         }
 
         private void Medias_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged(nameof(Medias.Count));
             NameAndCount = $"{Name} ({Medias.Count})";
-        }
-
-        public Playlist(string name)
-        {
-            medias = new ObservableCollection<Media>();
-            Name = name;
         }
     }
 }

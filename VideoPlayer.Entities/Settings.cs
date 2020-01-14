@@ -56,7 +56,7 @@ namespace VideoPlayer.Entities
 
         public async Task Save()
         {
-            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
+            string runningPath = Environment.CurrentDirectory;
             string file = $@"{runningPath}\Settings.json";
             string json = JsonConvert.SerializeObject(this, Formatting.Indented);
 
