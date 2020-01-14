@@ -232,12 +232,14 @@ namespace VideoPlayer
                 menuItemPlaylistsRemove.IsEnabled = false;
                 menuItemPlaylistsEditMedias.IsEnabled = false;
                 menuItemPlaylistsAddToQueue.IsEnabled = false;
+                menuItemPlaylistsEditName.IsEnabled = false;
             }
             else
             {
                 menuItemPlaylistsRemove.IsEnabled = true;
                 menuItemPlaylistsEditMedias.IsEnabled = true;
                 menuItemPlaylistsAddToQueue.IsEnabled = true;
+                menuItemPlaylistsEditName.IsEnabled = true;
             }
         }
 
