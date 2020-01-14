@@ -321,29 +321,8 @@ namespace VideoPlayer
                 await ViewModel.AddMediasToQueue(ViewModel.SelectedPlaylist.Medias);
         }
 
-        private void DataGridPlaylists_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
-        {
-            ViewModel.IsEditingPlaylists = true;
-        }
-
-        private async void DataGridPlaylists_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-        {
-            if (!ViewModel.IsEditingPlaylists)
-                return;
-            ViewModel.IsEditingPlaylists = false;
-            TextBox newName = e.EditingElement as TextBox;
-            if (ViewModel.Playlists.Count(x => x.Name == newName.Text) > 0)
-            {
-                e.Cancel = true;
-                dataGridPlaylists.CancelEdit();
-                await this.ShowMessageAsync("Error editing playlist", $"A playlist with the name '{newName.Text}' already exists");
-            }
-        }
-
         private void DataGridPlaylists_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (ViewModel.IsEditingPlaylists)
-                return;
             ViewModel.PlaylistsRowIndex = ViewModel.GetCurrentRowIndex(dataGridPlaylists, e.GetPosition);
             if (ViewModel.PlaylistsRowIndex < 0)
                 return;
@@ -428,8 +407,21 @@ namespace VideoPlayer
                 dataGridPlaylists.SelectedItem = null;
         }
 
-        private async void DataGridPlaylists_CurrentCellChanged(object sender, EventArgs e)
+        private void DataGridPlaylists_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
+            int index = ViewModel.GetCurrentRowIndex(dataGridPlaylists, e.GetPosition);
+            if (index < 0)
+                return;
+            dataGridPlaylists.SelectedIndex = index;
+        }
+
+        private async void MenuItemPlaylistsEditName_Click(object sender, RoutedEventArgs e)
+        {
+            string name = await this.ShowInputAsync("Edit playlist name", $"Please enter a new name for the playlist '{ViewModel.SelectedPlaylist.Name}'");
+            if (string.IsNullOrWhiteSpace(name))
+                return;
+
+            ViewModel.SelectedPlaylist.Name = name;
             await ViewModel.SavePlaylists();
         }
     }

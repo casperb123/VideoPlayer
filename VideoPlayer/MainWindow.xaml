@@ -309,13 +309,12 @@
                               MouseDoubleClick="DataGridPlaylists_MouseDoubleClick"
                               PreviewMouseLeftButtonDown="DataGridPlaylists_PreviewMouseLeftButtonDown"
                               Drop="DataGridPlaylists_Drop"
-                              CurrentCellChanged="DataGridPlaylists_CurrentCellChanged"
-                              BeginningEdit="DataGridPlaylists_BeginningEdit"
-                              CellEditEnding="DataGridPlaylists_CellEditEnding">
+                              PreviewMouseRightButtonDown="DataGridPlaylists_PreviewMouseRightButtonDown">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name"
                                                 Binding="{Binding Path=Name}"
-                                                Width="1*">
+                                                Width="1*"
+                                                IsReadOnly="True">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="{x:Type TextBlock}"
                                            BasedOn="{StaticResource MahApps.Styles.TextBlock}">
@@ -348,6 +347,9 @@
                                 <MenuItem x:Name="menuItemPlaylistsEditMedias"
                                           Header="Edit Medias"
                                           Click="MenuItemPlaylistsEditMedias_Click" />
+                                <MenuItem x:Name="menuItemPlaylistsEditName"
+                                          Header="Edit Name"
+                                          Click="MenuItemPlaylistsEditName_Click" />
                                 <MenuItem x:Name="menuItemPlaylistsRemove"
                                           Header="Remove"
                                           Click="MenuItemPlaylistsRemove_Click" />
