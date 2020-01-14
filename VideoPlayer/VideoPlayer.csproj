@@ -6,6 +6,18 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>video_icon.ico</ApplicationIcon>
     <NoWin32Manifest>true</NoWin32Manifest>
+    <Version>0.1</Version>
+    <Authors>Casper Bastholm</Authors>
+    <Product>Video Player</Product>
+    <Description>This is just a little video player i made for fun.</Description>
+    <PackageIcon>video_icon.ico</PackageIcon>
+    <PackageIconUrl />
+    <NeutralLanguage>en-DK</NeutralLanguage>
+    <RepositoryUrl>https://github.com/casperb123/VideoPlayer</RepositoryUrl>
+    <RepositoryType>Open source</RepositoryType>
+    <PackageTags />
+    <Copyright>Copyright © 2020 Casper Bastholm</Copyright>
+    <PackageProjectUrl>https://github.com/casperb123/VideoPlayer</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -17,6 +29,10 @@
     <Compile Remove="Commands\**" />
     <EmbeddedResource Remove="Commands\**" />
     <None Remove="Commands\**" />
+    <None Include="video_icon.ico">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
     <Page Remove="Commands\**" />
   </ItemGroup>
 
