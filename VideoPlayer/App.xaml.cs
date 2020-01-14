@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows;
+using VideoPlayer.Entities;
 
 namespace VideoPlayer
 {
@@ -20,6 +21,7 @@ namespace VideoPlayer
             }
 
             Unosquare.FFME.Library.FFmpegDirectory = ffmpegPath;
+            Settings.CurrentSettings = Settings.GetSettings().Result;
             base.OnStartup(e);
         }
     }

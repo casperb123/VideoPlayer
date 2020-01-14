@@ -1,8 +1,12 @@
 ﻿using DeviceId;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,7 +17,7 @@ namespace VideoPlayer.Entities
         private int theme;
         private int color;
 
-        public static Settings CurrentSettings = GetSettings();
+        public static Settings CurrentSettings;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public int Color
@@ -63,15 +67,31 @@ namespace VideoPlayer.Entities
             await File.WriteAllTextAsync(file, json);
         }
 
-        private static Settings GetSettings()
+        public static async Task<Settings> GetSettings()
         {
             string runningPath = Environment.CurrentDirectory;
             string settingsFile = $@"{runningPath}\Settings.json";
 
             if (!File.Exists(settingsFile))
-                return new Settings();
+            {
+                Settings newSettings = new Settings();
+                await newSettings.Save();
+                return newSettings;
+            }
 
-            return JsonConvert.DeserializeObject<Settings>(File.ReadAllText(settingsFile));
+            JObject obj = JsonConvert.DeserializeObject<dynamic>(File.ReadAllText(settingsFile));
+            List<JProperty> removedProperties = obj.Properties().Where(x => typeof(Settings).GetProperty(x.Name) is null).ToList();
+
+            if (removedProperties != null && removedProperties.Count > 0)
+                removedProperties.ForEach(x => obj.Remove(x.Name));
+
+            bool missingProperties = typeof(Settings).GetProperties().Any(x => obj.Property(x.Name) is null);
+            Settings settings = obj.ToObject<Settings>();
+
+            if (missingProperties)
+                await settings.Save();
+
+            return settings;
         }
     }
 }
