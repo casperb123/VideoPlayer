@@ -11,7 +11,7 @@ using System.Collections.Specialized;
 namespace VideoPlayer.Entities
 {
     [Serializable]
-    public class Playlist : Protected, INotifyPropertyChanged
+    public class Playlist : INotifyPropertyChanged
     {
         private string name;
         private ObservableCollection<Media> medias;

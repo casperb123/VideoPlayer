@@ -308,12 +308,14 @@
                               ToolTip="Left click and drag to move playlists"
                               MouseDoubleClick="DataGridPlaylists_MouseDoubleClick"
                               PreviewMouseLeftButtonDown="DataGridPlaylists_PreviewMouseLeftButtonDown"
-                              Drop="DataGridPlaylists_Drop">
+                              Drop="DataGridPlaylists_Drop"
+                              CurrentCellChanged="DataGridPlaylists_CurrentCellChanged"
+                              BeginningEdit="DataGridPlaylists_BeginningEdit"
+                              CellEditEnding="DataGridPlaylists_CellEditEnding">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name"
                                                 Binding="{Binding Path=Name}"
-                                                Width="1*"
-                                                IsReadOnly="True">
+                                                Width="1*">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="{x:Type TextBlock}"
                                            BasedOn="{StaticResource MahApps.Styles.TextBlock}">
@@ -343,9 +345,9 @@
                                 <MenuItem x:Name="menuItemPlaylistsAddToQueue"
                                           Header="Add to queue"
                                           Click="MenuItemPlaylistsAddToQueue_Click" />
-                                <MenuItem x:Name="menuItemPlaylistsEdit"
-                                          Header="Edit"
-                                          Click="MenuItemPlaylistsEdit_Click" />
+                                <MenuItem x:Name="menuItemPlaylistsEditMedias"
+                                          Header="Edit Medias"
+                                          Click="MenuItemPlaylistsEditMedias_Click" />
                                 <MenuItem x:Name="menuItemPlaylistsRemove"
                                           Header="Remove"
                                           Click="MenuItemPlaylistsRemove_Click" />
@@ -364,7 +366,7 @@
             </Controls:Flyout>
 
             <Controls:Flyout x:Name="flyoutPlaylist"
-                             Header="{Binding Path=SelectedPlaylist.NameAndCount, Mode=OneWay}"
+                             Header="{Binding Path=SelectedPlaylist.NameAndCount}"
                              Position="Right"
                              Theme="Adapt"
                              Width="300"
@@ -379,7 +381,7 @@
                     <DataGrid x:Name="dataGridPlaylist"
                               ItemsSource="{Binding Path=SelectedPlaylist.Medias}"
                               SelectedItem="{Binding Path=SelectedPlaylistMedia}"
-                              SelectionMode="Extended"
+                              SelectionMode="Single"
                               AutoGenerateColumns="False"
                               CanUserReorderColumns="True"
                               VerticalScrollBarVisibility="Auto"

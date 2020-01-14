@@ -33,6 +33,7 @@ namespace VideoPlayer.ViewModels
         public int PlaylistsRowIndex;
         public int PlaylistRowIndex;
         public int QueueRowIndex;
+        public bool IsEditingPlaylists;
 
         public delegate Point GetPosition(IInputElement element);
         public event PropertyChangedEventHandler PropertyChanged;
@@ -161,7 +162,6 @@ namespace VideoPlayer.ViewModels
         public async void AddMediasToPlaylist(ICollection<Media> medias)
         {
             medias.ToList().ForEach(x => SelectedPlaylist.Medias.Add(x));
-            //SelectedPlaylist.UpdateMediaCount();
             await SavePlaylists();
         }
 

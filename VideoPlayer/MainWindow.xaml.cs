@@ -230,13 +230,13 @@ namespace VideoPlayer
             if (ViewModel.SelectedPlaylist is null)
             {
                 menuItemPlaylistsRemove.IsEnabled = false;
-                menuItemPlaylistsEdit.IsEnabled = false;
+                menuItemPlaylistsEditMedias.IsEnabled = false;
                 menuItemPlaylistsAddToQueue.IsEnabled = false;
             }
             else
             {
                 menuItemPlaylistsRemove.IsEnabled = true;
-                menuItemPlaylistsEdit.IsEnabled = true;
+                menuItemPlaylistsEditMedias.IsEnabled = true;
                 menuItemPlaylistsAddToQueue.IsEnabled = true;
             }
         }
@@ -267,7 +267,7 @@ namespace VideoPlayer
                 await ViewModel.RemovePlaylist();
         }
 
-        private void MenuItemPlaylistsEdit_Click(object sender, RoutedEventArgs e)
+        private void MenuItemPlaylistsEditMedias_Click(object sender, RoutedEventArgs e)
         {
             flyoutPlaylist.IsOpen = true;
         }
@@ -321,8 +321,29 @@ namespace VideoPlayer
                 await ViewModel.AddMediasToQueue(ViewModel.SelectedPlaylist.Medias);
         }
 
+        private void DataGridPlaylists_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+        {
+            ViewModel.IsEditingPlaylists = true;
+        }
+
+        private async void DataGridPlaylists_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (!ViewModel.IsEditingPlaylists)
+                return;
+            ViewModel.IsEditingPlaylists = false;
+            TextBox newName = e.EditingElement as TextBox;
+            if (ViewModel.Playlists.Count(x => x.Name == newName.Text) > 0)
+            {
+                e.Cancel = true;
+                dataGridPlaylists.CancelEdit();
+                await this.ShowMessageAsync("Error editing playlist", $"A playlist with the name '{newName.Text}' already exists");
+            }
+        }
+
         private void DataGridPlaylists_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (ViewModel.IsEditingPlaylists)
+                return;
             ViewModel.PlaylistsRowIndex = ViewModel.GetCurrentRowIndex(dataGridPlaylists, e.GetPosition);
             if (ViewModel.PlaylistsRowIndex < 0)
                 return;
@@ -335,14 +356,13 @@ namespace VideoPlayer
 
         private async void DataGridPlaylists_Drop(object sender, DragEventArgs e)
         {
-            if (ViewModel.PlaylistsRowIndex < 0)
+            if (ViewModel.PlaylistRowIndex < 0)
                 return;
             int index = ViewModel.GetCurrentRowIndex(dataGridPlaylists, e.GetPosition);
             if (index < 0 || index == ViewModel.PlaylistsRowIndex)
                 return;
 
             Playlist changedPlaylist = ViewModel.Playlists[ViewModel.PlaylistsRowIndex];
-            Playlist otherPlaylist = ViewModel.Playlists[index];
             ViewModel.Playlists.RemoveAt(ViewModel.PlaylistsRowIndex);
             ViewModel.Playlists.Insert(index, changedPlaylist);
             await ViewModel.SavePlaylists();
@@ -406,6 +426,11 @@ namespace VideoPlayer
         {
             if (!flyoutPlaylists.IsOpen)
                 dataGridPlaylists.SelectedItem = null;
+        }
+
+        private async void DataGridPlaylists_CurrentCellChanged(object sender, EventArgs e)
+        {
+            await ViewModel.SavePlaylists();
         }
     }
 }
