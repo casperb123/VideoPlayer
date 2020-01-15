@@ -1,4 +1,5 @@
-﻿using MahApps.Metro;
+﻿using GithubUpdater;
+using MahApps.Metro;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -250,7 +251,6 @@ namespace VideoPlayer.ViewModels
         {
             string runningPath = Environment.CurrentDirectory;
             string file = $@"{runningPath}\Playlists.bin";
-
             BinaryFormatter formatter = new BinaryFormatter();
             MemoryStream stream = new MemoryStream();
             formatter.Serialize(stream, Playlists);

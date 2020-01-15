@@ -42,6 +42,7 @@
 
   <ItemGroup>
     <PackageReference Include="FFME.Windows" Version="4.2.330" />
+    <PackageReference Include="GithubUpdater" Version="0.7.0" />
     <PackageReference Include="MahApps.Metro" Version="2.0.0-alpha0660" />
     <PackageReference Include="MaterialDesignThemes" Version="3.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />

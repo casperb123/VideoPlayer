@@ -1,8 +1,8 @@
-﻿using MahApps.Metro;
+﻿using GithubUpdater;
+using MahApps.Metro;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,8 +25,11 @@ namespace VideoPlayer
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        private readonly Updater updater;
+        private ProgressDialogController progressDialog;
+
         public MainWindowViewModel ViewModel;
-        public Settings Settings;
+        public bool UpdateAvailable;
 
         public static RoutedCommand PlayPauseCommand = new RoutedCommand();
         public static RoutedCommand SkipForwardCommand = new RoutedCommand();
@@ -72,6 +75,90 @@ namespace VideoPlayer
             PlayPauseCommand.InputGestures.Add(new KeyGesture(Key.Space));
             SkipForwardCommand.InputGestures.Add(new KeyGesture(Key.Right));
             SkipBackwardsCommand.InputGestures.Add(new KeyGesture(Key.Left));
+
+            updater = new Updater("casperb123", "VideoPlayer", true);
+            updater.UpdateAvailable += Updater_UpdateAvailable;
+            updater.DownloadingStarted += Updater_DownloadingStarted;
+            updater.DownloadingProgressed += Updater_DownloadingProgressed;
+            updater.DownloadingCompleted += Updater_DownloadingCompleted;
+            updater.InstallationStarted += Updater_InstallationStarted;
+            updater.InstallationCompleted += Updater_InstallationCompleted;
+            updater.InstallationFailed += Updater_InstallationFailed;
+            updater.CheckForUpdate();
+        }
+
+        private async void Updater_InstallationFailed(object sender, EventArgs e)
+        {
+            updater.Dispose();
+            await progressDialog.CloseAsync();
+            await this.ShowMessageAsync("Updating application", "Updating the application has failed. No files were changed");
+        }
+
+        private async void Updater_InstallationCompleted(object sender, EventArgs e)
+        {
+            updater.Dispose();
+            await progressDialog.CloseAsync();
+            MessageDialogResult result = await this.ShowMessageAsync("Update completed", "The update has been installed successfully. Would you like to restart the application?", MessageDialogStyle.AffirmativeAndNegative);
+            if (result == MessageDialogResult.Affirmative)
+            {
+                Process.Start(Process.GetCurrentProcess().MainModule.FileName);
+                Close();
+            }
+        }
+
+        private void Updater_InstallationStarted(object sender, EventArgs e)
+        {
+            progressDialog.SetMessage("Installing update...");
+        }
+
+        private async void Updater_DownloadingCompleted(object sender, EventArgs e)
+        {
+            try
+            {
+                await updater.InstallUpdateAsync();
+            }
+            catch (Exception ex)
+            {
+                await this.ShowMessageAsync("Update failed", $"Updating the application has failed." +
+                                                             $"\n\n{ex.Message}");
+                throw;
+            }
+        }
+
+        private void Updater_DownloadingProgressed(object sender, DownloadProgressEventArgs e)
+        {
+            progressDialog.SetMessage($"Downloading update: {e.BytesReceived / 1000}/{e.TotalBytesToReceive / 1000} kb");
+            progressDialog.SetProgress(e.ProgressPercent);
+        }
+
+        private async void Updater_DownloadingStarted(object sender, EventArgs e)
+        {
+            progressDialog = await this.ShowProgressAsync("Updating application", $"Starting download...");
+            progressDialog.Minimum = 0;
+            progressDialog.Maximum = 100;
+        }
+
+        public async void Updater_UpdateAvailable(object sender, VersionEventArgs args)
+        {
+            if (!Settings.CurrentSettings.DownloadUpdate)
+            {
+                UpdateAvailable = true;
+                buttonUpdate.Content = "Update available";
+                return;
+            }
+
+            MessageDialogResult result = await this.ShowMessageAsync($"Update available", $"An update is available. Current version: '{args.CurrentVersion.ToString()}' New version: '{args.NewVersion.ToString()}'" +
+                                                                                          $"\n\nWould you like to update now?", MessageDialogStyle.AffirmativeAndNegative);
+
+            if (result == MessageDialogResult.Affirmative)
+                await updater.DownloadUpdateAsync();
+            else
+            {
+                UpdateAvailable = true;
+                buttonUpdate.Content = "Update available";
+                Settings.CurrentSettings.DownloadUpdate = false;
+                await Settings.CurrentSettings.Save();
+            }
         }
 
         private async void PlayPause_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -425,6 +512,27 @@ namespace VideoPlayer
 
             ViewModel.SelectedPlaylist.Name = name;
             await ViewModel.SavePlaylists();
+        }
+
+        private async void ButtonUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            if (UpdateAvailable)
+            {
+                MessageDialogResult result = await this.ShowMessageAsync("Update application", "Are you sure that you want to update the application?", MessageDialogStyle.AffirmativeAndNegative);
+
+                if (result == MessageDialogResult.Affirmative)
+                {
+                    Settings.CurrentSettings.DownloadUpdate = true;
+                    await Settings.CurrentSettings.Save();
+                    await updater.DownloadUpdateAsync();
+                }
+            }
+            else
+            {
+                bool updateAvailable = await updater.CheckForUpdateAsync();
+                if (!updateAvailable)
+                    await this.ShowMessageAsync("No updates available", "Hurray! You are currently using the latest version of the application");
+            }
         }
     }
 }

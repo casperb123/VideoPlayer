@@ -25,6 +25,12 @@
     
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
+            <Button x:Name="buttonUpdate"
+                    Content="Check for updates"
+                    Cursor="Hand"
+                    Focusable="False"
+                    Click="ButtonUpdate_Click" />
+
             <Button x:Name="buttonWindowCredits"
                     Content="Credits"
                     Cursor="Hand"

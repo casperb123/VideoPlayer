@@ -46,16 +46,18 @@ namespace VideoPlayer.Entities
             }
         }
 
-        private void OnPropertyChanged(string prop)
-        {
-            if (prop != null)
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
+        public bool DownloadUpdate { get; set; }
 
         public Settings()
         {
             Color = 1;
-            Theme = 0;
+            DownloadUpdate = true;
+        }
+
+        private void OnPropertyChanged(string prop)
+        {
+            if (prop != null)
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
         public async Task Save()
