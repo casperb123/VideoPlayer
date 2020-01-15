@@ -46,6 +46,8 @@ namespace VideoPlayer.Entities
             }
         }
 
+        public bool CheckForUpdates { get; set; }
+
         public bool DownloadUpdate { get; set; }
 
         public Settings()

@@ -84,7 +84,8 @@ namespace VideoPlayer
             updater.InstallationStarted += Updater_InstallationStarted;
             updater.InstallationCompleted += Updater_InstallationCompleted;
             updater.InstallationFailed += Updater_InstallationFailed;
-            updater.CheckForUpdate();
+            if (Settings.CurrentSettings.CheckForUpdates)
+                updater.CheckForUpdate();
         }
 
         private async void Updater_InstallationFailed(object sender, EventArgs e)
@@ -533,6 +534,11 @@ namespace VideoPlayer
                 if (!updateAvailable)
                     await this.ShowMessageAsync("No updates available", "Hurray! You are currently using the latest version of the application");
             }
+        }
+
+        private async void ToggleSwitchCheckForUpdates_IsCheckedChanged(object sender, EventArgs e)
+        {
+            await Settings.CurrentSettings.Save();
         }
     }
 }
