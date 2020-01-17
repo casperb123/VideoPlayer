@@ -141,7 +141,7 @@ namespace VideoPlayer
 
         public async void Updater_UpdateAvailable(object sender, VersionEventArgs args)
         {
-            if (!Settings.CurrentSettings.DownloadUpdate)
+            if (!Settings.CurrentSettings.NotifyUpdates)
             {
                 UpdateAvailable = true;
                 buttonUpdate.Content = "Update available";
@@ -157,7 +157,7 @@ namespace VideoPlayer
             {
                 UpdateAvailable = true;
                 buttonUpdate.Content = "Update available";
-                Settings.CurrentSettings.DownloadUpdate = false;
+                Settings.CurrentSettings.NotifyUpdates = false;
                 await Settings.CurrentSettings.Save();
             }
         }
@@ -523,7 +523,7 @@ namespace VideoPlayer
 
                 if (result == MessageDialogResult.Affirmative)
                 {
-                    Settings.CurrentSettings.DownloadUpdate = true;
+                    Settings.CurrentSettings.NotifyUpdates = true;
                     await Settings.CurrentSettings.Save();
                     await updater.DownloadUpdateAsync();
                 }

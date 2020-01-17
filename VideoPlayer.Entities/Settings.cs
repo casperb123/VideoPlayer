@@ -48,12 +48,12 @@ namespace VideoPlayer.Entities
 
         public bool CheckForUpdates { get; set; }
 
-        public bool DownloadUpdate { get; set; }
+        public bool NotifyUpdates { get; set; }
 
         public Settings()
         {
             Color = 1;
-            DownloadUpdate = true;
+            NotifyUpdates = true;
         }
 
         private void OnPropertyChanged(string prop)
