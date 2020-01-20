@@ -22,7 +22,6 @@ namespace VideoPlayer.ViewModels
         private readonly MediaPlayerUserControl userControl;
         private double loopStart;
         private double loopEnd;
-        private Theme currentTheme;
         private WindowState oldState;
 
         public readonly MainWindow MainWindow;
@@ -93,6 +92,12 @@ namespace VideoPlayer.ViewModels
                 userControl.gridControls.IsEnabled = false;
                 userControl.gridControls.Visibility = Visibility.Hidden;
                 Mouse.OverrideCursor = Cursors.None;
+
+                MainWindow.flyoutCredits.IsOpen = false;
+                MainWindow.flyoutPlaylist.IsOpen = false;
+                MainWindow.flyoutPlaylists.IsOpen = false;
+                MainWindow.flyoutQueue.IsOpen = false;
+                MainWindow.flyoutSettings.IsOpen = false;
             }
 
             ControlsTimer.Stop();
@@ -483,13 +488,6 @@ namespace VideoPlayer.ViewModels
 
         public void EnterFullscreen()
         {
-            Theme theme = ThemeManager.DetectTheme(Application.Current);
-            if (theme.BaseColorScheme == "Light")
-            {
-                currentTheme = theme;
-                ThemeManager.ChangeTheme(Application.Current, "Dark", currentTheme.ColorScheme);
-            }
-
             MainWindow.ShowTitleBar = false;
             MainWindow.ShowCloseButton = false;
             MainWindow.ShowMaxRestoreButton = false;
@@ -499,6 +497,11 @@ namespace VideoPlayer.ViewModels
                 MainWindow.WindowState = WindowState.Maximized;
             userControl.gridMediaElementBackground.SetValue(Grid.RowSpanProperty, 3);
             userControl.gridControls.Opacity = 0.7;
+            MainWindow.flyoutQueue.Opacity = 0.7;
+            MainWindow.flyoutCredits.Opacity = 0.7;
+            MainWindow.flyoutPlaylist.Opacity = 0.7;
+            MainWindow.flyoutPlaylists.Opacity = 0.7;
+            MainWindow.flyoutSettings.Opacity = 0.7;
             IsFullscreen = true;
             ControlsTimer.Start();
             userControl.iconFullscreen.Kind = PackIconKind.FullscreenExit;
@@ -506,12 +509,6 @@ namespace VideoPlayer.ViewModels
 
         public void ExitFullscreen()
         {
-            if (currentTheme != null)
-            {
-                ThemeManager.ChangeTheme(Application.Current, currentTheme);
-                currentTheme = null;
-            }
-
             IsFullscreen = false;
             ControlsTimer.Stop();
             MainWindow.ShowTitleBar = true;
@@ -523,6 +520,11 @@ namespace VideoPlayer.ViewModels
             userControl.gridControls.IsEnabled = true;
             userControl.gridControls.Visibility = Visibility.Visible;
             userControl.gridControls.Opacity = 1;
+            MainWindow.flyoutQueue.Opacity = 1;
+            MainWindow.flyoutCredits.Opacity = 1;
+            MainWindow.flyoutPlaylist.Opacity = 1;
+            MainWindow.flyoutPlaylists.Opacity = 1;
+            MainWindow.flyoutSettings.Opacity = 1;
             Mouse.OverrideCursor = null;
             userControl.iconFullscreen.Kind = PackIconKind.Fullscreen;
         }

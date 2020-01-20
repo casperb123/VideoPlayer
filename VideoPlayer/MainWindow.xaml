@@ -51,7 +51,9 @@
                              Position="Top"
                              Header="Credits"
                              Theme="Adapt"
-                             IsPinned="False">
+                             IsPinned="False"
+                             MouseEnter="Flyout_MouseEnter"
+                             MouseLeave="Flyout_MouseLeave">
                 <StackPanel x:Name="stackPanelFlyoutCredits"
                             Margin="10,20"
                             VerticalAlignment="Center">
@@ -81,7 +83,9 @@
                              Width="300"
                              Header="Settings"
                              Theme="Adapt"
-                             IsPinned="False">
+                             IsPinned="False"
+                             MouseEnter="Flyout_MouseEnter"
+                             MouseLeave="Flyout_MouseLeave">
                 <StackPanel x:Name="stackPanelFlyoutSettings">
                     <GroupBox Header="Player Settings">
                         <Grid Margin="10,10,10,5">
@@ -225,7 +229,9 @@
                              Position="Right"
                              Theme="Adapt"
                              Width="300"
-                             IsPinned="False">
+                             IsPinned="False"
+                             MouseEnter="Flyout_MouseEnter"
+                             MouseLeave="Flyout_MouseLeave">
                 <Grid x:Name="gridFlyoutQueue"
                       AllowDrop="True"
                       Drop="GridFlyoutQueue_Drop">
@@ -309,7 +315,9 @@
                              Theme="Adapt"
                              Width="300"
                              IsPinned="False"
-                             IsOpenChanged="FlyoutPlaylists_IsOpenChanged">
+                             IsOpenChanged="FlyoutPlaylists_IsOpenChanged"
+                             MouseEnter="Flyout_MouseEnter"
+                             MouseLeave="Flyout_MouseLeave">
                 <Grid x:Name="gridFlyoutPlaylists">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*" />
@@ -396,7 +404,9 @@
                              Theme="Adapt"
                              Width="300"
                              IsPinned="False"
-                             IsOpenChanged="FlyoutPlaylist_IsOpenChanged">
+                             IsOpenChanged="FlyoutPlaylist_IsOpenChanged"
+                             MouseEnter="Flyout_MouseEnter"
+                             MouseLeave="Flyout_MouseLeave">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*" />

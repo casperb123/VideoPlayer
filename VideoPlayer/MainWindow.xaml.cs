@@ -540,5 +540,22 @@ namespace VideoPlayer
         {
             await Settings.CurrentSettings.Save();
         }
+
+        private void Flyout_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (ViewModel.UserControl.ViewModel.IsFullscreen)
+            {
+                ViewModel.UserControl.ViewModel.ControlsTimer.Stop();
+                ViewModel.UserControl.gridControls.IsEnabled = true;
+                ViewModel.UserControl.gridControls.Visibility = Visibility.Visible;
+                Mouse.OverrideCursor = null;
+            }
+        }
+
+        private void Flyout_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (ViewModel.UserControl.ViewModel.IsFullscreen)
+                ViewModel.UserControl.ViewModel.ControlsTimer.Start();
+        }
     }
 }
