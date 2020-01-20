@@ -22,7 +22,7 @@
         <CommandBinding Command="{x:Static local:MainWindow.SkipBackwardsCommand}"
                         Executed="SkipBackwards_Executed" />
     </Controls:MetroWindow.CommandBindings>
-    
+
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button x:Name="buttonUpdate"
@@ -166,7 +166,7 @@
                                                    Focusable="False"
                                                    Checked="ToggleSwitchLoop_Checked"
                                                    Unchecked="ToggleSwitchLoop_Unchecked" />
-                            
+
                         </Grid>
                     </GroupBox>
 
@@ -294,7 +294,7 @@
                                          Opened="DataGridQueueContextMenu_Opened">
                                 <MenuItem x:Name="menuItemQueueRemove"
                                           Header="Remove"
-                                          Click="MenuItemQueueRemove_Click" />
+                                          Click="MenuItemQueueRemove_Click"/>
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                     </DataGrid>

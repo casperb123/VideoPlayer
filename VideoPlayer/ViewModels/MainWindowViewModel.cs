@@ -34,6 +34,7 @@ namespace VideoPlayer.ViewModels
         public int PlaylistsRowIndex;
         public int PlaylistRowIndex;
         public int QueueRowIndex;
+        public bool QueueMediaSelected;
 
         public delegate Point GetPosition(IInputElement element);
         public event PropertyChangedEventHandler PropertyChanged;

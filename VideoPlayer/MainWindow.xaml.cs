@@ -232,9 +232,7 @@ namespace VideoPlayer
 
         private void DataGridQueueContextMenu_Opened(object sender, RoutedEventArgs e)
         {
-            if (ViewModel.SelectedMedia is null ||
-                ViewModel.Queue.Count == 1 ||
-                ((Media)dataGridQueue.SelectedItem) == ViewModel.SelectedMedia)
+            if (ViewModel.Queue.Count < 1 || !ViewModel.QueueMediaSelected)
             {
                 menuItemQueueRemove.IsEnabled = false;
             }
@@ -246,7 +244,7 @@ namespace VideoPlayer
 
         private void MenuItemQueueRemove_Click(object sender, RoutedEventArgs e)
         {
-            Media media = dataGridQueue.SelectedItem as Media;
+            Media media = ViewModel.Queue[ViewModel.QueueRowIndex];
             ViewModel.Queue.Remove(media);
         }
 
@@ -474,6 +472,7 @@ namespace VideoPlayer
             Media changedMedia = ViewModel.Queue[ViewModel.QueueRowIndex];
             ViewModel.Queue.RemoveAt(ViewModel.QueueRowIndex);
             ViewModel.Queue.Insert(index, changedMedia);
+            ViewModel.QueueMediaSelected = false;
         }
 
         private void DataGridQueue_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -488,7 +487,10 @@ namespace VideoPlayer
                 return;
             if (!(dataGridQueue.Items[ViewModel.QueueRowIndex] is Media selectedMedia))
                 return;
+            ViewModel.QueueMediaSelected = true;
             DragDrop.DoDragDrop(dataGridQueue, selectedMedia, DragDropEffects.Move);
+            if (ViewModel.QueueMediaSelected)
+                dataGridQueueContextMenu.IsOpen = true;
         }
 
         private void FlyoutPlaylists_IsOpenChanged(object sender, RoutedEventArgs e)
