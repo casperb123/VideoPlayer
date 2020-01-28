@@ -85,7 +85,8 @@
                              Theme="Adapt"
                              IsPinned="False"
                              MouseEnter="Flyout_MouseEnter"
-                             MouseLeave="Flyout_MouseLeave">
+                             MouseLeave="Flyout_MouseLeave"
+                             IsOpenChanged="FlyoutSettings_IsOpenChanged">
                 <StackPanel x:Name="stackPanelFlyoutSettings">
                     <GroupBox Header="Player Settings">
                         <Grid Margin="10,10,10,5">

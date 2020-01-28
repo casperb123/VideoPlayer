@@ -16,6 +16,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
+using Application = System.Windows.Application;
 
 namespace VideoPlayer.ViewModels
 {
@@ -35,6 +36,7 @@ namespace VideoPlayer.ViewModels
         public int PlaylistRowIndex;
         public int QueueRowIndex;
         public bool QueueMediaSelected;
+        public bool SettingsChanged;
 
         public delegate Point GetPosition(IInputElement element);
         public event PropertyChangedEventHandler PropertyChanged;

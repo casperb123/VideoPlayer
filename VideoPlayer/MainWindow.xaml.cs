@@ -1,4 +1,4 @@
-﻿using GithubUpdater;
+﻿//using GithubUpdater;
 using MahApps.Metro;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
@@ -17,6 +17,7 @@ using System.Windows.Navigation;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
 using VideoPlayer.ViewModels;
+using GithubUpdater;
 
 namespace VideoPlayer
 {
@@ -189,9 +190,10 @@ namespace VideoPlayer
             flyoutCredits.IsOpen = !flyoutCredits.IsOpen;
         }
 
-        private void MetroWindow_Closing(object sender, CancelEventArgs e)
+        private async void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
             ViewModel.Hotkeys.ForEach(x => x.Dispose());
+            await Settings.CurrentSettings.Save();
         }
 
         private void NumericPlaybackSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
@@ -208,11 +210,14 @@ namespace VideoPlayer
             ViewModel.UserControl.ViewModel.SetLoopTime(textBoxLoopStart.Text, textBoxLoopEnd.Text);
         }
 
-        private async void ComboBoxThemeSettings_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ComboBoxThemeSettings_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!IsLoaded) return;
 
-            await ViewModel.ChangeTheme(comboBoxTheme.SelectedItem.ToString(), comboBoxColor.SelectedItem as ColorScheme);
+            string theme = comboBoxTheme.SelectedItem.ToString();
+            ColorScheme color = comboBoxColor.SelectedItem as ColorScheme;
+            ThemeManager.ChangeTheme(Application.Current, theme, color.Name);
+            ViewModel.SettingsChanged = true;
         }
 
         private async void DataGridQueue_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -291,23 +296,10 @@ namespace VideoPlayer
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                List<Media> medias = new List<Media>();
+                files.ToList().Where(x => validExtensions.Contains(Path.GetExtension(x))).ToList().ForEach(x => medias.Add(new Media(x)));
 
-                if (Path.GetExtension(files[0]) == ".playlist")
-                {
-                    string name = Path.GetFileNameWithoutExtension(files[0]);
-                    string[] filePaths = await File.ReadAllLinesAsync(files[0]);
-                    Playlist playlist = ViewModel.UserControl.ViewModel.GetPlaylist(name, filePaths);
-                    ViewModel.SelectedPlaylist = playlist;
-
-                    await ViewModel.AddMediasToQueue(playlist.Medias);
-                }
-                else
-                {
-                    List<Media> medias = new List<Media>();
-                    files.ToList().ForEach(x => medias.Add(new Media(x)));
-
-                    await ViewModel.AddMediasToQueue(medias);
-                }
+                await ViewModel.AddMediasToQueue(medias);
             }
         }
 
@@ -538,11 +530,6 @@ namespace VideoPlayer
             }
         }
 
-        private async void ToggleSwitchCheckForUpdates_IsCheckedChanged(object sender, EventArgs e)
-        {
-            await Settings.CurrentSettings.Save();
-        }
-
         private void Flyout_MouseEnter(object sender, MouseEventArgs e)
         {
             if (ViewModel.UserControl.ViewModel.IsFullscreen)
@@ -558,6 +545,20 @@ namespace VideoPlayer
         {
             if (ViewModel.UserControl.ViewModel.IsFullscreen)
                 ViewModel.UserControl.ViewModel.ControlsTimer.Start();
+        }
+
+        private async void FlyoutSettings_IsOpenChanged(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel.SettingsChanged && !flyoutSettings.IsOpen)
+            {
+                await Settings.CurrentSettings.Save();
+                ViewModel.SettingsChanged = false;
+            }
+        }
+
+        private void ToggleSwitchCheckForUpdates_IsCheckedChanged(object sender, EventArgs e)
+        {
+            ViewModel.SettingsChanged = true;
         }
     }
 }
