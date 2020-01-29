@@ -257,11 +257,10 @@
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled"
                               AllowDrop="True"
-                              ToolTip="Right click and drag to move medias"
+                              ToolTip="Left click and drag to move medias"
                               SelectionChanged="DataGridQueue_SelectionChanged"
                               Drop="DataGridQueue_Drop"
-                              PreviewMouseRightButtonDown="DataGridQueue_PreviewMouseRightButtonDown"
-                              PreviewMouseRightButtonUp="DataGridQueue_PreviewMouseRightButtonUp">
+                              PreviewMouseLeftButtonDown="DataGridQueue_PreviewMouseLeftButtonDown">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name"
                                                 Binding="{Binding Path=Name}"
@@ -316,7 +315,6 @@
                              Theme="Adapt"
                              Width="300"
                              IsPinned="False"
-                             IsOpenChanged="FlyoutPlaylists_IsOpenChanged"
                              MouseEnter="Flyout_MouseEnter"
                              MouseLeave="Flyout_MouseLeave">
                 <Grid x:Name="gridFlyoutPlaylists">
@@ -338,10 +336,9 @@
                               HorizontalScrollBarVisibility="Disabled"
                               AllowDrop="True"
                               ToolTip="Left click and drag to move playlists"
-                              MouseDoubleClick="DataGridPlaylists_MouseDoubleClick"
                               PreviewMouseLeftButtonDown="DataGridPlaylists_PreviewMouseLeftButtonDown"
                               Drop="DataGridPlaylists_Drop"
-                              PreviewMouseRightButtonDown="DataGridPlaylists_PreviewMouseRightButtonDown">
+                              SelectionChanged="DataGridPlaylists_SelectionChanged">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name"
                                                 Binding="{Binding Path=Name}"
