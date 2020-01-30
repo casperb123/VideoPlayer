@@ -18,6 +18,7 @@ using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
 using Application = System.Windows.Application;
 using GithubUpdater;
+using System.Reflection;
 
 namespace VideoPlayer.ViewModels
 {
@@ -231,7 +232,7 @@ namespace VideoPlayer.ViewModels
 
         public async Task<ICollection<Playlist>> GetPlaylists()
         {
-            string runningPath = Environment.CurrentDirectory;
+            string runningPath = Settings.GetCurrentDir();
             string file = $@"{runningPath}\Playlists.bin";
             BinaryFormatter formatter = new BinaryFormatter();
             MemoryStream stream = new MemoryStream();
@@ -289,7 +290,7 @@ namespace VideoPlayer.ViewModels
 
         public async Task SavePlaylists()
         {
-            string runningPath = Environment.CurrentDirectory;
+            string runningPath = Settings.GetCurrentDir();
             string file = $@"{runningPath}\Playlists.bin";
             BinaryFormatter formatter = new BinaryFormatter();
             MemoryStream stream = new MemoryStream();

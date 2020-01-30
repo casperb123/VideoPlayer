@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace VideoPlayer.Entities
@@ -61,7 +62,7 @@ namespace VideoPlayer.Entities
 
         public async Task Save()
         {
-            string runningPath = Environment.CurrentDirectory;
+            string runningPath = GetCurrentDir();
             string file = $@"{runningPath}\Settings.json";
             string json = JsonConvert.SerializeObject(this, Formatting.Indented);
 
@@ -70,7 +71,7 @@ namespace VideoPlayer.Entities
 
         public static async Task<Settings> GetSettings()
         {
-            string runningPath = Environment.CurrentDirectory;
+            string runningPath = GetCurrentDir();
             string settingsFile = $@"{runningPath}\Settings.json";
 
             if (!File.Exists(settingsFile))
@@ -93,6 +94,11 @@ namespace VideoPlayer.Entities
                 await settings.Save();
 
             return settings;
+        }
+
+        public static string GetCurrentDir()
+        {
+            return AppDomain.CurrentDomain.BaseDirectory;
         }
     }
 }
