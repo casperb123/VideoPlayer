@@ -232,7 +232,7 @@ namespace VideoPlayer.ViewModels
 
         public async Task<ICollection<Playlist>> GetPlaylists()
         {
-            string runningPath = Settings.GetCurrentDir();
+            string runningPath = Directory.GetCurrentDirectory();
             string file = $@"{runningPath}\Playlists.bin";
             BinaryFormatter formatter = new BinaryFormatter();
             MemoryStream stream = new MemoryStream();
@@ -290,7 +290,7 @@ namespace VideoPlayer.ViewModels
 
         public async Task SavePlaylists()
         {
-            string runningPath = Settings.GetCurrentDir();
+            string runningPath = Directory.GetCurrentDirectory();
             string file = $@"{runningPath}\Playlists.bin";
             BinaryFormatter formatter = new BinaryFormatter();
             MemoryStream stream = new MemoryStream();

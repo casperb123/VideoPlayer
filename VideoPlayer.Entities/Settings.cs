@@ -62,7 +62,7 @@ namespace VideoPlayer.Entities
 
         public async Task Save()
         {
-            string runningPath = GetCurrentDir();
+            string runningPath = Directory.GetCurrentDirectory();
             string file = $@"{runningPath}\Settings.json";
             string json = JsonConvert.SerializeObject(this, Formatting.Indented);
 
@@ -71,7 +71,7 @@ namespace VideoPlayer.Entities
 
         public static async Task<Settings> GetSettings()
         {
-            string runningPath = GetCurrentDir();
+            string runningPath = Directory.GetCurrentDirectory();
             string settingsFile = $@"{runningPath}\Settings.json";
 
             if (!File.Exists(settingsFile))
@@ -94,11 +94,6 @@ namespace VideoPlayer.Entities
                 await settings.Save();
 
             return settings;
-        }
-
-        public static string GetCurrentDir()
-        {
-            return AppDomain.CurrentDomain.BaseDirectory;
         }
     }
 }
