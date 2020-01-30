@@ -8,7 +8,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,8 +24,6 @@ namespace VideoPlayer
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        private ProgressDialogController progressDialog;
-
         public MainWindowViewModel ViewModel;
 
         public static RoutedCommand PlayPauseCommand = new RoutedCommand();
@@ -74,73 +71,6 @@ namespace VideoPlayer
             SkipForwardCommand.InputGestures.Add(new KeyGesture(Key.Right));
             SkipBackwardsCommand.InputGestures.Add(new KeyGesture(Key.Left));
         }
-
-        //private async void Updater_InstallationFailed(object sender, ExceptionEventArgs<Exception> e)
-        //{
-        //    updater.Dispose();
-        //    await progressDialog.CloseAsync();
-        //    //await this.ShowMessageAsync("Updating application", "Updating the application has failed!");
-        //    await this.ShowMessageAsync("Updating failed", $"Updating the application has failed." +
-        //                                                   $"\n\n{e.Message}");
-        //}
-
-        //private async void Updater_InstallationCompleted(object sender, EventArgs e)
-        //{
-        //    await progressDialog.CloseAsync();
-        //    MessageDialogResult result = await this.ShowMessageAsync("Update completed", "The update has been installed successfully. Would you like to restart the application?", MessageDialogStyle.AffirmativeAndNegative);
-        //    if (result == MessageDialogResult.Affirmative)
-        //    {
-        //        System.Windows.Forms.Application.Restart();
-        //        //Process.Start(updater.OriginalInstallPath);
-        //        //Close();
-        //    }
-        //}
-
-        //private void Updater_InstallationStarted(object sender, EventArgs e)
-        //{
-        //    progressDialog.SetMessage("Installing update...");
-        //}
-
-        //private void Updater_DownloadingCompleted(object sender, EventArgs e)
-        //{
-        //    updater.InstallUpdate();
-        //}
-
-        //private void Updater_DownloadingProgressed(object sender, DownloadProgressEventArgs e)
-        //{
-        //    progressDialog.SetMessage($"Downloading update: {e.BytesReceived / 1000}/{e.TotalBytesToReceive / 1000} kb");
-        //    progressDialog.SetProgress(e.ProgressPercent);
-        //}
-
-        //private async void Updater_DownloadingStarted(object sender, EventArgs e)
-        //{
-        //    progressDialog = await this.ShowProgressAsync("Updating application", $"Starting download...");
-        //    progressDialog.Minimum = 0;
-        //    progressDialog.Maximum = 100;
-        //}
-
-        //public async void Updater_UpdateAvailable(object sender, VersionEventArgs args)
-        //{
-        //    if (!Settings.CurrentSettings.NotifyUpdates)
-        //    {
-        //        UpdateAvailable = true;
-        //        buttonUpdate.Content = "Update available";
-        //        return;
-        //    }
-
-        //    MessageDialogResult result = await this.ShowMessageAsync($"Update available", $"An update is available. Current version: '{args.CurrentVersion.ToString()}' New version: '{args.NewVersion.ToString()}'" +
-        //                                                                                  $"\n\nWould you like to update now?", MessageDialogStyle.AffirmativeAndNegative);
-
-        //    if (result == MessageDialogResult.Affirmative)
-        //        await updater.DownloadUpdateAsync();
-        //    else
-        //    {
-        //        UpdateAvailable = true;
-        //        buttonUpdate.Content = "Update available";
-        //        Settings.CurrentSettings.NotifyUpdates = false;
-        //        await Settings.CurrentSettings.Save();
-        //    }
-        //}
 
         private async void PlayPause_Executed(object sender, ExecutedRoutedEventArgs e)
         {

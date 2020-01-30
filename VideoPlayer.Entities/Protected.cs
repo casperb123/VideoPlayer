@@ -6,17 +6,13 @@ using System.Text;
 
 namespace VideoPlayer.Entities
 {
-    [Serializable]
     public class Protected
     {
         protected byte[] Protect(byte[] data)
         {
             try
             {
-                string deviceId = new DeviceIdBuilder()
-                        .AddSystemUUID()
-                        .ToString();
-
+                string deviceId = GetDeviceId();
                 return ProtectedData.Protect(data, Encoding.ASCII.GetBytes(deviceId), DataProtectionScope.CurrentUser);
             }
             catch (CryptographicException)
@@ -33,10 +29,7 @@ namespace VideoPlayer.Entities
         {
             try
             {
-                string deviceId = new DeviceIdBuilder()
-                        .AddSystemUUID()
-                        .ToString();
-
+                string deviceId = GetDeviceId();
                 return ProtectedData.Unprotect(data, Encoding.ASCII.GetBytes(deviceId), DataProtectionScope.CurrentUser);
             }
             catch (CryptographicException)
@@ -47,6 +40,13 @@ namespace VideoPlayer.Entities
                 return null;
 #endif
             }
+        }
+
+        private string GetDeviceId()
+        {
+            return new DeviceIdBuilder()
+                        .AddSystemUUID()
+                        .ToString();
         }
     }
 }

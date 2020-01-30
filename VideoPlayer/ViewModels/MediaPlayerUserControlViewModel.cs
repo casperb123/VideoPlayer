@@ -12,8 +12,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows.Controls;
-using MahApps.Metro;
-using Theme = MahApps.Metro.Theme;
 
 namespace VideoPlayer.ViewModels
 {
