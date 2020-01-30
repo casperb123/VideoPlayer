@@ -11,6 +11,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Navigation;
 using VideoPlayer.Entities;
@@ -49,6 +51,12 @@ namespace VideoPlayer
             DataContext = ViewModel;
             ViewModel.UserControl = new MediaPlayerUserControl(this);
             masterUserControl.Content = ViewModel.UserControl;
+            comboBoxRightEdgeOpen.ItemsSource = Enum.GetValues(typeof(Settings.EdgeOpen)).Cast<Settings.EdgeOpen>();
+            Binding binding = new Binding("RightEdgeOpen")
+            {
+                Source = Settings.CurrentSettings
+            };
+            comboBoxRightEdgeOpen.SetBinding(Selector.SelectedItemProperty, binding);
 
             ViewModel.ChangeTheme(comboBoxTheme.SelectedItem.ToString(), comboBoxColor.SelectedItem as ColorScheme).ConfigureAwait(false);
 
@@ -446,6 +454,28 @@ namespace VideoPlayer
         {
             if (ViewModel.SelectedPlaylist != null)
                 await ViewModel.ChangePlaylist();
+        }
+
+        private void MetroWindow_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!ViewModel.UserControl.ViewModel.IsFullscreen)
+                return;
+
+            Point mousePos = Mouse.GetPosition(this);
+            double x = ActualWidth - mousePos.X;
+
+            if (x <= 40 && !flyoutQueue.IsOpen && !flyoutPlaylists.IsOpen)
+            {
+                if (Settings.CurrentSettings.RightEdgeOpen == Settings.EdgeOpen.Queue && !flyoutQueue.IsOpen)
+                    flyoutQueue.IsOpen = true;
+                else if (Settings.CurrentSettings.RightEdgeOpen == Settings.EdgeOpen.Playlists && !flyoutPlaylists.IsOpen)
+                    flyoutPlaylists.IsOpen = true;
+            }
+        }
+
+        private void ComboBoxRightEdgeOpen_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ViewModel.SettingsChanged = true;
         }
     }
 }

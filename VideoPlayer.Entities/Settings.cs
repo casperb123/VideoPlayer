@@ -48,10 +48,19 @@ namespace VideoPlayer.Entities
 
         public bool NotifyUpdates { get; set; }
 
+        public enum EdgeOpen
+        {
+            Queue,
+            Playlists
+        }
+
+        public EdgeOpen RightEdgeOpen { get; set; }
+
         public Settings()
         {
             Color = 1;
             NotifyUpdates = true;
+            RightEdgeOpen = EdgeOpen.Queue;
         }
 
         private void OnPropertyChanged(string prop)

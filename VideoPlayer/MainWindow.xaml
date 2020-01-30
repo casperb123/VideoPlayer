@@ -13,7 +13,8 @@
                       MinWidth="825"
                       Height="600"
                       MinHeight="600"
-                      Closing="MetroWindow_Closing">
+                      Closing="MetroWindow_Closing"
+                      MouseMove="MetroWindow_MouseMove">
     <Controls:MetroWindow.CommandBindings>
         <CommandBinding Command="{x:Static local:MainWindow.PlayPauseCommand}"
                         Executed="PlayPause_Executed" />
@@ -181,6 +182,7 @@
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
 
                             <Label Content="Theme:"
@@ -211,7 +213,7 @@
                             <Label Content="Check for updates:"
                                    VerticalContentAlignment="Center"
                                    Grid.Row="2"
-                                   Margin="0,5,5,0" />
+                                   Margin="0,0,5,0" />
                             <Controls:ToggleSwitch x:Name="toggleSwitchCheckForUpdates"
                                                    Grid.Row="2"
                                                    Grid.Column="1"
@@ -220,6 +222,18 @@
                                                    Focusable="False"
                                                    ToolTip="Check for updates on startup"
                                                    IsCheckedChanged="ToggleSwitchCheckForUpdates_IsCheckedChanged" />
+
+                            <Label Content="Right Edge Open"
+                                   VerticalContentAlignment="Center"
+                                   Grid.Row="3"
+                                   Margin="0,5,5,0" />
+                            <ComboBox x:Name="comboBoxRightEdgeOpen"
+                                      Grid.Row="3"
+                                      Grid.Column="1"
+                                      Margin="5,5,0,0"
+                                      Focusable="False"
+                                      ItemsSource="{Binding Path=EdgeOpen, Source={x:Static entities:Settings.CurrentSettings}}"
+                                      SelectionChanged="ComboBoxRightEdgeOpen_SelectionChanged" />
                         </Grid>
                     </GroupBox>
                 </StackPanel>
