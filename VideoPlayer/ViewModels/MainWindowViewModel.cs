@@ -1,10 +1,10 @@
-﻿using GithubUpdater;
-using MahApps.Metro;
-using Newtonsoft.Json;
+﻿using MahApps.Metro;
+using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -17,6 +17,7 @@ using System.Windows.Media;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
 using Application = System.Windows.Application;
+using GithubUpdater;
 
 namespace VideoPlayer.ViewModels
 {
@@ -38,6 +39,8 @@ namespace VideoPlayer.ViewModels
         public bool QueueMediaSelected;
         public bool PlaylistsPlaylistSelected;
         public bool SettingsChanged;
+        public bool UpdateAvailable;
+        public readonly Updater Updater;
 
         public delegate Point GetPosition(IInputElement element);
         public event PropertyChangedEventHandler PropertyChanged;
@@ -135,6 +138,39 @@ namespace VideoPlayer.ViewModels
                 previousTrackHotkey,
                 mediaPlayPauseHotkey
             };
+
+            Updater = new Updater("casperb123", "VideoPlayer");
+            Updater.UpdateAvailable += Updater_UpdateAvailable;
+            if (Settings.CurrentSettings.CheckForUpdates)
+                Updater.CheckForUpdate();
+        }
+
+        private async void Updater_UpdateAvailable(object sender, VersionEventArgs e)
+        {
+            if (Settings.CurrentSettings.NotifyUpdates || UpdateAvailable)
+            {
+                MessageDialogResult result = await mainWindow.ShowMessageAsync($"Update available", $"An update is available. Would you like to update now?", MessageDialogStyle.AffirmativeAndNegative);
+
+                if (result == MessageDialogResult.Affirmative)
+                {
+                    ProcessStartInfo ps = new ProcessStartInfo(Updater.LatestReleaseLink)
+                    {
+                        UseShellExecute = true,
+                        Verb = "open"
+                    };
+                    Process.Start(ps);
+
+                    UpdateAvailable = false;
+                    mainWindow.buttonUpdate.Content = "Check for updates";
+                }
+                else
+                {
+                    Settings.CurrentSettings.NotifyUpdates = false;
+                    UpdateAvailable = true;
+                    mainWindow.buttonUpdate.Content = "Update available";
+                    await Settings.CurrentSettings.Save();
+                }
+            }
         }
 
         public async Task ChangeTheme(string theme, ColorScheme color)
