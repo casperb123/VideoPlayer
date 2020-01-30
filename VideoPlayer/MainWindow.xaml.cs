@@ -456,9 +456,19 @@ namespace VideoPlayer
                 await ViewModel.ChangePlaylist();
         }
 
+        private void ComboBoxRightEdgeOpen_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ViewModel.SettingsChanged = true;
+        }
+
+        private void ToggleSwitchRightEdgeDetection_IsCheckedChanged(object sender, EventArgs e)
+        {
+            ViewModel.SettingsChanged = true;
+        }
+
         private void MetroWindow_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!ViewModel.UserControl.ViewModel.IsFullscreen)
+            if (!ViewModel.UserControl.ViewModel.IsFullscreen || !Settings.CurrentSettings.RightEdgeDetection)
                 return;
 
             Point mousePos = Mouse.GetPosition(this);
@@ -471,11 +481,6 @@ namespace VideoPlayer
                 else if (Settings.CurrentSettings.RightEdgeOpen == Settings.EdgeOpen.Playlists && !flyoutPlaylists.IsOpen)
                     flyoutPlaylists.IsOpen = true;
             }
-        }
-
-        private void ComboBoxRightEdgeOpen_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ViewModel.SettingsChanged = true;
         }
     }
 }

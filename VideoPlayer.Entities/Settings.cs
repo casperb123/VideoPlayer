@@ -14,6 +14,7 @@ namespace VideoPlayer.Entities
     {
         private int theme;
         private int color;
+        private bool rightEdgeDetection;
 
         public static Settings CurrentSettings;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -48,6 +49,16 @@ namespace VideoPlayer.Entities
 
         public bool NotifyUpdates { get; set; }
 
+        public bool RightEdgeDetection
+        {
+            get => rightEdgeDetection;
+            set
+            {
+                rightEdgeDetection = value;
+                OnPropertyChanged(nameof(RightEdgeDetection));
+            }
+        }
+
         public enum EdgeOpen
         {
             Queue,
@@ -61,6 +72,7 @@ namespace VideoPlayer.Entities
             Color = 1;
             NotifyUpdates = true;
             RightEdgeOpen = EdgeOpen.Queue;
+            RightEdgeDetection = true;
         }
 
         private void OnPropertyChanged(string prop)
