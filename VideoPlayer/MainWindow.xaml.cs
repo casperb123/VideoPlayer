@@ -28,10 +28,6 @@ namespace VideoPlayer
     {
         public MainWindowViewModel ViewModel;
 
-        public static RoutedCommand PlayPauseCommand = new RoutedCommand();
-        public static RoutedCommand SkipForwardCommand = new RoutedCommand();
-        public static RoutedCommand SkipBackwardsCommand = new RoutedCommand();
-
         private readonly string[] validExtensions = new string[]
         {
             ".mpg",
@@ -75,9 +71,7 @@ namespace VideoPlayer
                 ViewModel.AddMediasToQueue(medias).ConfigureAwait(false);
             }
 
-            PlayPauseCommand.InputGestures.Add(new KeyGesture(Key.Space));
-            SkipForwardCommand.InputGestures.Add(new KeyGesture(Key.Right));
-            SkipBackwardsCommand.InputGestures.Add(new KeyGesture(Key.Left));
+            RegisterCommandBindings();
         }
 
         private async void PlayPause_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -93,6 +87,57 @@ namespace VideoPlayer
         private async void SkipBackwards_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             await ViewModel.UserControl.ViewModel.SkipBackwards(5);
+        }
+
+        private void Settings_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            flyoutSettings.IsOpen = !flyoutSettings.IsOpen;
+        }
+
+        private void Queue_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            flyoutQueue.IsOpen = !flyoutQueue.IsOpen;
+        }
+
+        private void Playlists_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            flyoutPlaylists.IsOpen = !flyoutPlaylists.IsOpen;
+        }
+
+        private void RegisterCommandBindings()
+        {
+            RoutedCommand PlayPauseCommand = new RoutedCommand();
+            RoutedCommand SkipForwardCommand = new RoutedCommand();
+            RoutedCommand SkipBackwardsCommand = new RoutedCommand();
+            RoutedCommand SettingsCommand = new RoutedCommand();
+            RoutedCommand QueueCommand = new RoutedCommand();
+            RoutedCommand PlaylistsCommand = new RoutedCommand();
+
+            PlayPauseCommand.InputGestures.Add(new KeyGesture(Key.Space));
+            SkipForwardCommand.InputGestures.Add(new KeyGesture(Key.Right));
+            SkipBackwardsCommand.InputGestures.Add(new KeyGesture(Key.Left));
+            SettingsCommand.InputGestures.Add(new KeyGesture(Key.Escape));
+            SettingsCommand.InputGestures.Add(new KeyGesture(Key.S, ModifierKeys.Control));
+            QueueCommand.InputGestures.Add(new KeyGesture(Key.Q, ModifierKeys.Control));
+            PlaylistsCommand.InputGestures.Add(new KeyGesture(Key.P, ModifierKeys.Control));
+
+            CommandBinding PlayPauseBinding = new CommandBinding(PlayPauseCommand, PlayPause_Executed);
+            CommandBinding SkipForwardBinding = new CommandBinding(SkipForwardCommand, SkipForward_Executed);
+            CommandBinding SkipBackwardsBinding = new CommandBinding(SkipBackwardsCommand, SkipBackwards_Executed);
+            CommandBinding SettingsBinding = new CommandBinding(SettingsCommand, Settings_Executed);
+            CommandBinding QueueBinding = new CommandBinding(QueueCommand, Queue_Executed);
+            CommandBinding PlaylistsBinding = new CommandBinding(PlaylistsCommand, Playlists_Executed);
+
+            CommandBinding[] commandBindings = new CommandBinding[]
+            {
+                PlayPauseBinding,
+                SkipForwardBinding,
+                SkipBackwardsBinding,
+                SettingsBinding,
+                QueueBinding,
+                PlaylistsBinding
+            };
+            CommandBindings.AddRange(commandBindings);
         }
 
         private void ButtonWindowSettings_Click(object sender, RoutedEventArgs e)
@@ -489,6 +534,21 @@ namespace VideoPlayer
                 else if (Settings.CurrentSettings.RightEdgeOpen == Settings.EdgeOpen.Playlists && !flyoutPlaylists.IsOpen)
                     flyoutPlaylists.IsOpen = true;
             }
+        }
+
+        private void FlyoutQueue_IsOpenChanged(object sender, RoutedEventArgs e)
+        {
+            if (flyoutQueue.IsOpen)
+            {
+                flyoutPlaylists.IsOpen = false;
+                flyoutPlaylist.IsOpen = false;
+            }
+        }
+
+        private void FlyoutPlaylists_IsOpenChanged(object sender, RoutedEventArgs e)
+        {
+            if (flyoutPlaylists.IsOpen)
+                flyoutQueue.IsOpen = false;
         }
     }
 }

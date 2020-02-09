@@ -15,33 +15,27 @@
                       MinHeight="600"
                       Closing="MetroWindow_Closing"
                       MouseMove="MetroWindow_MouseMove">
-    <Controls:MetroWindow.CommandBindings>
-        <CommandBinding Command="{x:Static local:MainWindow.PlayPauseCommand}"
-                        Executed="PlayPause_Executed" />
-        <CommandBinding Command="{x:Static local:MainWindow.SkipForwardCommand}"
-                        Executed="SkipForward_Executed" />
-        <CommandBinding Command="{x:Static local:MainWindow.SkipBackwardsCommand}"
-                        Executed="SkipBackwards_Executed" />
-    </Controls:MetroWindow.CommandBindings>
-
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button x:Name="buttonUpdate"
                     Content="Check for updates"
                     Cursor="Hand"
                     Focusable="False"
+                    ToolTip="Check for updates"
                     Click="ButtonUpdate_Click" />
 
             <Button x:Name="buttonWindowCredits"
                     Content="Credits"
                     Cursor="Hand"
                     Focusable="False"
+                    ToolTip="Open/close credits flyout"
                     Click="ButtonWindowCredits_Click" />
 
             <Button x:Name="buttonWindowSettings"
                     Content="Settings"
                     Cursor="Hand"
                     Focusable="False"
+                    ToolTip="Open/close settings flyout (Escape/Ctrl+S)"
                     Click="ButtonWindowSettings_Click" />
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
@@ -278,7 +272,8 @@
                              Width="300"
                              IsPinned="False"
                              MouseEnter="Flyout_MouseEnter"
-                             MouseLeave="Flyout_MouseLeave">
+                             MouseLeave="Flyout_MouseLeave"
+                             IsOpenChanged="FlyoutQueue_IsOpenChanged">
                 <Grid x:Name="gridFlyoutQueue"
                       AllowDrop="True"
                       Drop="GridFlyoutQueue_Drop">
@@ -362,7 +357,8 @@
                              Width="300"
                              IsPinned="False"
                              MouseEnter="Flyout_MouseEnter"
-                             MouseLeave="Flyout_MouseLeave">
+                             MouseLeave="Flyout_MouseLeave"
+                             IsOpenChanged="FlyoutPlaylists_IsOpenChanged">
                 <Grid x:Name="gridFlyoutPlaylists">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*" />

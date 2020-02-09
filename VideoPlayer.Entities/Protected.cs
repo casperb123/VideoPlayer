@@ -12,8 +12,7 @@ namespace VideoPlayer.Entities
         {
             try
             {
-                string deviceId = GetDeviceId();
-                return ProtectedData.Protect(data, Encoding.ASCII.GetBytes(deviceId), DataProtectionScope.CurrentUser);
+                return ProtectedData.Protect(data, null, DataProtectionScope.CurrentUser);
             }
             catch (CryptographicException)
             {
@@ -29,8 +28,7 @@ namespace VideoPlayer.Entities
         {
             try
             {
-                string deviceId = GetDeviceId();
-                return ProtectedData.Unprotect(data, Encoding.ASCII.GetBytes(deviceId), DataProtectionScope.CurrentUser);
+                return ProtectedData.Unprotect(data, null, DataProtectionScope.CurrentUser);
             }
             catch (CryptographicException)
             {
@@ -40,13 +38,6 @@ namespace VideoPlayer.Entities
                 return null;
 #endif
             }
-        }
-
-        private string GetDeviceId()
-        {
-            return new DeviceIdBuilder()
-                        .AddSystemUUID()
-                        .ToString();
         }
     }
 }
