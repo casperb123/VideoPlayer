@@ -15,6 +15,7 @@ namespace VideoPlayer.Entities
         private int theme;
         private int color;
         private bool rightEdgeDetection;
+        private int rightEdgeDistance;
 
         public static Settings CurrentSettings;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -67,12 +68,25 @@ namespace VideoPlayer.Entities
 
         public EdgeOpen RightEdgeOpen { get; set; }
 
+        public int RightEdgeDistance
+        {
+            get => rightEdgeDistance;
+            set
+            {
+                if (value < 5 || value > 200)
+                    throw new ArgumentOutOfRangeException(nameof(RightEdgeDistance), "The right edge distance must be between 5 and 100");
+
+                rightEdgeDistance = value;
+            }
+        }
+
         public Settings()
         {
             Color = 1;
             NotifyUpdates = true;
             RightEdgeOpen = EdgeOpen.Queue;
             RightEdgeDetection = true;
+            RightEdgeDistance = 50;
         }
 
         private void OnPropertyChanged(string prop)

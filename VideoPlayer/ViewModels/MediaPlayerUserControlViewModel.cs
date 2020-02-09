@@ -85,7 +85,7 @@ namespace VideoPlayer.ViewModels
 
         private void ControlsTimer_Tick(object sender, EventArgs e)
         {
-            if (userControl.player.IsPlaying)
+            if (userControl.player.IsPlaying && !MainWindow.ShowTitleBar)
             {
                 userControl.gridControls.IsEnabled = false;
                 userControl.gridControls.Visibility = Visibility.Hidden;

@@ -466,15 +466,38 @@ namespace VideoPlayer
             ViewModel.SettingsChanged = true;
         }
 
+        private void NumericUpDownRightEdgeDistance_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            if (!IsLoaded)
+                return;
+
+            ViewModel.SettingsChanged = true;
+        }
+
         private void MetroWindow_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!ViewModel.UserControl.ViewModel.IsFullscreen || !Settings.CurrentSettings.RightEdgeDetection)
+            if (!ViewModel.UserControl.ViewModel.IsFullscreen)
                 return;
 
             Point mousePos = Mouse.GetPosition(this);
             double x = ActualWidth - mousePos.X;
 
-            if (x <= 40 && !flyoutQueue.IsOpen && !flyoutPlaylists.IsOpen)
+            if (mousePos.Y <= 5 && !ShowTitleBar)
+            {
+                ShowTitleBar = true;
+                ShowCloseButton = true;
+                ShowMaxRestoreButton = true;
+                ShowMinButton = true;
+            }
+            else if (mousePos.Y > 30 && ShowTitleBar)
+            {
+                ShowTitleBar = false;
+                ShowCloseButton = false;
+                ShowMaxRestoreButton = false;
+                ShowMinButton = false;
+            }
+
+            if (x <= Settings.CurrentSettings.RightEdgeDistance && !flyoutQueue.IsOpen && !flyoutPlaylists.IsOpen && Settings.CurrentSettings.RightEdgeDetection && !ShowTitleBar)
             {
                 if (Settings.CurrentSettings.RightEdgeOpen == Settings.EdgeOpen.Queue && !flyoutQueue.IsOpen)
                     flyoutQueue.IsOpen = true;

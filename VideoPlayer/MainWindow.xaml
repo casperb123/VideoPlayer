@@ -184,6 +184,7 @@
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
 
                             <Label Content="Theme:"
@@ -240,15 +241,31 @@
                             <Label Content="Right Edge Open:"
                                    VerticalContentAlignment="Center"
                                    Grid.Row="4"
-                                   Margin="0,5,5,0" />
+                                   Margin="0,0,5,0" />
                             <ComboBox x:Name="comboBoxRightEdgeOpen"
                                       Grid.Row="4"
                                       Grid.Column="1"
-                                      Margin="5,5,0,0"
+                                      Margin="5,5,0,5"
                                       Focusable="False"
                                       ItemsSource="{Binding Path=EdgeOpen, Source={x:Static entities:Settings.CurrentSettings}}"
                                       IsEnabled="{Binding Path=RightEdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
                                       SelectionChanged="ComboBoxRightEdgeOpen_SelectionChanged" />
+
+                            <Label Content="Right Edge Distance:"
+                                   VerticalContentAlignment="Center"
+                                   Grid.Row="5"
+                                   Margin="0,5,5,0" />
+                            <Controls:NumericUpDown x:Name="numericUpDownRightEdgeDistance"
+                                                    Grid.Row="5"
+                                                    Grid.Column="1"
+                                                    Margin="5,5,0,0"
+                                                    Minimum="5"
+                                                    Maximum="200"
+                                                    Speedup="True"
+                                                    Interval="1"
+                                                    IsEnabled="{Binding Path=RightEdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
+                                                    Value="{Binding Path=RightEdgeDistance, Source={x:Static entities:Settings.CurrentSettings}}"
+                                                    ValueChanged="NumericUpDownRightEdgeDistance_ValueChanged" />
                         </Grid>
                     </GroupBox>
                 </StackPanel>
