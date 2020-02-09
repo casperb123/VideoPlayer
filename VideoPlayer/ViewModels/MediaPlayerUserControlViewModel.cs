@@ -150,6 +150,7 @@ namespace VideoPlayer.ViewModels
 
             await userControl.player.Open(media.Uri);
             await Play();
+            ChangeSpeed(MainWindow.numericPlaybackSpeed.Value.GetValueOrDefault());
         }
 
         public async Task Play()
@@ -181,9 +182,7 @@ namespace VideoPlayer.ViewModels
                 ResetControls();
             }
             else
-            {
                 await userControl.player.Stop();
-            }
         }
 
         public void ResetControls()
@@ -267,22 +266,14 @@ namespace VideoPlayer.ViewModels
             if (timeSpan.Hours > 0)
             {
                 if (timeSpan.Hours > 9)
-                {
                     timeSpanString = @"hh\:";
-                }
                 else
-                {
                     timeSpanString = @"h\:";
-                }
             }
             if (timeSpan.Minutes > 9 || timeSpan.Hours > 0)
-            {
                 timeSpanString += @"mm\:";
-            }
             else
-            {
                 timeSpanString += @"m\:";
-            }
 
             return timeSpan.ToString($@"{timeSpanString}ss");
         }
@@ -304,16 +295,13 @@ namespace VideoPlayer.ViewModels
                 loopStart = startSeconds;
                 loopEnd = endSeconds;
 
-                if (loopStart > 0 && loopEnd > 0 &&
-                    loopStart < loopEnd)
+                if (loopStart > 0 && loopEnd > 0 && loopStart < loopEnd)
                 {
                     SetSelection(loopStart, loopEnd);
                     userControl.buttonResetLoop.IsEnabled = true;
                 }
                 else
-                {
                     userControl.buttonResetLoop.IsEnabled = false;
-                }
             }
             else
             {
@@ -326,9 +314,7 @@ namespace VideoPlayer.ViewModels
         private string Split(string source, int start, int end)
         {
             if (end < 0)
-            {
                 end = source.Length + end;
-            }
             int len = end - start;
 
             return source.Substring(start, len);
@@ -345,20 +331,15 @@ namespace VideoPlayer.ViewModels
         {
             double value = PixelsToValue(point.X, userControl.sliderProgress.Minimum, userControl.sliderProgress.Maximum, userControl.sliderProgress.ActualWidth);
 
-            if (loopStart == 0 && loopEnd == 0 ||
-                Math.Abs(loopStart - value) < Math.Abs(loopEnd - value) && loopEnd > 0)
-            {
+            if (loopStart == 0 && loopEnd == 0 || Math.Abs(loopStart - value) < Math.Abs(loopEnd - value) && loopEnd > 0)
                 MainWindow.textBoxLoopStart.Text = ConvertSecondsToTime(value);
-            }
             else if (loopEnd == 0)
             {
                 MainWindow.textBoxLoopEnd.Text = ConvertSecondsToTime(value);
                 MainWindow.toggleSwitchLoopTime.IsChecked = true;
             }
             else
-            {
                 MainWindow.textBoxLoopEnd.Text = ConvertSecondsToTime(value);
-            }
         }
 
         public void SetSelection(double start, double end)
@@ -382,13 +363,9 @@ namespace VideoPlayer.ViewModels
             await Open(MainWindow.ViewModel.SelectedMedia);
 
             if (MainWindow.ViewModel.OldQueue.Count == 0)
-            {
                 userControl.buttonSkipBackwards.IsEnabled = false;
-            }
             else
-            {
                 userControl.buttonSkipBackwards.IsEnabled = true;
-            }
 
             userControl.buttonSkipForward.IsEnabled = true;
         }
@@ -399,13 +376,9 @@ namespace VideoPlayer.ViewModels
             await Open(media);
 
             if (index + 1 == MainWindow.ViewModel.Queue.Count)
-            {
                 userControl.buttonSkipForward.IsEnabled = false;
-            }
             else
-            {
                 userControl.buttonSkipForward.IsEnabled = true;
-            }
 
             List<Media> oldMedias = MainWindow.ViewModel.Queue.Where(x => MainWindow.ViewModel.Queue.IndexOf(x) < index).ToList();
             List<Media> medias = MainWindow.ViewModel.Queue.Where(x => MainWindow.ViewModel.Queue.IndexOf(x) > index).ToList();
@@ -415,20 +388,14 @@ namespace VideoPlayer.ViewModels
                 MainWindow.ViewModel.OldQueue.Add(MainWindow.ViewModel.SelectedMedia);
 
             foreach (Media oldMedia in oldMedias)
-            {
                 MainWindow.ViewModel.OldQueue.Add(oldMedia);
-            }
 
             MainWindow.ViewModel.SelectedMedia = media;
 
             if (MainWindow.ViewModel.OldQueue.Count > 0)
-            {
                 userControl.buttonSkipBackwards.IsEnabled = true;
-            }
             else
-            {
                 userControl.buttonSkipBackwards.IsEnabled = false;
-            }
         }
 
         public Playlist GetPlaylist(string name, string[] filePaths)
@@ -443,9 +410,7 @@ namespace VideoPlayer.ViewModels
         public async Task SkipForward(int value)
         {
             if (IsFullscreen)
-            {
                 ShowControlsInFullscreen();
-            }
 
             int pos = Convert.ToInt32(userControl.sliderProgress.Value + value);
             await userControl.player.Seek(new TimeSpan(0, 0, 0, pos, 0));
@@ -455,9 +420,7 @@ namespace VideoPlayer.ViewModels
         public async Task SkipBackwards(int value)
         {
             if (IsFullscreen)
-            {
                 ShowControlsInFullscreen();
-            }
 
             int pos = Convert.ToInt32(userControl.sliderProgress.Value - value);
             await userControl.player.Seek(new TimeSpan(0, 0, 0, pos, 0));
@@ -469,18 +432,12 @@ namespace VideoPlayer.ViewModels
             if (userControl.player.IsOpen)
             {
                 if (IsFullscreen)
-                {
                     ShowControlsInFullscreen();
-                }
 
                 if (userControl.player.IsPlaying)
-                {
                     await Pause();
-                }
                 else
-                {
                     await Play();
-                }
             }
         }
 
