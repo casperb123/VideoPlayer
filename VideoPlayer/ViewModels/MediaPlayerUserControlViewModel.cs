@@ -513,7 +513,7 @@ namespace VideoPlayer.ViewModels
             MainWindow.ShowCloseButton = true;
             MainWindow.ShowMaxRestoreButton = true;
             MainWindow.ShowMinButton = true;
-            //MainWindow.WindowState = oldState;
+            MainWindow.WindowState = oldState;
             userControl.gridMediaElementBackground.ClearValue(Grid.RowSpanProperty);
             userControl.gridControls.IsEnabled = true;
             userControl.gridControls.Visibility = Visibility.Visible;

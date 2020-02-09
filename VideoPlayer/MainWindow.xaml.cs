@@ -476,28 +476,13 @@ namespace VideoPlayer
 
         private void MetroWindow_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!ViewModel.UserControl.ViewModel.IsFullscreen)
+            if (!ViewModel.UserControl.ViewModel.IsFullscreen || !Settings.CurrentSettings.RightEdgeDetection)
                 return;
 
             Point mousePos = Mouse.GetPosition(this);
             double x = ActualWidth - mousePos.X;
 
-            if (mousePos.Y <= 5 && !ShowTitleBar)
-            {
-                ShowTitleBar = true;
-                ShowCloseButton = true;
-                ShowMaxRestoreButton = true;
-                ShowMinButton = true;
-            }
-            else if (mousePos.Y > 30 && ShowTitleBar)
-            {
-                ShowTitleBar = false;
-                ShowCloseButton = false;
-                ShowMaxRestoreButton = false;
-                ShowMinButton = false;
-            }
-
-            if (x <= Settings.CurrentSettings.RightEdgeDistance && !flyoutQueue.IsOpen && !flyoutPlaylists.IsOpen && Settings.CurrentSettings.RightEdgeDetection && !ShowTitleBar)
+            if (x <= Settings.CurrentSettings.RightEdgeDistance && !flyoutQueue.IsOpen && !flyoutPlaylists.IsOpen)
             {
                 if (Settings.CurrentSettings.RightEdgeOpen == Settings.EdgeOpen.Queue && !flyoutQueue.IsOpen)
                     flyoutQueue.IsOpen = true;
