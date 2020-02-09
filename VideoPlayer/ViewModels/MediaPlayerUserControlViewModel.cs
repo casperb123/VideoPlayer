@@ -398,6 +398,34 @@ namespace VideoPlayer.ViewModels
                 userControl.buttonSkipBackwards.IsEnabled = false;
         }
 
+        public async Task ChangeTrack(Media media)
+        {
+            int index = MainWindow.ViewModel.Queue.IndexOf(media);
+            await Open(media);
+
+            if (index + 1 == MainWindow.ViewModel.Queue.Count)
+                userControl.buttonSkipForward.IsEnabled = false;
+            else
+                userControl.buttonSkipForward.IsEnabled = true;
+
+            List<Media> oldMedias = MainWindow.ViewModel.Queue.Where(x => MainWindow.ViewModel.Queue.IndexOf(x) < index).ToList();
+            List<Media> medias = MainWindow.ViewModel.Queue.Where(x => MainWindow.ViewModel.Queue.IndexOf(x) > index).ToList();
+            MainWindow.ViewModel.Queue = new ObservableCollection<Media>(medias);
+
+            if (MainWindow.ViewModel.SelectedMedia != null)
+                MainWindow.ViewModel.OldQueue.Add(MainWindow.ViewModel.SelectedMedia);
+
+            foreach (Media oldMedia in oldMedias)
+                MainWindow.ViewModel.OldQueue.Add(oldMedia);
+
+            MainWindow.ViewModel.SelectedMedia = media;
+
+            if (MainWindow.ViewModel.OldQueue.Count > 0)
+                userControl.buttonSkipBackwards.IsEnabled = true;
+            else
+                userControl.buttonSkipBackwards.IsEnabled = false;
+        }
+
         public Playlist GetPlaylist(string name, string[] filePaths)
         {
             List<Media> medias = new List<Media>();

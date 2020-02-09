@@ -184,11 +184,10 @@ namespace VideoPlayer
 
         private async void DataGridQueue_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            int index = dataGridQueue.SelectedIndex;
-            if (index == -1)
+            if (ViewModel.SelectedMedia is null)
                 return;
 
-            await ViewModel.UserControl.ViewModel.ChangeTrack(index);
+            await ViewModel.UserControl.ViewModel.ChangeTrack(ViewModel.SelectedMedia);
         }
 
         private void ButtonClearQueue_Click(object sender, RoutedEventArgs e)
@@ -197,22 +196,9 @@ namespace VideoPlayer
             ViewModel.UserControl.buttonSkipForward.IsEnabled = false;
         }
 
-        private void DataGridQueueContextMenu_Opened(object sender, RoutedEventArgs e)
-        {
-            if (ViewModel.Queue.Count < 1 || !ViewModel.QueueMediaSelected)
-            {
-                menuItemQueueRemove.IsEnabled = false;
-            }
-            else
-            {
-                menuItemQueueRemove.IsEnabled = true;
-            }
-        }
-
         private void MenuItemQueueRemove_Click(object sender, RoutedEventArgs e)
         {
-            Media media = ViewModel.Queue[ViewModel.QueueRowIndex];
-            ViewModel.Queue.Remove(media);
+            ViewModel.Queue.Remove(ViewModel.SelectedMedia);
         }
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
@@ -265,7 +251,7 @@ namespace VideoPlayer
             }
         }
 
-        private void DataGridPlaylistsContextMenu_Opened(object sender, RoutedEventArgs e)
+        private void ContextMenuDataGridPlaylists_Opened(object sender, RoutedEventArgs e)
         {
             if (ViewModel.SelectedPlaylist is null)
             {
@@ -304,9 +290,9 @@ namespace VideoPlayer
 
         private async void MenuItemPlaylistsRemove_Click(object sender, RoutedEventArgs e)
         {
-            MessageDialogResult result = await this.ShowMessageAsync("Delete playlist", $"Are you sure that you want to delete the playlist '{ViewModel.SelectedPlaylist.Name}'?", MessageDialogStyle.AffirmativeAndNegative);
+            MessageDialogResult result = await this.ShowMessageAsync("Delete playlist", $"Are you sure that you want to delete the playlist '{ViewModel.SelectedPlaylist.Name}' MessageDialogStyle.AffirmativeAndNegative");
             if (result == MessageDialogResult.Affirmative)
-                await ViewModel.RemovePlaylist();
+                await ViewModel.RemovePlaylist(ViewModel.SelectedPlaylist);
         }
 
         private void MenuItemPlaylistsEditMedias_Click(object sender, RoutedEventArgs e)
@@ -333,7 +319,7 @@ namespace VideoPlayer
                 dataGridPlaylist.SelectedItem = null;
         }
 
-        private void DataGridPlaylistContextMenu_Opened(object sender, RoutedEventArgs e)
+        private void ContextMenuDataGridPlaylist_Opened(object sender, RoutedEventArgs e)
         {
             if (ViewModel.SelectedPlaylistMedia is null)
                 menuItemPlaylistRemove.IsEnabled = false;
@@ -353,8 +339,7 @@ namespace VideoPlayer
 
         private async void MenuItemPlaylistsAddToQueue_Click(object sender, RoutedEventArgs e)
         {
-            if (ViewModel.SelectedPlaylist != null)
-                await ViewModel.AddMediasToQueue(ViewModel.SelectedPlaylist.Medias);
+            await ViewModel.AddMediasToQueue(ViewModel.SelectedPlaylist.Medias);
         }
 
         private void DataGridPlaylists_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -390,25 +375,27 @@ namespace VideoPlayer
             ViewModel.PlaylistRowIndex = ViewModel.GetCurrentRowIndex(dataGridPlaylist, e.GetPosition);
             if (ViewModel.PlaylistRowIndex < 0)
                 return;
-            dataGridPlaylist.SelectedIndex = ViewModel.PlaylistRowIndex;
             if (!(dataGridPlaylist.Items[ViewModel.PlaylistRowIndex] is Media selectedMedia))
                 return;
-            if (DragDrop.DoDragDrop(dataGridPlaylist, selectedMedia, DragDropEffects.Move) != DragDropEffects.None)
-                dataGridPlaylist.SelectedItem = selectedMedia;
+            ViewModel.PlaylistMediaSelected = true;
+            DragDrop.DoDragDrop(dataGridPlaylist, selectedMedia, DragDropEffects.Move);
+            if (ViewModel.PlaylistMediaSelected)
+                dataGridPlaylist.SelectedIndex = ViewModel.PlaylistRowIndex;
         }
 
         private async void DataGridPlaylist_Drop(object sender, DragEventArgs e)
         {
             if (ViewModel.PlaylistRowIndex < 0)
                 return;
-            int index = ViewModel.GetCurrentRowIndex(dataGridPlaylist, e.GetPosition);
-            if (index < 0 || index == ViewModel.PlaylistRowIndex)
+            int index = ViewModel.GetCurrentRowIndex(dataGridPlaylists, e.GetPosition);
+            if (index < 0 || index == ViewModel.PlaylistsRowIndex)
                 return;
 
             Media changedMedia = ViewModel.SelectedPlaylist.Medias[ViewModel.PlaylistRowIndex];
             ViewModel.SelectedPlaylist.Medias.RemoveAt(ViewModel.PlaylistRowIndex);
             ViewModel.SelectedPlaylist.Medias.Insert(index, changedMedia);
             await ViewModel.SavePlaylists();
+            ViewModel.PlaylistMediaSelected = false;
         }
 
         private void DataGridQueue_Drop(object sender, DragEventArgs e)
@@ -428,9 +415,10 @@ namespace VideoPlayer
         private void DataGridPlaylists_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             int index = ViewModel.GetCurrentRowIndex(dataGridPlaylists, e.GetPosition);
-            if (index < 0)
+            if (index == -1 || !(dataGridPlaylists.Items[index] is Playlist selectedPlaylist))
                 return;
-            dataGridPlaylists.SelectedIndex = index;
+            ViewModel.SelectedPlaylist = selectedPlaylist;
+            contextMenuDataGridPlaylists.IsOpen = true;
         }
 
         private async void MenuItemPlaylistsEditName_Click(object sender, RoutedEventArgs e)
@@ -549,6 +537,47 @@ namespace VideoPlayer
         {
             if (flyoutPlaylists.IsOpen)
                 flyoutQueue.IsOpen = false;
+        }
+
+        private void DataGridQueue_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            int index = ViewModel.GetCurrentRowIndex(dataGridQueue, e.GetPosition);
+            if (index == -1 || !(dataGridQueue.Items[index] is Media selectedMedia))
+                return;
+            ViewModel.SelectedMedia = selectedMedia;
+            contextMenuDataGridQueue.IsOpen = true;
+        }
+
+        private void ContextMenuDataGridQueue_Opened(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel.SelectedMedia is null)
+                menuItemQueueRemove.IsEnabled = false;
+            else
+                menuItemQueueRemove.IsEnabled = true;
+        }
+
+        private void DataGridPlaylist_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            int index = ViewModel.GetCurrentRowIndex(dataGridPlaylist, e.GetPosition);
+            if (index == -1 || !(dataGridPlaylist.Items[index] is Media selectedMedia))
+                return;
+            ViewModel.SelectedPlaylistMedia = selectedMedia;
+            contextMenuDataGridPlaylist.IsOpen = true;
+        }
+
+        private void DataGridQueue_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void DataGridPlaylists_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void DataGridPlaylist_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }

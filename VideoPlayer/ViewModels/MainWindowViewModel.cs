@@ -39,6 +39,7 @@ namespace VideoPlayer.ViewModels
         public int QueueRowIndex;
         public bool QueueMediaSelected;
         public bool PlaylistsPlaylistSelected;
+        public bool PlaylistMediaSelected;
         public bool SettingsChanged;
         public bool UpdateAvailable;
         public readonly Updater Updater;
@@ -224,9 +225,9 @@ namespace VideoPlayer.ViewModels
             await AddMediasToQueue(SelectedPlaylist.Medias);
         }
 
-        public async Task RemovePlaylist()
+        public async Task RemovePlaylist(Playlist playlist)
         {
-            Playlists.Remove(SelectedPlaylist);
+            Playlists.Remove(playlist);
             await SavePlaylists();
         }
 

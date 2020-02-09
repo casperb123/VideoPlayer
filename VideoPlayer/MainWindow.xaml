@@ -289,6 +289,7 @@
                     <DataGrid x:Name="dataGridQueue"
                               Grid.Row="1"
                               ItemsSource="{Binding Path=Queue}"
+                              SelectedItem="{Binding Path=SelectedMedia, Mode=OneWayToSource}"
                               SelectionMode="Single"
                               AutoGenerateColumns="False"
                               CanUserSortColumns="False"
@@ -301,7 +302,9 @@
                               ToolTip="Left click and drag to move medias"
                               SelectionChanged="DataGridQueue_SelectionChanged"
                               Drop="DataGridQueue_Drop"
-                              PreviewMouseLeftButtonDown="DataGridQueue_PreviewMouseLeftButtonDown">
+                              PreviewMouseLeftButtonDown="DataGridQueue_PreviewMouseLeftButtonDown"
+                              PreviewMouseRightButtonDown="DataGridQueue_PreviewMouseRightButtonDown"
+                              PreviewMouseRightButtonUp="DataGridQueue_PreviewMouseRightButtonUp">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name"
                                                 Binding="{Binding Path=Name}"
@@ -331,8 +334,8 @@
                             </DataGridTextColumn>
                         </DataGrid.Columns>
                         <DataGrid.ContextMenu>
-                            <ContextMenu x:Name="dataGridQueueContextMenu"
-                                         Opened="DataGridQueueContextMenu_Opened">
+                            <ContextMenu x:Name="contextMenuDataGridQueue"
+                                         Opened="ContextMenuDataGridQueue_Opened">
                                 <MenuItem x:Name="menuItemQueueRemove"
                                           Header="Remove"
                                           Click="MenuItemQueueRemove_Click"/>
@@ -367,7 +370,7 @@
 
                     <DataGrid x:Name="dataGridPlaylists"
                               ItemsSource="{Binding Path=Playlists}"
-                              SelectedItem="{Binding Path=SelectedPlaylist}"
+                              SelectedItem="{Binding Path=SelectedPlaylist, Mode=OneWayToSource}"
                               SelectionMode="Single"
                               AutoGenerateColumns="False"
                               CanUserSortColumns="False"
@@ -378,9 +381,11 @@
                               HorizontalScrollBarVisibility="Disabled"
                               AllowDrop="True"
                               ToolTip="Left click and drag to move playlists"
-                              PreviewMouseLeftButtonDown="DataGridPlaylists_PreviewMouseLeftButtonDown"
                               Drop="DataGridPlaylists_Drop"
-                              SelectionChanged="DataGridPlaylists_SelectionChanged">
+                              SelectionChanged="DataGridPlaylists_SelectionChanged"
+                              PreviewMouseLeftButtonDown="DataGridPlaylists_PreviewMouseLeftButtonDown"
+                              PreviewMouseRightButtonDown="DataGridPlaylists_PreviewMouseRightButtonDown"
+                              PreviewMouseRightButtonUp="DataGridPlaylists_PreviewMouseRightButtonUp">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name"
                                                 Binding="{Binding Path=Name}"
@@ -410,8 +415,8 @@
                             </DataGridTextColumn>
                         </DataGrid.Columns>
                         <DataGrid.ContextMenu>
-                            <ContextMenu x:Name="dataGridPlaylistsContextMenu"
-                                         Opened="DataGridPlaylistsContextMenu_Opened">
+                            <ContextMenu x:Name="contextMenuDataGridPlaylists"
+                                         Opened="ContextMenuDataGridPlaylists_Opened">
                                 <MenuItem x:Name="menuItemPlaylistsAddToQueue"
                                           Header="Add to queue"
                                           Click="MenuItemPlaylistsAddToQueue_Click" />
@@ -466,8 +471,10 @@
                               HorizontalScrollBarVisibility="Disabled"
                               AllowDrop="True"
                               ToolTip="Left click and drag to move medias"
+                              Drop="DataGridPlaylist_Drop"
                               PreviewMouseLeftButtonDown="DataGridPlaylist_PreviewMouseLeftButtonDown"
-                              Drop="DataGridPlaylist_Drop">
+                              PreviewMouseRightButtonDown="DataGridPlaylist_PreviewMouseRightButtonDown"
+                              PreviewMouseRightButtonUp="DataGridPlaylist_PreviewMouseRightButtonUp">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name"
                                                 Binding="{Binding Path=Name}"
@@ -497,8 +504,8 @@
                             </DataGridTextColumn>
                         </DataGrid.Columns>
                         <DataGrid.ContextMenu>
-                            <ContextMenu x:Name="dataGridPlaylistContextMenu"
-                                         Opened="DataGridPlaylistContextMenu_Opened">
+                            <ContextMenu x:Name="contextMenuDataGridPlaylist"
+                                         Opened="ContextMenuDataGridPlaylist_Opened">
                                 <MenuItem x:Name="menuItemPlaylistRemove"
                                           Header="Remove"
                                           Click="MenuItemPlaylistRemove_Click" />
