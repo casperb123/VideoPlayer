@@ -47,12 +47,20 @@ namespace VideoPlayer
             DataContext = ViewModel;
             ViewModel.UserControl = new MediaPlayerUserControl(this);
             masterUserControl.Content = ViewModel.UserControl;
-            comboBoxRightEdgeOpen.ItemsSource = Enum.GetValues(typeof(Settings.EdgeOpen)).Cast<Settings.EdgeOpen>();
-            Binding binding = new Binding("RightEdgeOpen")
+            IEnumerable<Settings.EdgeOpen> edgeOpens = Enum.GetValues(typeof(Settings.EdgeOpen)).Cast<Settings.EdgeOpen>();
+            comboBoxRightEdgeOpen.ItemsSource = edgeOpens;
+            comboBoxLeftEdgeOpen.ItemsSource = edgeOpens;
+
+            Binding rightEdgeBinding = new Binding("RightEdgeOpen")
             {
                 Source = Settings.CurrentSettings
             };
-            comboBoxRightEdgeOpen.SetBinding(Selector.SelectedItemProperty, binding);
+            comboBoxRightEdgeOpen.SetBinding(Selector.SelectedItemProperty, rightEdgeBinding);
+            Binding leftEdgeBinding = new Binding("LeftEdgeOpen")
+            {
+                Source = Settings.CurrentSettings
+            };
+            comboBoxLeftEdgeOpen.SetBinding(Selector.SelectedItemProperty, leftEdgeBinding);
 
             ViewModel.ChangeTheme(comboBoxTheme.SelectedItem.ToString(), comboBoxColor.SelectedItem as ColorScheme).ConfigureAwait(false);
 
@@ -91,17 +99,17 @@ namespace VideoPlayer
 
         private void Settings_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            flyoutSettings.IsOpen = !flyoutSettings.IsOpen;
+            ViewModel.OpenSettings();
         }
 
         private void Queue_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            flyoutQueue.IsOpen = !flyoutQueue.IsOpen;
+            ViewModel.OpenQueue();
         }
 
         private void Playlists_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            flyoutPlaylists.IsOpen = !flyoutPlaylists.IsOpen;
+            ViewModel.OpenPlaylists();
         }
 
         private void RegisterCommandBindings()
@@ -142,8 +150,7 @@ namespace VideoPlayer
 
         private void ButtonWindowSettings_Click(object sender, RoutedEventArgs e)
         {
-            flyoutCredits.IsOpen = false;
-            flyoutSettings.IsOpen = !flyoutSettings.IsOpen;
+            ViewModel.OpenSettings();
         }
 
         private void ButtonWindowCredits_Click(object sender, RoutedEventArgs e)
@@ -494,12 +501,12 @@ namespace VideoPlayer
             ViewModel.SettingsChanged = true;
         }
 
-        private void ToggleSwitchRightEdgeDetection_IsCheckedChanged(object sender, EventArgs e)
+        private void ToggleSwitchEdgeDetection_IsCheckedChanged(object sender, EventArgs e)
         {
             ViewModel.SettingsChanged = true;
         }
 
-        private void NumericUpDownRightEdgeDistance_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        private void NumericUpDownEdgeDistance_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             if (!IsLoaded)
                 return;
@@ -509,18 +516,47 @@ namespace VideoPlayer
 
         private void MetroWindow_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!ViewModel.UserControl.ViewModel.IsFullscreen || !Settings.CurrentSettings.RightEdgeDetection)
+            if (!ViewModel.UserControl.ViewModel.IsFullscreen || !Settings.CurrentSettings.EdgeDetection)
                 return;
 
             Point mousePos = Mouse.GetPosition(this);
-            double x = ActualWidth - mousePos.X;
+            double xRight = ActualWidth - mousePos.X;
 
-            if (x <= Settings.CurrentSettings.RightEdgeDistance && !flyoutQueue.IsOpen && !flyoutPlaylists.IsOpen)
+            if (xRight <= Settings.CurrentSettings.EdgeDistance)
             {
                 if (Settings.CurrentSettings.RightEdgeOpen == Settings.EdgeOpen.Queue && !flyoutQueue.IsOpen)
+                {
+                    flyoutQueue.Position = Position.Right;
                     flyoutQueue.IsOpen = true;
+                }
                 else if (Settings.CurrentSettings.RightEdgeOpen == Settings.EdgeOpen.Playlists && !flyoutPlaylists.IsOpen)
+                {
+                    flyoutPlaylist.Position = Position.Right;
                     flyoutPlaylists.IsOpen = true;
+                }
+                else if (Settings.CurrentSettings.RightEdgeOpen == Settings.EdgeOpen.Settings && !flyoutSettings.IsOpen)
+                {
+                    flyoutSettings.Position = Position.Right;
+                    flyoutSettings.IsOpen = true;
+                }
+            }
+            else if (mousePos.X <= Settings.CurrentSettings.EdgeDistance)
+            {
+                if (Settings.CurrentSettings.LeftEdgeOpen == Settings.EdgeOpen.Queue && !flyoutQueue.IsOpen)
+                {
+                    flyoutQueue.Position = Position.Left;
+                    flyoutQueue.IsOpen = true;
+                }
+                else if (Settings.CurrentSettings.LeftEdgeOpen == Settings.EdgeOpen.Playlists && !flyoutPlaylists.IsOpen)
+                {
+                    flyoutPlaylist.Position = Position.Left;
+                    flyoutPlaylists.IsOpen = true;
+                }
+                else if (Settings.CurrentSettings.LeftEdgeOpen == Settings.EdgeOpen.Settings && !flyoutSettings.IsOpen)
+                {
+                    flyoutSettings.Position = Position.Left;
+                    flyoutSettings.IsOpen = true;
+                }
             }
         }
 

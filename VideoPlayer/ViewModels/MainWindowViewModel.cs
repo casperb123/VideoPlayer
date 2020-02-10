@@ -19,6 +19,7 @@ using VideoPlayer.UserControls;
 using Application = System.Windows.Application;
 using GithubUpdater;
 using System.Reflection;
+using MahApps.Metro.Controls;
 
 namespace VideoPlayer.ViewModels
 {
@@ -297,6 +298,25 @@ namespace VideoPlayer.ViewModels
             MemoryStream stream = new MemoryStream();
             formatter.Serialize(stream, Playlists);
             await File.WriteAllBytesAsync(file, Protect(stream.ToArray()));
+        }
+
+        public void OpenSettings()
+        {
+            mainWindow.flyoutCredits.IsOpen = false;
+            mainWindow.flyoutSettings.Position = Position.Left;
+            mainWindow.flyoutSettings.IsOpen = !mainWindow.flyoutSettings.IsOpen;
+        }
+
+        public void OpenQueue()
+        {
+            mainWindow.flyoutQueue.Position = Position.Right;
+            mainWindow.flyoutQueue.IsOpen = true;
+        }
+
+        public void OpenPlaylists()
+        {
+            mainWindow.flyoutPlaylists.Position = Position.Right;
+            mainWindow.flyoutPlaylists.IsOpen = true;
         }
     }
 }

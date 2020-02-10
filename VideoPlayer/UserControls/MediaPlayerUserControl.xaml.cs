@@ -10,6 +10,7 @@ using VideoPlayer.Entities;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using MahApps.Metro.Controls;
 
 namespace VideoPlayer.UserControls
 {
@@ -255,7 +256,7 @@ namespace VideoPlayer.UserControls
 
         private void ButtonQueue_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.MainWindow.flyoutQueue.IsOpen = true;
+            ViewModel.MainWindow.ViewModel.OpenQueue();
         }
 
         private async void DataGridQueue_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -284,7 +285,7 @@ namespace VideoPlayer.UserControls
 
         private void ButtonPlaylists_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.MainWindow.flyoutPlaylists.IsOpen = true;
+            ViewModel.MainWindow.ViewModel.OpenPlaylists();
         }
 
         private async void GridMediaElementBackground_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)

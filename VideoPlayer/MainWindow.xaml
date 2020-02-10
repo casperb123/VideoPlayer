@@ -179,6 +179,7 @@
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
 
                             <Label Content="Theme:"
@@ -219,47 +220,60 @@
                                                    ToolTip="Check for updates on startup"
                                                    IsCheckedChanged="ToggleSwitchCheckForUpdates_IsCheckedChanged" />
 
-                            <Label Content="Right Edge Detection:"
+                            <Label Content="Edge Detection:"
                                    VerticalContentAlignment="Center"
                                    Grid.Row="3"
                                    Margin="0,0,5,0" />
-                            <Controls:ToggleSwitch x:Name="toggleSwitchRightEdgeDetection"
+                            <Controls:ToggleSwitch x:Name="toggleSwitchEdgeDetection"
                                                    Grid.Row="3"
                                                    Grid.Column="1"
                                                    Margin="10,0,0,0"
                                                    Focusable="False"
-                                                   ToolTip="Detect when mouse is near right edge"
-                                                   IsChecked="{Binding Path=RightEdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
-                                                   IsCheckedChanged="ToggleSwitchRightEdgeDetection_IsCheckedChanged" />
-
-                            <Label Content="Right Edge Open:"
+                                                   ToolTip="Detect when mouse is near the right/left edge"
+                                                   IsChecked="{Binding Path=EdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
+                                                   IsCheckedChanged="ToggleSwitchEdgeDetection_IsCheckedChanged" />
+                            
+                            <Label Content="Edge Distance:"
                                    VerticalContentAlignment="Center"
                                    Grid.Row="4"
-                                   Margin="0,0,5,0" />
-                            <ComboBox x:Name="comboBoxRightEdgeOpen"
-                                      Grid.Row="4"
-                                      Grid.Column="1"
-                                      Margin="5,5,0,5"
-                                      Focusable="False"
-                                      ItemsSource="{Binding Path=EdgeOpen, Source={x:Static entities:Settings.CurrentSettings}}"
-                                      IsEnabled="{Binding Path=RightEdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
-                                      SelectionChanged="ComboBoxRightEdgeOpen_SelectionChanged" />
-
-                            <Label Content="Right Edge Distance:"
-                                   VerticalContentAlignment="Center"
-                                   Grid.Row="5"
                                    Margin="0,5,5,0" />
-                            <Controls:NumericUpDown x:Name="numericUpDownRightEdgeDistance"
-                                                    Grid.Row="5"
+                            <Controls:NumericUpDown x:Name="numericUpDownEdgeDistance"
+                                                    Grid.Row="4"
                                                     Grid.Column="1"
-                                                    Margin="5,5,0,0"
+                                                    Margin="5,5,0,5"
                                                     Minimum="5"
                                                     Maximum="200"
                                                     Speedup="True"
                                                     Interval="1"
-                                                    IsEnabled="{Binding Path=RightEdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
-                                                    Value="{Binding Path=RightEdgeDistance, Source={x:Static entities:Settings.CurrentSettings}}"
-                                                    ValueChanged="NumericUpDownRightEdgeDistance_ValueChanged" />
+                                                    IsEnabled="{Binding Path=EdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
+                                                    Value="{Binding Path=EdgeDistance, Source={x:Static entities:Settings.CurrentSettings}}"
+                                                    ValueChanged="NumericUpDownEdgeDistance_ValueChanged" />
+
+                            <Label Content="Right Edge Open:"
+                                   VerticalContentAlignment="Center"
+                                   Grid.Row="5"
+                                   Margin="0,0,5,0" />
+                            <ComboBox x:Name="comboBoxRightEdgeOpen"
+                                      Grid.Row="5"
+                                      Grid.Column="1"
+                                      Margin="5,5,0,5"
+                                      Focusable="False"
+                                      ItemsSource="{Binding Path=RightEdgeOpen, Source={x:Static entities:Settings.CurrentSettings}}"
+                                      IsEnabled="{Binding Path=EdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
+                                      SelectionChanged="ComboBoxRightEdgeOpen_SelectionChanged" />
+
+                            <Label Content="Left Edge Open:"
+                                   VerticalContentAlignment="Center"
+                                   Grid.Row="6"
+                                   Margin="0,0,5,0" />
+                            <ComboBox x:Name="comboBoxLeftEdgeOpen"
+                                      Grid.Row="6"
+                                      Grid.Column="1"
+                                      Margin="5,5,0,0"
+                                      Focusable="False"
+                                      ItemsSource="{Binding Path=LeftEdgeOpen, Source={x:Static entities:Settings.CurrentSettings}}"
+                                      IsEnabled="{Binding Path=EdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
+                                      SelectionChanged="ComboBoxRightEdgeOpen_SelectionChanged" />
                         </Grid>
                     </GroupBox>
                 </StackPanel>

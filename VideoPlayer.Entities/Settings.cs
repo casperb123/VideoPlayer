@@ -14,8 +14,8 @@ namespace VideoPlayer.Entities
     {
         private int theme;
         private int color;
-        private bool rightEdgeDetection;
-        private int rightEdgeDistance;
+        private bool edgeDetection;
+        private int edgeDistance;
 
         public static Settings CurrentSettings;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -50,33 +50,35 @@ namespace VideoPlayer.Entities
 
         public bool NotifyUpdates { get; set; }
 
-        public bool RightEdgeDetection
+        public bool EdgeDetection
         {
-            get => rightEdgeDetection;
+            get => edgeDetection;
             set
             {
-                rightEdgeDetection = value;
-                OnPropertyChanged(nameof(RightEdgeDetection));
+                edgeDetection = value;
+                OnPropertyChanged(nameof(EdgeDetection));
             }
         }
 
         public enum EdgeOpen
         {
             Queue,
-            Playlists
+            Playlists,
+            Settings
         }
 
         public EdgeOpen RightEdgeOpen { get; set; }
+        public EdgeOpen LeftEdgeOpen { get; set; }
 
-        public int RightEdgeDistance
+        public int EdgeDistance
         {
-            get => rightEdgeDistance;
+            get => edgeDistance;
             set
             {
                 if (value < 5 || value > 200)
-                    throw new ArgumentOutOfRangeException(nameof(RightEdgeDistance), "The right edge distance must be between 5 and 100");
+                    throw new ArgumentOutOfRangeException(nameof(EdgeDistance), "The right edge distance must be between 5 and 100");
 
-                rightEdgeDistance = value;
+                edgeDistance = value;
             }
         }
 
@@ -85,8 +87,8 @@ namespace VideoPlayer.Entities
             Color = 1;
             NotifyUpdates = true;
             RightEdgeOpen = EdgeOpen.Queue;
-            RightEdgeDetection = true;
-            RightEdgeDistance = 50;
+            EdgeDetection = true;
+            EdgeDistance = 50;
         }
 
         private void OnPropertyChanged(string prop)
