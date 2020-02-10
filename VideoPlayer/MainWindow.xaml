@@ -289,7 +289,6 @@
                     <DataGrid x:Name="dataGridQueue"
                               Grid.Row="1"
                               ItemsSource="{Binding Path=Queue}"
-                              SelectedItem="{Binding Path=SelectedMedia, Mode=OneWayToSource}"
                               SelectionMode="Single"
                               AutoGenerateColumns="False"
                               CanUserSortColumns="False"

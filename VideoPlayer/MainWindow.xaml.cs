@@ -184,10 +184,10 @@ namespace VideoPlayer
 
         private async void DataGridQueue_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ViewModel.SelectedMedia is null)
+            if (!(dataGridQueue.SelectedItem is Media selectedMedia))
                 return;
 
-            await ViewModel.UserControl.ViewModel.ChangeTrack(ViewModel.SelectedMedia);
+            await ViewModel.UserControl.ViewModel.ChangeTrack(selectedMedia);
         }
 
         private void ButtonClearQueue_Click(object sender, RoutedEventArgs e)
