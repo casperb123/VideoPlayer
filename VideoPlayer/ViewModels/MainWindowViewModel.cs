@@ -44,6 +44,9 @@ namespace VideoPlayer.ViewModels
         public bool SettingsChanged;
         public bool UpdateAvailable;
         public readonly Updater Updater;
+        public bool SettingsOpenedWithEdgeDetection;
+        public bool QueueOpenedWithEdgeDetection;
+        public bool PlaylistsOpenedWithEdgeDetection;
 
         public delegate Point GetPosition(IInputElement element);
         public event PropertyChangedEventHandler PropertyChanged;
@@ -305,18 +308,21 @@ namespace VideoPlayer.ViewModels
             mainWindow.flyoutCredits.IsOpen = false;
             mainWindow.flyoutSettings.Position = Position.Left;
             mainWindow.flyoutSettings.IsOpen = !mainWindow.flyoutSettings.IsOpen;
+            SettingsOpenedWithEdgeDetection = false;
         }
 
         public void OpenQueue()
         {
             mainWindow.flyoutQueue.Position = Position.Right;
             mainWindow.flyoutQueue.IsOpen = true;
+            QueueOpenedWithEdgeDetection = false;
         }
 
         public void OpenPlaylists()
         {
             mainWindow.flyoutPlaylists.Position = Position.Right;
             mainWindow.flyoutPlaylists.IsOpen = true;
+            PlaylistsOpenedWithEdgeDetection = false;
         }
     }
 }

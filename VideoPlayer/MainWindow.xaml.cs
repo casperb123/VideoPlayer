@@ -394,8 +394,8 @@ namespace VideoPlayer
         {
             if (ViewModel.PlaylistRowIndex < 0)
                 return;
-            int index = ViewModel.GetCurrentRowIndex(dataGridPlaylists, e.GetPosition);
-            if (index < 0 || index == ViewModel.PlaylistsRowIndex)
+            int index = ViewModel.GetCurrentRowIndex(dataGridPlaylist, e.GetPosition);
+            if (index < 0 || index == ViewModel.PlaylistRowIndex)
                 return;
 
             Media changedMedia = ViewModel.SelectedPlaylist.Medias[ViewModel.PlaylistRowIndex];
@@ -459,8 +459,22 @@ namespace VideoPlayer
 
         private void Flyout_MouseLeave(object sender, MouseEventArgs e)
         {
-            if (ViewModel.UserControl.ViewModel.IsFullscreen)
-                ViewModel.UserControl.ViewModel.ControlsTimer.Start();
+            if (!ViewModel.UserControl.ViewModel.IsFullscreen ||
+                !(sender is Flyout flyout) ||
+                !Settings.CurrentSettings.EdgeDetection)
+                return;
+
+            ViewModel.UserControl.ViewModel.ControlsTimer.Start();
+            string settingsName = flyout.Name.Replace("flyout", "");
+
+            if (settingsName == "Queue" && !ViewModel.QueueOpenedWithEdgeDetection ||
+                settingsName == "Playlists" && !ViewModel.PlaylistsOpenedWithEdgeDetection ||
+                settingsName == "Settings" && !ViewModel.SettingsOpenedWithEdgeDetection)
+                return;
+
+            if (Settings.CurrentSettings.LeftEdgeOpen.ToString() == settingsName ||
+                Settings.CurrentSettings.RightEdgeOpen.ToString() == settingsName)
+                flyout.IsOpen = false;
         }
 
         private async void FlyoutSettings_IsOpenChanged(object sender, RoutedEventArgs e)
@@ -528,16 +542,19 @@ namespace VideoPlayer
                 {
                     flyoutQueue.Position = Position.Right;
                     flyoutQueue.IsOpen = true;
+                    ViewModel.QueueOpenedWithEdgeDetection = true;
                 }
                 else if (Settings.CurrentSettings.RightEdgeOpen == Settings.EdgeOpen.Playlists && !flyoutPlaylists.IsOpen)
                 {
                     flyoutPlaylist.Position = Position.Right;
                     flyoutPlaylists.IsOpen = true;
+                    ViewModel.PlaylistsOpenedWithEdgeDetection = true;
                 }
                 else if (Settings.CurrentSettings.RightEdgeOpen == Settings.EdgeOpen.Settings && !flyoutSettings.IsOpen)
                 {
                     flyoutSettings.Position = Position.Right;
                     flyoutSettings.IsOpen = true;
+                    ViewModel.SettingsOpenedWithEdgeDetection = true;
                 }
             }
             else if (mousePos.X <= Settings.CurrentSettings.EdgeDistance)
@@ -546,16 +563,19 @@ namespace VideoPlayer
                 {
                     flyoutQueue.Position = Position.Left;
                     flyoutQueue.IsOpen = true;
+                    ViewModel.QueueOpenedWithEdgeDetection = true;
                 }
                 else if (Settings.CurrentSettings.LeftEdgeOpen == Settings.EdgeOpen.Playlists && !flyoutPlaylists.IsOpen)
                 {
                     flyoutPlaylist.Position = Position.Left;
                     flyoutPlaylists.IsOpen = true;
+                    ViewModel.PlaylistsOpenedWithEdgeDetection = true;
                 }
                 else if (Settings.CurrentSettings.LeftEdgeOpen == Settings.EdgeOpen.Settings && !flyoutSettings.IsOpen)
                 {
                     flyoutSettings.Position = Position.Left;
                     flyoutSettings.IsOpen = true;
+                    ViewModel.SettingsOpenedWithEdgeDetection = true;
                 }
             }
         }

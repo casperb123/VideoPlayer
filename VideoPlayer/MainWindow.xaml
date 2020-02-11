@@ -232,7 +232,7 @@
                                                    ToolTip="Detect when mouse is near the right/left edge"
                                                    IsChecked="{Binding Path=EdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
                                                    IsCheckedChanged="ToggleSwitchEdgeDetection_IsCheckedChanged" />
-                            
+
                             <Label Content="Edge Distance:"
                                    VerticalContentAlignment="Center"
                                    Grid.Row="4"
@@ -351,7 +351,7 @@
                                          Opened="ContextMenuDataGridQueue_Opened">
                                 <MenuItem x:Name="menuItemQueueRemove"
                                           Header="Remove"
-                                          Click="MenuItemQueueRemove_Click"/>
+                                          Click="MenuItemQueueRemove_Click" />
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                     </DataGrid>
@@ -473,7 +473,7 @@
 
                     <DataGrid x:Name="dataGridPlaylist"
                               ItemsSource="{Binding Path=SelectedPlaylist.Medias}"
-                              SelectedItem="{Binding Path=SelectedPlaylistMedia}"
+                              SelectedItem="{Binding Path=SelectedPlaylistMedia, Mode=OneWayToSource}"
                               SelectionMode="Single"
                               AutoGenerateColumns="False"
                               CanUserSortColumns="False"
