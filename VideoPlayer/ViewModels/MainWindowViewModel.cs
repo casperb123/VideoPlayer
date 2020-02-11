@@ -18,7 +18,6 @@ using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
 using Application = System.Windows.Application;
 using GithubUpdater;
-using System.Reflection;
 using MahApps.Metro.Controls;
 
 namespace VideoPlayer.ViewModels

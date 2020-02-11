@@ -290,9 +290,6 @@ namespace VideoPlayer.UserControls
 
         private async void GridMediaElementBackground_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (!player.IsOpen)
-                return;
-
             if (!ViewModel.DoubleClickTimer.IsEnabled)
             {
                 ViewModel.DoubleClickTimer.Start();

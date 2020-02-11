@@ -460,11 +460,11 @@ namespace VideoPlayer
         private void Flyout_MouseLeave(object sender, MouseEventArgs e)
         {
             if (!ViewModel.UserControl.ViewModel.IsFullscreen ||
-                !(sender is Flyout flyout) ||
-                !Settings.CurrentSettings.EdgeDetection)
+                !(sender is Flyout flyout))
                 return;
+            if (Settings.CurrentSettings.EdgeDetection)
+                ViewModel.UserControl.ViewModel.ControlsTimer.Start();
 
-            ViewModel.UserControl.ViewModel.ControlsTimer.Start();
             string settingsName = flyout.Name.Replace("flyout", "");
 
             if (settingsName == "Queue" && !ViewModel.QueueOpenedWithEdgeDetection ||
@@ -538,6 +538,11 @@ namespace VideoPlayer
 
             if (xRight <= Settings.CurrentSettings.EdgeDistance)
             {
+                if (flyoutQueue.IsOpen && flyoutQueue.Position == Position.Right ||
+                    flyoutPlaylists.IsOpen && flyoutPlaylists.Position == Position.Right ||
+                    flyoutSettings.IsOpen && flyoutSettings.Position == Position.Right)
+                    return;
+
                 if (Settings.CurrentSettings.RightEdgeOpen == Settings.EdgeOpen.Queue && !flyoutQueue.IsOpen)
                 {
                     flyoutQueue.Position = Position.Right;
@@ -559,6 +564,11 @@ namespace VideoPlayer
             }
             else if (mousePos.X <= Settings.CurrentSettings.EdgeDistance)
             {
+                if (flyoutQueue.IsOpen && flyoutQueue.Position == Position.Left ||
+                    flyoutPlaylists.IsOpen && flyoutPlaylists.Position == Position.Left ||
+                    flyoutSettings.IsOpen && flyoutSettings.Position == Position.Left)
+                    return;
+
                 if (Settings.CurrentSettings.LeftEdgeOpen == Settings.EdgeOpen.Queue && !flyoutQueue.IsOpen)
                 {
                     flyoutQueue.Position = Position.Left;
