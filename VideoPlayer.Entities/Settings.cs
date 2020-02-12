@@ -15,12 +15,26 @@ namespace VideoPlayer.Entities
     {
         private int theme;
         private int color;
-        private bool edgeDetection;
+        private bool leftRightedgeDetection;
         private int edgeDistance;
         private bool alwaysOnTop;
+        private bool topEdgeDetection;
 
         public static Settings CurrentSettings;
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool AlwaysOnTop
+        {
+            get => alwaysOnTop;
+            set
+            {
+                alwaysOnTop = value;
+                OnPropertyChanged(nameof(AlwaysOnTop));
+
+                if (Application.Current.MainWindow != null && Application.Current.MainWindow.IsLoaded)
+                    Application.Current.MainWindow.Topmost = value;
+            }
+        }
 
         public int Color
         {
@@ -52,13 +66,13 @@ namespace VideoPlayer.Entities
 
         public bool NotifyUpdates { get; set; }
 
-        public bool EdgeDetection
+        public bool LeftRightEdgeDetection
         {
-            get => edgeDetection;
+            get => leftRightedgeDetection;
             set
             {
-                edgeDetection = value;
-                OnPropertyChanged(nameof(EdgeDetection));
+                leftRightedgeDetection = value;
+                OnPropertyChanged(nameof(LeftRightEdgeDetection));
             }
         }
 
@@ -73,19 +87,6 @@ namespace VideoPlayer.Entities
 
         public EdgeOpen LeftEdgeOpen { get; set; }
 
-        public bool AlwaysOnTop
-        {
-            get => alwaysOnTop;
-            set
-            {
-                alwaysOnTop = value;
-                OnPropertyChanged(nameof(AlwaysOnTop));
-
-                if (Application.Current.MainWindow != null && Application.Current.MainWindow.IsLoaded)
-                    Application.Current.MainWindow.Topmost = value;
-            }
-        }
-
         public int EdgeDistance
         {
             get => edgeDistance;
@@ -98,12 +99,22 @@ namespace VideoPlayer.Entities
             }
         }
 
+        public bool TopEdgeDetection
+        {
+            get => topEdgeDetection;
+            set
+            {
+                topEdgeDetection = value;
+                OnPropertyChanged(nameof(TopEdgeDetection));
+            }
+        }
+
         public Settings()
         {
             Color = 1;
             NotifyUpdates = true;
             RightEdgeOpen = EdgeOpen.Queue;
-            EdgeDetection = true;
+            LeftRightEdgeDetection = true;
             EdgeDistance = 50;
         }
 

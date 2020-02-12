@@ -297,7 +297,7 @@ namespace VideoPlayer
 
         private async void MenuItemPlaylistsRemove_Click(object sender, RoutedEventArgs e)
         {
-            MessageDialogResult result = await this.ShowMessageAsync("Delete playlist", $"Are you sure that you want to delete the playlist '{ViewModel.SelectedPlaylist.Name}' MessageDialogStyle.AffirmativeAndNegative");
+            MessageDialogResult result = await this.ShowMessageAsync("Delete playlist", $"Are you sure that you want to delete the playlist '{ViewModel.SelectedPlaylist.Name}'", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
                 await ViewModel.RemovePlaylist(ViewModel.SelectedPlaylist);
         }
@@ -462,7 +462,7 @@ namespace VideoPlayer
             if (!ViewModel.UserControl.ViewModel.IsFullscreen ||
                 !(sender is Flyout flyout))
                 return;
-            if (Settings.CurrentSettings.EdgeDetection)
+            if (Settings.CurrentSettings.LeftRightEdgeDetection)
                 ViewModel.UserControl.ViewModel.ControlsTimer.Start();
 
             string settingsName = flyout.Name.Replace("flyout", "");
@@ -515,7 +515,7 @@ namespace VideoPlayer
             ViewModel.SettingsChanged = true;
         }
 
-        private void ToggleSwitchEdgeDetection_IsCheckedChanged(object sender, EventArgs e)
+        private void ToggleSwitchLeftRightEdgeDetection_IsCheckedChanged(object sender, EventArgs e)
         {
             ViewModel.SettingsChanged = true;
         }
@@ -530,74 +530,81 @@ namespace VideoPlayer
 
         private void MetroWindow_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!ViewModel.UserControl.ViewModel.IsFullscreen || !Settings.CurrentSettings.EdgeDetection)
+            if (!ViewModel.UserControl.ViewModel.IsFullscreen)
                 return;
 
             Point mousePos = Mouse.GetPosition(this);
             double xRight = ActualWidth - mousePos.X;
 
-            if (mousePos.Y <= 5 && !ShowTitleBar && !ViewModel.IsFlyoutOpen)
+            if (Settings.CurrentSettings.TopEdgeDetection)
             {
-                ShowCloseButton = true;
-                ShowMinButton = true;
-                ShowTitleBar = true;
+                if (mousePos.Y <= 5 && !ShowTitleBar && !ViewModel.IsFlyoutOpen)
+                {
+                    ShowCloseButton = true;
+                    ShowMinButton = true;
+                    ShowTitleBar = true;
+                }
+                else if (mousePos.Y > 30 && ShowTitleBar && !ViewModel.IsFlyoutOpen)
+                {
+                    ShowCloseButton = false;
+                    ShowMinButton = false;
+                    ShowTitleBar = false;
+                }
             }
-            else if (mousePos.Y > 30 && ShowTitleBar && !ViewModel.IsFlyoutOpen)
-            {
-                ShowCloseButton = false;
-                ShowMinButton = false;
-                ShowTitleBar = false;
-            }
-            else if (xRight <= Settings.CurrentSettings.EdgeDistance && !ShowTitleBar)
-            {
-                if (flyoutQueue.IsOpen && flyoutQueue.Position == Position.Right ||
-                    flyoutPlaylists.IsOpen && flyoutPlaylists.Position == Position.Right ||
-                    flyoutSettings.IsOpen && flyoutSettings.Position == Position.Right)
-                    return;
 
-                if (Settings.CurrentSettings.RightEdgeOpen == Settings.EdgeOpen.Queue && !flyoutQueue.IsOpen)
-                {
-                    flyoutQueue.Position = Position.Right;
-                    flyoutQueue.IsOpen = true;
-                    ViewModel.QueueOpenedWithEdgeDetection = true;
-                }
-                else if (Settings.CurrentSettings.RightEdgeOpen == Settings.EdgeOpen.Playlists && !flyoutPlaylists.IsOpen)
-                {
-                    flyoutPlaylist.Position = Position.Right;
-                    flyoutPlaylists.IsOpen = true;
-                    ViewModel.PlaylistsOpenedWithEdgeDetection = true;
-                }
-                else if (Settings.CurrentSettings.RightEdgeOpen == Settings.EdgeOpen.Settings && !flyoutSettings.IsOpen)
-                {
-                    flyoutSettings.Position = Position.Right;
-                    flyoutSettings.IsOpen = true;
-                    ViewModel.SettingsOpenedWithEdgeDetection = true;
-                }
-            }
-            else if (mousePos.X <= Settings.CurrentSettings.EdgeDistance && !ShowTitleBar)
+            if (Settings.CurrentSettings.LeftRightEdgeDetection)
             {
-                if (flyoutQueue.IsOpen && flyoutQueue.Position == Position.Left ||
-                    flyoutPlaylists.IsOpen && flyoutPlaylists.Position == Position.Left ||
-                    flyoutSettings.IsOpen && flyoutSettings.Position == Position.Left)
-                    return;
+                if (xRight <= Settings.CurrentSettings.EdgeDistance && !ShowTitleBar)
+                {
+                    if (flyoutQueue.IsOpen && flyoutQueue.Position == Position.Right ||
+                        flyoutPlaylists.IsOpen && flyoutPlaylists.Position == Position.Right ||
+                        flyoutSettings.IsOpen && flyoutSettings.Position == Position.Right)
+                        return;
 
-                if (Settings.CurrentSettings.LeftEdgeOpen == Settings.EdgeOpen.Queue && !flyoutQueue.IsOpen)
-                {
-                    flyoutQueue.Position = Position.Left;
-                    flyoutQueue.IsOpen = true;
-                    ViewModel.QueueOpenedWithEdgeDetection = true;
+                    if (Settings.CurrentSettings.RightEdgeOpen == Settings.EdgeOpen.Queue && !flyoutQueue.IsOpen)
+                    {
+                        flyoutQueue.Position = Position.Right;
+                        flyoutQueue.IsOpen = true;
+                        ViewModel.QueueOpenedWithEdgeDetection = true;
+                    }
+                    else if (Settings.CurrentSettings.RightEdgeOpen == Settings.EdgeOpen.Playlists && !flyoutPlaylists.IsOpen)
+                    {
+                        flyoutPlaylist.Position = Position.Right;
+                        flyoutPlaylists.IsOpen = true;
+                        ViewModel.PlaylistsOpenedWithEdgeDetection = true;
+                    }
+                    else if (Settings.CurrentSettings.RightEdgeOpen == Settings.EdgeOpen.Settings && !flyoutSettings.IsOpen)
+                    {
+                        flyoutSettings.Position = Position.Right;
+                        flyoutSettings.IsOpen = true;
+                        ViewModel.SettingsOpenedWithEdgeDetection = true;
+                    }
                 }
-                else if (Settings.CurrentSettings.LeftEdgeOpen == Settings.EdgeOpen.Playlists && !flyoutPlaylists.IsOpen)
+                else if (mousePos.X <= Settings.CurrentSettings.EdgeDistance && !ShowTitleBar)
                 {
-                    flyoutPlaylist.Position = Position.Left;
-                    flyoutPlaylists.IsOpen = true;
-                    ViewModel.PlaylistsOpenedWithEdgeDetection = true;
-                }
-                else if (Settings.CurrentSettings.LeftEdgeOpen == Settings.EdgeOpen.Settings && !flyoutSettings.IsOpen)
-                {
-                    flyoutSettings.Position = Position.Left;
-                    flyoutSettings.IsOpen = true;
-                    ViewModel.SettingsOpenedWithEdgeDetection = true;
+                    if (flyoutQueue.IsOpen && flyoutQueue.Position == Position.Left ||
+                        flyoutPlaylists.IsOpen && flyoutPlaylists.Position == Position.Left ||
+                        flyoutSettings.IsOpen && flyoutSettings.Position == Position.Left)
+                        return;
+
+                    if (Settings.CurrentSettings.LeftEdgeOpen == Settings.EdgeOpen.Queue && !flyoutQueue.IsOpen)
+                    {
+                        flyoutQueue.Position = Position.Left;
+                        flyoutQueue.IsOpen = true;
+                        ViewModel.QueueOpenedWithEdgeDetection = true;
+                    }
+                    else if (Settings.CurrentSettings.LeftEdgeOpen == Settings.EdgeOpen.Playlists && !flyoutPlaylists.IsOpen)
+                    {
+                        flyoutPlaylist.Position = Position.Left;
+                        flyoutPlaylists.IsOpen = true;
+                        ViewModel.PlaylistsOpenedWithEdgeDetection = true;
+                    }
+                    else if (Settings.CurrentSettings.LeftEdgeOpen == Settings.EdgeOpen.Settings && !flyoutSettings.IsOpen)
+                    {
+                        flyoutSettings.Position = Position.Left;
+                        flyoutSettings.IsOpen = true;
+                        ViewModel.SettingsOpenedWithEdgeDetection = true;
+                    }
                 }
             }
         }
@@ -667,6 +674,11 @@ namespace VideoPlayer
         {
             if (ViewModel.UserControl.ViewModel.IsFullscreen && e.Source == this)
                 e.Handled = true;
+        }
+
+        private void ToggleSwitchTopEdgeDetection_IsCheckedChanged(object sender, EventArgs e)
+        {
+            ViewModel.SettingsChanged = true;
         }
     }
 }

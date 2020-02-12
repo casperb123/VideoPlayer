@@ -9,10 +9,10 @@
                       xmlns:entities="clr-namespace:VideoPlayer.Entities;assembly=VideoPlayer.Entities"
                       mc:Ignorable="d"
                       Title="Video Player"
-                      Width="825"
-                      MinWidth="825"
-                      Height="600"
-                      MinHeight="600"
+                      Width="875"
+                      MinWidth="875"
+                      Height="628"
+                      MinHeight="628"
                       Closing="MetroWindow_Closing"
                       MouseMove="MetroWindow_MouseMove"
                       PreviewMouseLeftButtonDown="MetroWindow_PreviewMouseLeftButtonDown">
@@ -168,12 +168,13 @@
                     </GroupBox>
 
                     <GroupBox Header="Application Settings">
-                        <Grid Margin="10,5,10,10">
+                        <Grid Margin="10,5,10,5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="1*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
@@ -235,18 +236,18 @@
                                                    ToolTip="Check for updates on startup"
                                                    IsCheckedChanged="ToggleSwitchCheckForUpdates_IsCheckedChanged" />
 
-                            <Label Content="Edge Detection:"
+                            <Label Content="Left/Right Edge Detection:"
                                    VerticalContentAlignment="Center"
                                    Grid.Row="4"
                                    Margin="0,0,5,0" />
-                            <Controls:ToggleSwitch x:Name="toggleSwitchEdgeDetection"
+                            <Controls:ToggleSwitch x:Name="toggleSwitchLeftRightEdgeDetection"
                                                    Grid.Row="4"
                                                    Grid.Column="1"
                                                    Margin="10,0,0,0"
                                                    Focusable="False"
                                                    ToolTip="Detect when mouse is near the right/left edge"
-                                                   IsChecked="{Binding Path=EdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
-                                                   IsCheckedChanged="ToggleSwitchEdgeDetection_IsCheckedChanged" />
+                                                   IsChecked="{Binding Path=LeftRightEdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
+                                                   IsCheckedChanged="ToggleSwitchLeftRightEdgeDetection_IsCheckedChanged" />
 
                             <Label Content="Edge Distance:"
                                    VerticalContentAlignment="Center"
@@ -260,7 +261,7 @@
                                                     Maximum="200"
                                                     Speedup="True"
                                                     Interval="1"
-                                                    IsEnabled="{Binding Path=EdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
+                                                    IsEnabled="{Binding Path=LeftRightEdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
                                                     Value="{Binding Path=EdgeDistance, Source={x:Static entities:Settings.CurrentSettings}}"
                                                     ValueChanged="NumericUpDownEdgeDistance_ValueChanged" />
 
@@ -273,8 +274,8 @@
                                       Grid.Column="1"
                                       Margin="5,5,0,5"
                                       Focusable="False"
+                                      IsEnabled="{Binding Path=LeftRightEdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
                                       ItemsSource="{Binding Path=RightEdgeOpen, Source={x:Static entities:Settings.CurrentSettings}}"
-                                      IsEnabled="{Binding Path=EdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
                                       SelectionChanged="ComboBoxRightEdgeOpen_SelectionChanged" />
 
                             <Label Content="Left Edge Open:"
@@ -284,11 +285,24 @@
                             <ComboBox x:Name="comboBoxLeftEdgeOpen"
                                       Grid.Row="7"
                                       Grid.Column="1"
-                                      Margin="5,5,0,0"
+                                      Margin="5,5,0,5"
                                       Focusable="False"
+                                      IsEnabled="{Binding Path=LeftRightEdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
                                       ItemsSource="{Binding Path=LeftEdgeOpen, Source={x:Static entities:Settings.CurrentSettings}}"
-                                      IsEnabled="{Binding Path=EdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
                                       SelectionChanged="ComboBoxRightEdgeOpen_SelectionChanged" />
+
+                            <Label Content="Top Edge Detection:"
+                                   VerticalContentAlignment="Center"
+                                   Grid.Row="8"
+                                   Margin="0,0,5,0" />
+                            <Controls:ToggleSwitch x:Name="toggleSwitchTopEdgeDetection"
+                                                   Grid.Row="9"
+                                                   Grid.Column="1"
+                                                   Margin="10,0,0,0"
+                                                   Focusable="False"
+                                                   ToolTip="Show the title bar when the mouse is at the top"
+                                                   IsChecked="{Binding Path=TopEdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
+                                                   IsCheckedChanged="ToggleSwitchTopEdgeDetection_IsCheckedChanged" />
                         </Grid>
                     </GroupBox>
                 </StackPanel>
