@@ -12,15 +12,20 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows.Controls;
+using System.ComponentModel;
 
 namespace VideoPlayer.ViewModels
 {
-    public class MediaPlayerUserControlViewModel
+    public class MediaPlayerUserControlViewModel : INotifyPropertyChanged
     {
         private readonly MediaPlayerUserControl userControl;
         private double loopStart;
         private double loopEnd;
         private WindowState oldState;
+        private bool setStartLoop = true;
+
+        [DllImport("user32.dll")]
+        private static extern uint GetDoubleClickTime();
 
         public readonly MainWindow MainWindow;
         public bool DarkTheme;
@@ -33,9 +38,13 @@ namespace VideoPlayer.ViewModels
         public bool IsFullscreen;
         public DispatcherTimer DoubleClickTimer;
         public DispatcherTimer ControlsTimer;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        [DllImport("user32.dll")]
-        private static extern uint GetDoubleClickTime();
+        private void OnPropertyChanged(string prop)
+        {
+            if (!string.IsNullOrWhiteSpace(prop))
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
 
         public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl, MainWindow mainWindow)
         {
@@ -331,15 +340,31 @@ namespace VideoPlayer.ViewModels
         {
             double value = PixelsToValue(point.X, userControl.sliderProgress.Minimum, userControl.sliderProgress.Maximum, userControl.sliderProgress.ActualWidth);
 
-            if (loopStart == 0 && loopEnd == 0 || Math.Abs(loopStart - value) < Math.Abs(loopEnd - value) && loopEnd > 0)
-                MainWindow.textBoxLoopStart.Text = ConvertSecondsToTime(value);
-            else if (loopEnd == 0)
+            if (loopStart == 0 && setStartLoop)
             {
+                loopStart = value;
+                MainWindow.textBoxLoopStart.Text = ConvertSecondsToTime(value);
+                setStartLoop = false;
+            }
+            else if (loopEnd == 0 && !setStartLoop)
+            {
+                loopEnd = value;
                 MainWindow.textBoxLoopEnd.Text = ConvertSecondsToTime(value);
                 MainWindow.toggleSwitchLoopTime.IsChecked = true;
+                setStartLoop = true;
+            }
+            else if (setStartLoop)
+            {
+                loopStart = value;
+                MainWindow.textBoxLoopStart.Text = ConvertSecondsToTime(value);
+                setStartLoop = false;
             }
             else
+            {
+                loopEnd = value;
                 MainWindow.textBoxLoopEnd.Text = ConvertSecondsToTime(value);
+                setStartLoop = true;
+            }
         }
 
         public void SetSelection(double start, double end)
