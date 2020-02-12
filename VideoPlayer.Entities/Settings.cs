@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace VideoPlayer.Entities
 {
@@ -16,6 +17,7 @@ namespace VideoPlayer.Entities
         private int color;
         private bool edgeDetection;
         private int edgeDistance;
+        private bool alwaysOnTop;
 
         public static Settings CurrentSettings;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -68,7 +70,18 @@ namespace VideoPlayer.Entities
         }
 
         public EdgeOpen RightEdgeOpen { get; set; }
+
         public EdgeOpen LeftEdgeOpen { get; set; }
+
+        public bool AlwaysOnTop
+        {
+            get => alwaysOnTop;
+            set
+            {
+                alwaysOnTop = value;
+                OnPropertyChanged(nameof(AlwaysOnTop));
+            }
+        }
 
         public int EdgeDistance
         {

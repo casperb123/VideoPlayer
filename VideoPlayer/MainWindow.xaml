@@ -167,7 +167,7 @@
                     </GroupBox>
 
                     <GroupBox Header="Application Settings">
-                        <Grid Margin="10,10,10,10">
+                        <Grid Margin="10,5,10,10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="1*" />
@@ -180,12 +180,26 @@
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
 
+                            <Label Content="Always on top:"
+                                   VerticalContentAlignment="Center"
+                                   Margin="0,0,5,0" />
+                            <Controls:ToggleSwitch x:Name="toggleSwitchAlwaysOnTop"
+                                                   Grid.Column="1"
+                                                   Margin="10,0,0,5"
+                                                   IsChecked="{Binding Path=AlwaysOnTop, Source={x:Static entities:Settings.CurrentSettings}}"
+                                                   Focusable="False"
+                                                   ToolTip="Always keep application on top"
+                                                   IsCheckedChanged="ToggleSwitchAlwaysOnTop_IsCheckedChanged" />
+
                             <Label Content="Theme:"
+                                   Grid.Row="1"
                                    VerticalContentAlignment="Center"
                                    Margin="0,0,5,0" />
                             <ComboBox x:Name="comboBoxTheme"
+                                      Grid.Row="1"
                                       Grid.Column="1"
                                       Margin="5,0,0,5"
                                       ItemsSource="{x:Static metro:ThemeManager.BaseColors}"
@@ -195,10 +209,10 @@
 
                             <Label Content="Color:"
                                    VerticalContentAlignment="Center"
-                                   Grid.Row="1"
+                                   Grid.Row="2"
                                    Margin="0,0,5,0" />
                             <ComboBox x:Name="comboBoxColor"
-                                      Grid.Row="1"
+                                      Grid.Row="2"
                                       Grid.Column="1"
                                       Margin="5,5,0,0"
                                       ItemsSource="{x:Static metro:ThemeManager.ColorSchemes}"
@@ -209,10 +223,10 @@
 
                             <Label Content="Check for updates:"
                                    VerticalContentAlignment="Center"
-                                   Grid.Row="2"
+                                   Grid.Row="3"
                                    Margin="0,0,5,0" />
                             <Controls:ToggleSwitch x:Name="toggleSwitchCheckForUpdates"
-                                                   Grid.Row="2"
+                                                   Grid.Row="3"
                                                    Grid.Column="1"
                                                    Margin="10,5,0,0"
                                                    IsChecked="{Binding Path=CheckForUpdates, Source={x:Static entities:Settings.CurrentSettings}}"
@@ -222,10 +236,10 @@
 
                             <Label Content="Edge Detection:"
                                    VerticalContentAlignment="Center"
-                                   Grid.Row="3"
+                                   Grid.Row="4"
                                    Margin="0,0,5,0" />
                             <Controls:ToggleSwitch x:Name="toggleSwitchEdgeDetection"
-                                                   Grid.Row="3"
+                                                   Grid.Row="4"
                                                    Grid.Column="1"
                                                    Margin="10,0,0,0"
                                                    Focusable="False"
@@ -235,10 +249,10 @@
 
                             <Label Content="Edge Distance:"
                                    VerticalContentAlignment="Center"
-                                   Grid.Row="4"
+                                   Grid.Row="5"
                                    Margin="0,5,5,0" />
                             <Controls:NumericUpDown x:Name="numericUpDownEdgeDistance"
-                                                    Grid.Row="4"
+                                                    Grid.Row="5"
                                                     Grid.Column="1"
                                                     Margin="5,5,0,5"
                                                     Minimum="5"
@@ -251,10 +265,10 @@
 
                             <Label Content="Right Edge Open:"
                                    VerticalContentAlignment="Center"
-                                   Grid.Row="5"
+                                   Grid.Row="6"
                                    Margin="0,0,5,0" />
                             <ComboBox x:Name="comboBoxRightEdgeOpen"
-                                      Grid.Row="5"
+                                      Grid.Row="6"
                                       Grid.Column="1"
                                       Margin="5,5,0,5"
                                       Focusable="False"
@@ -264,10 +278,10 @@
 
                             <Label Content="Left Edge Open:"
                                    VerticalContentAlignment="Center"
-                                   Grid.Row="6"
+                                   Grid.Row="7"
                                    Margin="0,0,5,0" />
                             <ComboBox x:Name="comboBoxLeftEdgeOpen"
-                                      Grid.Row="6"
+                                      Grid.Row="7"
                                       Grid.Column="1"
                                       Margin="5,5,0,0"
                                       Focusable="False"

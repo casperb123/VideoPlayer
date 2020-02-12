@@ -130,6 +130,7 @@ namespace VideoPlayer.ViewModels
         public MainWindowViewModel(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
+            mainWindow.Topmost = Settings.CurrentSettings.AlwaysOnTop;
             queue = new ObservableCollection<Media>();
             oldQueue = new ObservableCollection<Media>();
             playlists = new ObservableCollection<Playlist>();
