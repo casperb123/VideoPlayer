@@ -14,7 +14,8 @@
                       Height="600"
                       MinHeight="600"
                       Closing="MetroWindow_Closing"
-                      MouseMove="MetroWindow_MouseMove">
+                      MouseMove="MetroWindow_MouseMove"
+                      PreviewMouseLeftButtonDown="MetroWindow_PreviewMouseLeftButtonDown">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button x:Name="buttonUpdate"

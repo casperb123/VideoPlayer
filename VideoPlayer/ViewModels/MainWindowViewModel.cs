@@ -121,6 +121,18 @@ namespace VideoPlayer.ViewModels
             }
         }
 
+        public bool IsFlyoutOpen
+        {
+            get
+            {
+                return mainWindow.flyoutCredits.IsOpen ||
+                    mainWindow.flyoutPlaylist.IsOpen ||
+                    mainWindow.flyoutPlaylists.IsOpen ||
+                    mainWindow.flyoutQueue.IsOpen ||
+                    mainWindow.flyoutSettings.IsOpen;
+            }
+        }
+
         private void OnPropertyChanged(string prop)
         {
             if (prop != null)

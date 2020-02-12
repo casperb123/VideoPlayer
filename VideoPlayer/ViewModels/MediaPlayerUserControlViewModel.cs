@@ -494,11 +494,11 @@ namespace VideoPlayer.ViewModels
         {
             IsFullscreen = false;
             ControlsTimer.Stop();
+            MainWindow.WindowState = oldState;
             MainWindow.ShowTitleBar = true;
             MainWindow.ShowCloseButton = true;
             MainWindow.ShowMaxRestoreButton = true;
             MainWindow.ShowMinButton = true;
-            MainWindow.WindowState = oldState;
             userControl.gridMediaElementBackground.ClearValue(Grid.RowSpanProperty);
             userControl.gridControls.IsEnabled = true;
             userControl.gridControls.Visibility = Visibility.Visible;

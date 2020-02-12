@@ -536,7 +536,19 @@ namespace VideoPlayer
             Point mousePos = Mouse.GetPosition(this);
             double xRight = ActualWidth - mousePos.X;
 
-            if (xRight <= Settings.CurrentSettings.EdgeDistance)
+            if (mousePos.Y <= 5 && !ShowTitleBar && !ViewModel.IsFlyoutOpen)
+            {
+                ShowCloseButton = true;
+                ShowMinButton = true;
+                ShowTitleBar = true;
+            }
+            else if (mousePos.Y > 30 && ShowTitleBar && !ViewModel.IsFlyoutOpen)
+            {
+                ShowCloseButton = false;
+                ShowMinButton = false;
+                ShowTitleBar = false;
+            }
+            else if (xRight <= Settings.CurrentSettings.EdgeDistance && !ShowTitleBar)
             {
                 if (flyoutQueue.IsOpen && flyoutQueue.Position == Position.Right ||
                     flyoutPlaylists.IsOpen && flyoutPlaylists.Position == Position.Right ||
@@ -562,7 +574,7 @@ namespace VideoPlayer
                     ViewModel.SettingsOpenedWithEdgeDetection = true;
                 }
             }
-            else if (mousePos.X <= Settings.CurrentSettings.EdgeDistance)
+            else if (mousePos.X <= Settings.CurrentSettings.EdgeDistance && !ShowTitleBar)
             {
                 if (flyoutQueue.IsOpen && flyoutQueue.Position == Position.Left ||
                     flyoutPlaylists.IsOpen && flyoutPlaylists.Position == Position.Left ||
@@ -649,6 +661,12 @@ namespace VideoPlayer
         private void ToggleSwitchAlwaysOnTop_IsCheckedChanged(object sender, EventArgs e)
         {
             ViewModel.SettingsChanged = true;
+        }
+
+        private void MetroWindow_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (ViewModel.UserControl.ViewModel.IsFullscreen && e.Source == this)
+                e.Handled = true;
         }
     }
 }
