@@ -316,6 +316,9 @@ namespace VideoPlayer
                 Playlist playlist = new Playlist(name);
                 ViewModel.Playlists.Add(playlist);
                 await ViewModel.SavePlaylists();
+
+                ViewModel.SelectedPlaylist = playlist;
+                flyoutPlaylist.IsOpen = true;
             }
         }
 
