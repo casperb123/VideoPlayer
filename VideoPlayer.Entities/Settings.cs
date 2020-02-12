@@ -19,6 +19,7 @@ namespace VideoPlayer.Entities
         private int leftRightedgeDistance;
         private bool alwaysOnTop;
         private bool topEdgeDetection;
+        private double volume;
 
         public static Settings CurrentSettings;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -109,6 +110,19 @@ namespace VideoPlayer.Entities
             }
         }
 
+        public double Volume
+        {
+            get => volume;
+            set
+            {
+                if (value < 0 || volume > 1)
+                    throw new ArgumentOutOfRangeException(nameof(Volume), "The volume must be between 0 and 1");
+
+                volume = value;
+                OnPropertyChanged(nameof(Volume));
+            }
+        }
+
         public Settings()
         {
             Color = 1;
@@ -116,6 +130,7 @@ namespace VideoPlayer.Entities
             RightEdgeOpen = EdgeOpen.Queue;
             LeftRightEdgeDetection = true;
             LeftRightEdgeDistance = 50;
+            Volume = 1;
         }
 
         private void OnPropertyChanged(string prop)

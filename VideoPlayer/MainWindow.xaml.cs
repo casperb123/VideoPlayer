@@ -530,7 +530,7 @@ namespace VideoPlayer
 
         private void MetroWindow_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!ViewModel.UserControl.ViewModel.IsFullscreen)
+            if (!ViewModel.UserControl.ViewModel.IsFullscreen || ViewModel.UserControl.ViewModel.MouseOverControls)
                 return;
 
             Point mousePos = Mouse.GetPosition(this);
@@ -541,13 +541,11 @@ namespace VideoPlayer
                 if (mousePos.Y <= 5 && !ShowTitleBar && !ViewModel.IsFlyoutOpen)
                 {
                     ShowCloseButton = true;
-                    ShowMinButton = true;
                     ShowTitleBar = true;
                 }
                 else if (mousePos.Y > 30 && ShowTitleBar && !ViewModel.IsFlyoutOpen)
                 {
                     ShowCloseButton = false;
-                    ShowMinButton = false;
                     ShowTitleBar = false;
                 }
             }

@@ -39,6 +39,9 @@ namespace VideoPlayer.ViewModels
         public DispatcherTimer DoubleClickTimer;
         public DispatcherTimer ControlsTimer;
         public event PropertyChangedEventHandler PropertyChanged;
+        public bool MouseOverControls;
+        public static bool ChangingVolume;
+        public static bool ChangingProgress;
 
         private void OnPropertyChanged(string prop)
         {
@@ -49,6 +52,7 @@ namespace VideoPlayer.ViewModels
         public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl, MainWindow mainWindow)
         {
             userControl = mediaPlayerUserControl;
+            userControl.player.Volume = Settings.CurrentSettings.Volume;
             MainWindow = mainWindow;
             DoubleClickTimer = new DispatcherTimer
             {
@@ -210,27 +214,25 @@ namespace VideoPlayer.ViewModels
             userControl.textBlockDuration.Text = "0:00 / 0:00";
         }
 
-        public bool MuteToggle()
+        public async Task MuteToggle()
         {
             if (userControl.player.Volume > 0)
             {
                 OldVolume = userControl.player.Volume;
-                userControl.sliderVolume.Value = 0;
-
-                return true;
+                Settings.CurrentSettings.Volume = 0;
             }
             else if (OldVolume == 0)
             {
-                userControl.sliderVolume.Value = 1;
+                Settings.CurrentSettings.Volume = 1;
                 OldVolume = userControl.player.Volume;
             }
             else
             {
-                userControl.sliderVolume.Value = OldVolume;
+                Settings.CurrentSettings.Volume = OldVolume;
                 OldVolume = userControl.player.Volume;
             }
 
-            return false;
+            await Settings.CurrentSettings.Save();
         }
 
         public void ChangeSpeed(double speed)

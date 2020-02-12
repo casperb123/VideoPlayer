@@ -36,7 +36,9 @@
 
         <Grid x:Name="gridControls"
               Grid.Row="1"
-              Background="{DynamicResource MahApps.Brushes.Window.Background}">
+              Background="{DynamicResource MahApps.Brushes.Window.Background}"
+              MouseEnter="GridControls_MouseEnter"
+              MouseLeave="GridControls_MouseLeave">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
@@ -171,7 +173,7 @@
             <StackPanel Orientation="Horizontal"
                         Grid.Row="1"
                         HorizontalAlignment="Right"
-                        Margin="0,10,0,10">
+                        Margin="0,10,10,10">
                 <Button x:Name="buttonQueue"
                         HorizontalAlignment="Right"
                         BorderThickness="0"
@@ -191,7 +193,7 @@
                         BorderThickness="0"
                         Height="40"
                         Width="40"
-                        Margin="5,0"
+                        Margin="5,0,0,0"
                         ToolTip="Open the playlists (Ctrl+P)"
                         Focusable="False"
                         Click="ButtonPlaylists_Click">
@@ -202,70 +204,75 @@
                                              HorizontalAlignment="Center"
                                              VerticalAlignment="Center" />
                 </Button>
+            </StackPanel>
+
+            <Grid Margin="10,5,10,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+
                 <Button x:Name="buttonMuteUnmute"
+                        Grid.Row="1"
                         BorderThickness="0"
                         HorizontalAlignment="Right"
-                        Width="40"
-                        Height="40"
-                        Margin="5,0,10,0"
+                        Width="30"
+                        Height="30"
+                        Margin="0,0,10,0"
                         ToolTip="Mute/Unmute the player"
                         Focusable="False"
                         Click="ButtonMuteUnmute_Click">
                     <materialDesign:PackIcon x:Name="iconVolume"
                                              Kind="VolumeHigh"
-                                             Width="30"
-                                             Height="30"
+                                             Width="25"
+                                             Height="25"
                                              HorizontalAlignment="Center"
                                              VerticalAlignment="Center" />
                 </Button>
-            </StackPanel>
-
-            <Grid Margin="10,5,10,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="180" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="20" />
-                    <RowDefinition Height="1*" />
-                </Grid.RowDefinitions>
-
-                <TextBlock x:Name="textBlockDuration"
-                           Text="0:00 / 0:00"
-                           VerticalAlignment="Center" />
-                <entities:CustomSlider x:Name="sliderProgress"
-                                       Style="{StaticResource MahApps.Styles.Slider}"
-                                       Grid.Column="0"
-                                       Grid.Row="1"
-                                       IsMoveToPointEnabled="True"
-                                       IsSelectionRangeEnabled="True"
-                                       Margin="0,0,10,0"
-                                       TickPlacement="BottomRight"
-                                       IsEnabled="False"
-                                       Focusable="False"
-                                       ValueChanged="SliderProgress_ValueChanged"
-                                       PreviewMouseLeftButtonDown="SliderProgress_PreviewMouseLeftButtonDown"
-                                       PreviewMouseLeftButtonUp="SliderProgress_PreviewMouseLeftButtonUp"
-                                       PreviewMouseRightButtonUp="SliderProgress_PreviewMouseRightButtonUp" />
 
                 <TextBlock Text="Volume"
-                           TextAlignment="Center"
                            Grid.Column="1"
+                           TextAlignment="Center"
                            VerticalAlignment="Center" />
-                <entities:CustomSlider x:Name="sliderVolume"
-                                       Style="{StaticResource MahApps.Styles.Slider}"
-                                       Grid.Column="1"
-                                       Grid.Row="1"
-                                       Minimum="0"
-                                       Maximum="1"
-                                       Value="1"
-                                       IsMoveToPointEnabled="True"
-                                       TickPlacement="BottomRight"
-                                       TickFrequency=".04"
-                                       Focusable="False"
-                                       PreviewMouseLeftButtonDown="SliderVolume_PreviewMouseLeftButtonDown"
-                                       PreviewMouseLeftButtonUp="SliderVolume_PreviewMouseLeftButtonUp"
-                                       ValueChanged="SliderVolume_ValueChanged" />
+                <Slider x:Name="sliderVolume"
+                        Grid.Column="1"
+                        Grid.Row="1"
+                        Margin="0,0,5,0"
+                        Minimum="0"
+                        Maximum="1"
+                        IsMoveToPointEnabled="True"
+                        TickPlacement="BottomRight"
+                        TickFrequency="0"
+                        Focusable="False"
+                        Value="{Binding Path=Volume, Source={x:Static entities:Settings.CurrentSettings}}"
+                        PreviewMouseLeftButtonDown="SliderVolume_PreviewMouseLeftButtonDown"
+                        PreviewMouseLeftButtonUp="SliderVolume_PreviewMouseLeftButtonUp"
+                        ValueChanged="SliderVolume_ValueChanged" />
+
+                <TextBlock x:Name="textBlockDuration"
+                           Grid.Column="2"
+                           Margin="5,0,0,0"
+                           Text="0:00 / 0:00"
+                           VerticalAlignment="Center" />
+                <Slider x:Name="sliderProgress"
+                        Grid.Column="2"
+                        Grid.Row="1"
+                        Margin="5,0,0,0"
+                        IsMoveToPointEnabled="True"
+                        IsSelectionRangeEnabled="True"
+                        TickPlacement="BottomRight"
+                        TickFrequency="0"
+                        IsEnabled="False"
+                        Focusable="False"
+                        ValueChanged="SliderProgress_ValueChanged"
+                        PreviewMouseLeftButtonDown="SliderProgress_PreviewMouseLeftButtonDown"
+                        PreviewMouseLeftButtonUp="SliderProgress_PreviewMouseLeftButtonUp"
+                        PreviewMouseRightButtonUp="SliderProgress_PreviewMouseRightButtonUp" />
             </Grid>
         </Grid>
     </Grid>

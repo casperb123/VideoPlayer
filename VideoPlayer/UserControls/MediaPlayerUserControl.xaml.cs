@@ -107,7 +107,10 @@ namespace VideoPlayer.UserControls
 
         private void SliderProgress_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (player.Source is null || !player.IsOpen) return;
+            if (player.Source is null || !player.IsOpen || MediaPlayerUserControlViewModel.ChangingVolume)
+                return;
+
+            MediaPlayerUserControlViewModel.ChangingProgress = true;
             ViewModel.Seeking = true;
             ViewModel.ProgressTimer.Stop();
             player.Pause();
@@ -117,6 +120,7 @@ namespace VideoPlayer.UserControls
         {
             if (player.Source is null || !player.IsOpen) return;
 
+            MediaPlayerUserControlViewModel.ChangingProgress = false;
             int pos = Convert.ToInt32(sliderProgress.Value);
             await ViewModel.Seek(new TimeSpan(0, 0, 0, pos, 0));
 
@@ -171,20 +175,19 @@ namespace VideoPlayer.UserControls
             ViewModel.OldVolume = sliderVolume.Value;
         }
 
-        private void SliderVolume_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private async void SliderVolume_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (sliderVolume.Value > 0)
             {
                 ViewModel.OldVolume = sliderVolume.Value;
             }
 
-            Focus();
+            await Settings.CurrentSettings.Save();
         }
 
-        private void ButtonMuteUnmute_Click(object sender, RoutedEventArgs e)
+        private async void ButtonMuteUnmute_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.MuteToggle();
-            Focus();
+            await ViewModel.MuteToggle();
         }
 
         private void CheckBoxLoop_Checked(object sender, RoutedEventArgs e)
@@ -320,6 +323,16 @@ namespace VideoPlayer.UserControls
                 ViewModel.ExitFullscreen();
             else
                 ViewModel.EnterFullscreen();
+        }
+
+        private void GridControls_MouseEnter(object sender, MouseEventArgs e)
+        {
+            ViewModel.MouseOverControls = true;
+        }
+
+        private void GridControls_MouseLeave(object sender, MouseEventArgs e)
+        {
+            ViewModel.MouseOverControls = false;
         }
     }
 }
