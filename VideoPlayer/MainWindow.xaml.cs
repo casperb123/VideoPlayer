@@ -649,7 +649,6 @@ namespace VideoPlayer
         private void ToggleSwitchAlwaysOnTop_IsCheckedChanged(object sender, EventArgs e)
         {
             ViewModel.SettingsChanged = true;
-            Topmost = Settings.CurrentSettings.AlwaysOnTop;
         }
     }
 }

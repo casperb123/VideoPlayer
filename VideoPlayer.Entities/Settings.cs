@@ -80,6 +80,9 @@ namespace VideoPlayer.Entities
             {
                 alwaysOnTop = value;
                 OnPropertyChanged(nameof(AlwaysOnTop));
+
+                if (Application.Current.MainWindow != null && Application.Current.MainWindow.IsLoaded)
+                    Application.Current.MainWindow.Topmost = value;
             }
         }
 
