@@ -16,7 +16,7 @@ namespace VideoPlayer.Entities
         private int theme;
         private int color;
         private bool leftRightedgeDetection;
-        private int edgeDistance;
+        private int leftRightedgeDistance;
         private bool alwaysOnTop;
         private bool topEdgeDetection;
 
@@ -87,15 +87,15 @@ namespace VideoPlayer.Entities
 
         public EdgeOpen LeftEdgeOpen { get; set; }
 
-        public int EdgeDistance
+        public int LeftRightEdgeDistance
         {
-            get => edgeDistance;
+            get => leftRightedgeDistance;
             set
             {
                 if (value < 5 || value > 200)
-                    throw new ArgumentOutOfRangeException(nameof(EdgeDistance), "The right edge distance must be between 5 and 100");
+                    throw new ArgumentOutOfRangeException(nameof(LeftRightEdgeDistance), "The left/right edge distance must be between 5 and 200");
 
-                edgeDistance = value;
+                leftRightedgeDistance = value;
             }
         }
 
@@ -115,7 +115,7 @@ namespace VideoPlayer.Entities
             NotifyUpdates = true;
             RightEdgeOpen = EdgeOpen.Queue;
             LeftRightEdgeDetection = true;
-            EdgeDistance = 50;
+            LeftRightEdgeDistance = 50;
         }
 
         private void OnPropertyChanged(string prop)

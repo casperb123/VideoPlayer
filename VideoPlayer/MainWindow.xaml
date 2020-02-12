@@ -249,11 +249,11 @@
                                                    IsChecked="{Binding Path=LeftRightEdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
                                                    IsCheckedChanged="ToggleSwitchLeftRightEdgeDetection_IsCheckedChanged" />
 
-                            <Label Content="Edge Distance:"
+                            <Label Content="Left/Right Edge Distance:"
                                    VerticalContentAlignment="Center"
                                    Grid.Row="5"
-                                   Margin="0,5,5,0" />
-                            <Controls:NumericUpDown x:Name="numericUpDownEdgeDistance"
+                                   Margin="0,0,5,0" />
+                            <Controls:NumericUpDown x:Name="numericUpDownLeftRightEdgeDistance"
                                                     Grid.Row="5"
                                                     Grid.Column="1"
                                                     Margin="5,5,0,5"
@@ -262,8 +262,8 @@
                                                     Speedup="True"
                                                     Interval="1"
                                                     IsEnabled="{Binding Path=LeftRightEdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
-                                                    Value="{Binding Path=EdgeDistance, Source={x:Static entities:Settings.CurrentSettings}}"
-                                                    ValueChanged="NumericUpDownEdgeDistance_ValueChanged" />
+                                                    Value="{Binding Path=LeftRightEdgeDistance, Source={x:Static entities:Settings.CurrentSettings}}"
+                                                    ValueChanged="NumericUpDownLeftRightEdgeDistance_ValueChanged" />
 
                             <Label Content="Right Edge Open:"
                                    VerticalContentAlignment="Center"

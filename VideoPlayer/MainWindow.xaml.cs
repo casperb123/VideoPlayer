@@ -520,7 +520,7 @@ namespace VideoPlayer
             ViewModel.SettingsChanged = true;
         }
 
-        private void NumericUpDownEdgeDistance_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        private void NumericUpDownLeftRightEdgeDistance_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             if (!IsLoaded)
                 return;
@@ -554,7 +554,7 @@ namespace VideoPlayer
 
             if (Settings.CurrentSettings.LeftRightEdgeDetection)
             {
-                if (xRight <= Settings.CurrentSettings.EdgeDistance && !ShowTitleBar)
+                if (xRight <= Settings.CurrentSettings.LeftRightEdgeDistance && !ShowTitleBar)
                 {
                     if (flyoutQueue.IsOpen && flyoutQueue.Position == Position.Right ||
                         flyoutPlaylists.IsOpen && flyoutPlaylists.Position == Position.Right ||
@@ -580,7 +580,7 @@ namespace VideoPlayer
                         ViewModel.SettingsOpenedWithEdgeDetection = true;
                     }
                 }
-                else if (mousePos.X <= Settings.CurrentSettings.EdgeDistance && !ShowTitleBar)
+                else if (mousePos.X <= Settings.CurrentSettings.LeftRightEdgeDistance && !ShowTitleBar)
                 {
                     if (flyoutQueue.IsOpen && flyoutQueue.Position == Position.Left ||
                         flyoutPlaylists.IsOpen && flyoutPlaylists.Position == Position.Left ||
