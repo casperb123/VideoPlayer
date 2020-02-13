@@ -42,6 +42,7 @@ namespace VideoPlayer.ViewModels
         public bool MouseOverControls;
         public static bool ChangingVolume;
         public static bool ChangingProgress;
+        public bool IsPlaying;
 
         private void OnPropertyChanged(string prop)
         {
@@ -118,8 +119,11 @@ namespace VideoPlayer.ViewModels
         {
             await userControl.player.Seek(timeSpan);
             Seeking = false;
-            ProgressTimer.Start();
-            await userControl.player.Play();
+            if (IsPlaying)
+            {
+                ProgressTimer.Start();
+                await userControl.player.Play();
+            }
         }
 
         public void ShowTime()
@@ -168,6 +172,7 @@ namespace VideoPlayer.ViewModels
 
         public async Task Play()
         {
+            IsPlaying = true;
             ProgressTimer.Start();
             await userControl.player.Play();
             userControl.iconPlayPause.Kind = PackIconKind.Pause;
@@ -177,6 +182,7 @@ namespace VideoPlayer.ViewModels
 
         public async Task Pause()
         {
+            IsPlaying = false;
             ProgressTimer.Stop();
             await userControl.player.Pause();
             userControl.iconPlayPause.Kind = PackIconKind.Play;

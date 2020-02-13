@@ -123,8 +123,6 @@ namespace VideoPlayer.UserControls
             MediaPlayerUserControlViewModel.ChangingProgress = false;
             int pos = Convert.ToInt32(sliderProgress.Value);
             await ViewModel.Seek(new TimeSpan(0, 0, 0, pos, 0));
-
-            Focus();
         }
 
         private void SliderProgress_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
