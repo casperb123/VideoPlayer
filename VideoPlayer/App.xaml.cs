@@ -15,7 +15,7 @@ namespace VideoPlayer
         {
             if (e.Args.Length > 0)
             {
-                MessageBox.Show("Please don't open the application with another file", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Please don't open the application with another file", "Video Player", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
