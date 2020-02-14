@@ -115,7 +115,8 @@ namespace VideoPlayer.ViewModels
                 !MainWindow.ShowTitleBar &&
                 !MainWindow.ViewModel.IsAnyContextOpen &&
                 !MainWindow.flyoutPlaylist.IsOpen &&
-                !MainWindow.IsAnyDialogOpen)
+                !MainWindow.IsAnyDialogOpen &&
+                !MouseOverControls)
             {
                 userControl.gridControls.IsEnabled = false;
                 userControl.gridControls.Visibility = Visibility.Hidden;

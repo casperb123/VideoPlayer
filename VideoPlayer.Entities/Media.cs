@@ -64,7 +64,7 @@ namespace VideoPlayer.Entities
             Source = source;
             Name = Path.GetFileNameWithoutExtension(Source);
 
-            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
+            string runningPath = Directory.GetCurrentDirectory();
             string ffmpegPath = $@"{Path.GetFullPath(Path.Combine(runningPath, @"..\..\..\"))}ffmpeg";
 
             if (!Directory.Exists(ffmpegPath))

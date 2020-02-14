@@ -19,6 +19,7 @@ using VideoPlayer.UserControls;
 using Application = System.Windows.Application;
 using GithubUpdater;
 using MahApps.Metro.Controls;
+using System.Reflection;
 
 namespace VideoPlayer.ViewModels
 {
@@ -266,7 +267,7 @@ namespace VideoPlayer.ViewModels
 
         public void RenamePlaylist(Playlist playlist, string name)
         {
-            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
+            string runningPath = Directory.GetCurrentDirectory();
             string playlistsPath = $@"{runningPath}\Playlists";
             string file = $@"{playlistsPath}\{playlist.Name}.playlist";
             if (File.Exists(file))

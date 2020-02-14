@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using VideoPlayer.Entities;
 
@@ -12,13 +13,18 @@ namespace VideoPlayer
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
-            string ffmpegPath = $@"{Path.GetFullPath(Path.Combine(runningPath, @"..\..\..\"))}ffmpeg";
-
-            if (!Directory.Exists(ffmpegPath))
+            if (e.Args.Length > 0)
             {
-                ffmpegPath = $@"{runningPath}\ffmpeg";
+                MessageBox.Show("Please don't open the application with another file", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
+
+            string runningPath = Directory.GetCurrentDirectory();
+#if DEBUG
+            string ffmpegPath = $@"{Path.GetFullPath(Path.Combine(runningPath, @"..\..\..\"))}ffmpeg";
+#else
+            string ffmpegPath = $@"{runningPath}\ffmpeg";
+#endif
 
             Unosquare.FFME.Library.FFmpegDirectory = ffmpegPath;
             Settings.CurrentSettings = Settings.GetSettings().Result;

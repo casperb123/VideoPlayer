@@ -70,14 +70,14 @@ namespace VideoPlayer
                 playlists.ToList().ForEach(x => ViewModel.Playlists.Add(x));
             });
 
-            string[] cmdLine = Environment.GetCommandLineArgs();
-            List<string> filePaths = cmdLine.Where(x => validExtensions.Contains(Path.GetExtension(x))).ToList();
-            if (filePaths.Count > 0)
-            {
-                List<Media> medias = new List<Media>();
-                filePaths.ForEach(x => medias.Add(new Media(x)));
-                ViewModel.AddMediasToQueue(medias).ConfigureAwait(false);
-            }
+            //string[] cmdLine = Environment.GetCommandLineArgs();
+            //List<string> filePaths = cmdLine.Where(x => validExtensions.Contains(Path.GetExtension(x))).ToList();
+            //if (filePaths.Count > 0)
+            //{
+            //    List<Media> medias = new List<Media>();
+            //    filePaths.ForEach(x => medias.Add(new Media(x)));
+            //    ViewModel.AddMediasToQueue(medias).ConfigureAwait(false);
+            //}
 
             RegisterCommandBindings();
         }
@@ -550,23 +550,24 @@ namespace VideoPlayer
             Point mousePos = Mouse.GetPosition(this);
             double xRight = ActualWidth - mousePos.X;
 
-            if (Settings.CurrentSettings.TopEdgeDetection)
+            if (Settings.CurrentSettings.TopEdgeDetection &&
+                !ViewModel.IsFlyoutOpen)
             {
-                if (mousePos.Y <= 5 && !ShowTitleBar && !ViewModel.IsFlyoutOpen)
+                if (mousePos.Y <= 5 && !ShowTitleBar)
                 {
                     ShowCloseButton = true;
                     ShowTitleBar = true;
                 }
-                else if (mousePos.Y > 30 && ShowTitleBar && !ViewModel.IsFlyoutOpen)
+                else if (mousePos.Y > 30 && ShowTitleBar)
                 {
                     ShowCloseButton = false;
                     ShowTitleBar = false;
                 }
             }
 
-            if (Settings.CurrentSettings.LeftRightEdgeDetection)
+            if (Settings.CurrentSettings.LeftRightEdgeDetection && !ShowTitleBar && !flyoutCredits.IsOpen)
             {
-                if (xRight <= Settings.CurrentSettings.LeftRightEdgeDistance && !ShowTitleBar)
+                if (xRight <= Settings.CurrentSettings.LeftRightEdgeDistance)
                 {
                     if (flyoutQueue.IsOpen && flyoutQueue.Position == Position.Right ||
                         flyoutPlaylists.IsOpen && flyoutPlaylists.Position == Position.Right ||
@@ -592,7 +593,7 @@ namespace VideoPlayer
                         ViewModel.SettingsOpenedWithEdgeDetection = true;
                     }
                 }
-                else if (mousePos.X <= Settings.CurrentSettings.LeftRightEdgeDistance && !ShowTitleBar)
+                else if (mousePos.X <= Settings.CurrentSettings.LeftRightEdgeDistance)
                 {
                     if (flyoutQueue.IsOpen && flyoutQueue.Position == Position.Left ||
                         flyoutPlaylists.IsOpen && flyoutPlaylists.Position == Position.Left ||
@@ -699,6 +700,15 @@ namespace VideoPlayer
         private void ToggleSwitchTopEdgeDetection_IsCheckedChanged(object sender, EventArgs e)
         {
             ViewModel.SettingsChanged = true;
+        }
+
+        private void FlyoutCredits_IsOpenChanged(object sender, RoutedEventArgs e)
+        {
+            if (flyoutCredits.IsOpen && ViewModel.UserControl.ViewModel.IsFullscreen)
+            {
+                ShowCloseButton = false;
+                ShowTitleBar = false;
+            }
         }
     }
 }
