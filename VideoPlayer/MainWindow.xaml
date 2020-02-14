@@ -377,7 +377,8 @@
                         </DataGrid.Columns>
                         <DataGrid.ContextMenu>
                             <ContextMenu x:Name="contextMenuDataGridQueue"
-                                         Opened="ContextMenuDataGridQueue_Opened">
+                                         Opened="ContextMenuDataGridQueue_Opened"
+                                         Closed="ContextMenuDataGridQueue_Closed">
                                 <MenuItem x:Name="menuItemQueueRemove"
                                           Header="Remove"
                                           Click="MenuItemQueueRemove_Click" />
@@ -458,7 +459,8 @@
                         </DataGrid.Columns>
                         <DataGrid.ContextMenu>
                             <ContextMenu x:Name="contextMenuDataGridPlaylists"
-                                         Opened="ContextMenuDataGridPlaylists_Opened">
+                                         Opened="ContextMenuDataGridPlaylists_Opened"
+                                         Closed="ContextMenuDataGridPlaylists_Closed">
                                 <MenuItem x:Name="menuItemPlaylistsAddToQueue"
                                           Header="Add to queue"
                                           Click="MenuItemPlaylistsAddToQueue_Click" />
@@ -547,7 +549,8 @@
                         </DataGrid.Columns>
                         <DataGrid.ContextMenu>
                             <ContextMenu x:Name="contextMenuDataGridPlaylist"
-                                         Opened="ContextMenuDataGridPlaylist_Opened">
+                                         Opened="ContextMenuDataGridPlaylist_Opened"
+                                         Closed="ContextMenuDataGridPlaylist_Closed">
                                 <MenuItem x:Name="menuItemPlaylistRemove"
                                           Header="Remove"
                                           Click="MenuItemPlaylistRemove_Click" />

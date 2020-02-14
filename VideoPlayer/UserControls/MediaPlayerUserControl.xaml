@@ -32,6 +32,20 @@
                                Panel.ZIndex="1"
                                MediaEnded="Player_MediaEnded"
                                MediaOpened="Player_MediaOpened" />
+            <Grid.ContextMenu>
+                <ContextMenu x:Name="contextMenuGridPlayer"
+                             Opened="ContextMenuGridPlayer_Opened"
+                             Closed="ContextMenuGridPlayer_Closed">
+                    <MenuItem x:Name="menuItemGridPlayerLoop"
+                              Header="Loop"
+                              IsCheckable="True"
+                              Checked="MenuItemGridPlayerLoop_Checked"
+                              Unchecked="MenuItemGridPlayerLoop_Unchecked" />
+                    <MenuItem x:Name="menuItemGridPlayerOpen"
+                              Header="Open"
+                              Click="MenuItemGridPlayerOpen_Click" />
+                </ContextMenu>
+            </Grid.ContextMenu>
         </Grid>
 
         <Grid x:Name="gridControls"

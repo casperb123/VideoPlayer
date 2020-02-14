@@ -35,35 +35,16 @@ namespace VideoPlayer.UserControls
         public async void ButtonPlayPause_Click(object sender, RoutedEventArgs e)
         {
             await ViewModel.PlayPause();
-            Focus();
         }
 
         private async void ButtonStop_Click(object sender, RoutedEventArgs e)
         {
             await ViewModel.Stop(false);
-            Focus();
         }
 
         private async void ButtonAddToQueue_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog
-            {
-                Title = "Select video file(s)",
-                DefaultExt = ".avi",
-                Filter = "Media Files|*.mpg;*.avi;*.wma;*.mov;*.wav;*.mp2;*.mp3;*.mp4|All Files|*.*",
-                Multiselect = true
-            };
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                List<string> fileNames = openFileDialog.FileNames.ToList();
-                List<Media> medias = new List<Media>();
-                fileNames.ForEach(x => medias.Add(new Media(x)));
-
-                await ViewModel.MainWindow.ViewModel.AddMediasToQueue(medias);
-            }
-
-            Focus();
+            await ViewModel.OpenDialog();
         }
 
         private async void Player_MediaEnded(object sender, EventArgs e)
@@ -331,6 +312,31 @@ namespace VideoPlayer.UserControls
         private void GridControls_MouseLeave(object sender, MouseEventArgs e)
         {
             ViewModel.MouseOverControls = false;
+        }
+
+        private void MenuItemGridPlayerLoop_Checked(object sender, RoutedEventArgs e)
+        {
+            ViewModel.LoopVideo = true;
+        }
+
+        private void MenuItemGridPlayerLoop_Unchecked(object sender, RoutedEventArgs e)
+        {
+            ViewModel.LoopVideo = false;
+        }
+
+        private void ContextMenuGridPlayer_Opened(object sender, RoutedEventArgs e)
+        {
+            ViewModel.MainWindow.ViewModel.IsAnyContextOpen = true;
+        }
+
+        private void ContextMenuGridPlayer_Closed(object sender, RoutedEventArgs e)
+        {
+            ViewModel.MainWindow.ViewModel.IsAnyContextOpen = false;
+        }
+
+        private async void MenuItemGridPlayerOpen_Click(object sender, RoutedEventArgs e)
+        {
+            await ViewModel.OpenDialog();
         }
     }
 }

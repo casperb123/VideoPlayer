@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows.Controls;
 using System.ComponentModel;
+using Microsoft.Win32;
 
 namespace VideoPlayer.ViewModels
 {
@@ -23,6 +24,7 @@ namespace VideoPlayer.ViewModels
         private double loopEnd;
         private WindowState oldState;
         private bool setStartLoop = true;
+        private bool loopVideo;
 
         [DllImport("user32.dll")]
         private static extern uint GetDoubleClickTime();
@@ -32,7 +34,6 @@ namespace VideoPlayer.ViewModels
         public bool Seeking;
         public TimeSpan position;
         public double OldVolume;
-        public bool LoopVideo;
         public bool LoopSpecificTime;
         public DispatcherTimer ProgressTimer;
         public bool IsFullscreen;
@@ -43,6 +44,17 @@ namespace VideoPlayer.ViewModels
         public static bool ChangingVolume;
         public static bool ChangingProgress;
         public bool IsPlaying;
+
+        public bool LoopVideo
+        {
+            get => loopVideo;
+            set
+            {
+                loopVideo = value;
+                userControl.menuItemGridPlayerLoop.IsChecked = value;
+                MainWindow.toggleSwitchLoop.IsChecked = value;
+            }
+        }
 
         private void OnPropertyChanged(string prop)
         {
@@ -99,7 +111,11 @@ namespace VideoPlayer.ViewModels
 
         private void ControlsTimer_Tick(object sender, EventArgs e)
         {
-            if (userControl.player.IsPlaying && !MainWindow.ShowTitleBar)
+            if (userControl.player.IsPlaying &&
+                !MainWindow.ShowTitleBar &&
+                !MainWindow.ViewModel.IsAnyContextOpen &&
+                !MainWindow.flyoutPlaylist.IsOpen &&
+                !MainWindow.IsAnyDialogOpen)
             {
                 userControl.gridControls.IsEnabled = false;
                 userControl.gridControls.Visibility = Visibility.Hidden;
@@ -154,6 +170,26 @@ namespace VideoPlayer.ViewModels
         public void EnableStop()
         {
             userControl.buttonStop.IsEnabled = true;
+        }
+
+        public async Task OpenDialog()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Title = "Select video file(s)",
+                DefaultExt = ".avi",
+                Filter = "Media Files|*.mpg;*.avi;*.wma;*.mov;*.wav;*.mp2;*.mp3;*.mp4|All Files|*.*",
+                Multiselect = true
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                List<string> fileNames = openFileDialog.FileNames.ToList();
+                List<Media> medias = new List<Media>();
+                fileNames.ForEach(x => medias.Add(new Media(x)));
+
+                await MainWindow.ViewModel.AddMediasToQueue(medias);
+            }
         }
 
         public async Task Open(Media media)
@@ -515,7 +551,6 @@ namespace VideoPlayer.ViewModels
             userControl.gridControls.Opacity = 0.7;
             MainWindow.flyoutQueue.Opacity = 0.7;
             MainWindow.flyoutCredits.Opacity = 0.7;
-            MainWindow.flyoutPlaylist.Opacity = 0.7;
             MainWindow.flyoutPlaylists.Opacity = 0.7;
             MainWindow.flyoutSettings.Opacity = 0.7;
             IsFullscreen = true;
@@ -538,7 +573,6 @@ namespace VideoPlayer.ViewModels
             userControl.gridControls.Opacity = 1;
             MainWindow.flyoutQueue.Opacity = 1;
             MainWindow.flyoutCredits.Opacity = 1;
-            MainWindow.flyoutPlaylist.Opacity = 1;
             MainWindow.flyoutPlaylists.Opacity = 1;
             MainWindow.flyoutSettings.Opacity = 1;
             Mouse.OverrideCursor = null;

@@ -221,13 +221,11 @@ namespace VideoPlayer
         private void ToggleSwitchLoop_Checked(object sender, RoutedEventArgs e)
         {
             ViewModel.UserControl.ViewModel.LoopVideo = true;
-            Focus();
         }
 
         private void ToggleSwitchLoop_Unchecked(object sender, RoutedEventArgs e)
         {
             ViewModel.UserControl.ViewModel.LoopVideo = false;
-            Focus();
         }
 
         private void ToggleSwitchLoopTime_Checked(object sender, RoutedEventArgs e)
@@ -260,20 +258,26 @@ namespace VideoPlayer
 
         private void ContextMenuDataGridPlaylists_Opened(object sender, RoutedEventArgs e)
         {
+            ViewModel.IsAnyContextOpen = true;
             if (ViewModel.SelectedPlaylist is null)
             {
                 menuItemPlaylistsRemove.IsEnabled = false;
+                menuItemPlaylistsEditName.IsEnabled = false;
                 menuItemPlaylistsEditMedias.IsEnabled = false;
                 menuItemPlaylistsAddToQueue.IsEnabled = false;
-                menuItemPlaylistsEditName.IsEnabled = false;
             }
             else
             {
                 menuItemPlaylistsRemove.IsEnabled = true;
+                menuItemPlaylistsEditName.IsEnabled = true;
                 menuItemPlaylistsEditMedias.IsEnabled = true;
                 menuItemPlaylistsAddToQueue.IsEnabled = true;
-                menuItemPlaylistsEditName.IsEnabled = true;
             }
+        }
+
+        private void ContextMenuDataGridPlaylists_Closed(object sender, RoutedEventArgs e)
+        {
+            ViewModel.IsAnyContextOpen = false;
         }
 
         private void ButtonAddMediasToPlaylist_Click(object sender, RoutedEventArgs e)
@@ -331,10 +335,16 @@ namespace VideoPlayer
 
         private void ContextMenuDataGridPlaylist_Opened(object sender, RoutedEventArgs e)
         {
+            ViewModel.IsAnyContextOpen = true;
             if (ViewModel.SelectedPlaylistMedia is null)
                 menuItemPlaylistRemove.IsEnabled = false;
             else
                 menuItemPlaylistRemove.IsEnabled = true;
+        }
+
+        private void ContextMenuDataGridPlaylist_Closed(object sender, RoutedEventArgs e)
+        {
+            ViewModel.IsAnyContextOpen = false;
         }
 
         private async void MenuItemPlaylistRemove_Click(object sender, RoutedEventArgs e)
@@ -533,6 +543,7 @@ namespace VideoPlayer
 
         private void MetroWindow_MouseMove(object sender, MouseEventArgs e)
         {
+
             if (!ViewModel.UserControl.ViewModel.IsFullscreen || ViewModel.UserControl.ViewModel.MouseOverControls)
                 return;
 
@@ -636,10 +647,16 @@ namespace VideoPlayer
 
         private void ContextMenuDataGridQueue_Opened(object sender, RoutedEventArgs e)
         {
+            ViewModel.IsAnyContextOpen = true;
             if (ViewModel.SelectedMedia is null)
                 menuItemQueueRemove.IsEnabled = false;
             else
                 menuItemQueueRemove.IsEnabled = true;
+        }
+
+        private void ContextMenuDataGridQueue_Closed(object sender, RoutedEventArgs e)
+        {
+            ViewModel.IsAnyContextOpen = false;
         }
 
         private void DataGridPlaylist_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -673,7 +690,9 @@ namespace VideoPlayer
 
         private void MetroWindow_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (ViewModel.UserControl.ViewModel.IsFullscreen && e.Source == this)
+            Point point = e.GetPosition(this);
+
+            if (ViewModel.UserControl.ViewModel.IsFullscreen && e.Source == this && point.Y <= 35)
                 e.Handled = true;
         }
 
