@@ -19,7 +19,7 @@ namespace VideoPlayer
                 return;
             }
 
-            string runningPath = Directory.GetCurrentDirectory();
+            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
 #if DEBUG
             string ffmpegPath = $@"{Path.GetFullPath(Path.Combine(runningPath, @"..\..\..\"))}ffmpeg";
 #else
