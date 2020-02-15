@@ -57,6 +57,8 @@ namespace VideoPlayer.Entities
             }
         }
 
+        public bool MediasChanged { get; set; }
+
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 

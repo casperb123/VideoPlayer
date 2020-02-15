@@ -163,6 +163,7 @@ namespace VideoPlayer
         {
             ViewModel.Hotkeys.ForEach(x => x.Dispose());
             await Settings.CurrentSettings.Save();
+            await ViewModel.SavePlaylists();
         }
 
         private void NumericPlaybackSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
@@ -326,11 +327,19 @@ namespace VideoPlayer
             }
         }
 
-        private void FlyoutPlaylist_IsOpenChanged(object sender, RoutedEventArgs e)
+        private async void FlyoutPlaylist_IsOpenChanged(object sender, RoutedEventArgs e)
         {
             flyoutPlaylists.IsPinned = flyoutPlaylist.IsOpen;
             if (!flyoutPlaylist.IsOpen)
+            {
+                if (ViewModel.SelectedPlaylist != null && ViewModel.SelectedPlaylist.MediasChanged)
+                {
+                    await ViewModel.SavePlaylists();
+                    ViewModel.SelectedPlaylist.MediasChanged = false;
+                }
+
                 dataGridPlaylist.SelectedItem = null;
+            }
         }
 
         private void ContextMenuDataGridPlaylist_Opened(object sender, RoutedEventArgs e)
@@ -365,7 +374,7 @@ namespace VideoPlayer
         private void DataGridPlaylists_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             ViewModel.PlaylistsRowIndex = ViewModel.GetCurrentRowIndex(dataGridPlaylists, e.GetPosition);
-            if (ViewModel.PlaylistsRowIndex < 0)
+            if (ViewModel.PlaylistsRowIndex == -1)
                 return;
             if (!(dataGridPlaylists.Items[ViewModel.PlaylistsRowIndex] is Playlist selectedPlaylist))
                 return;
@@ -375,7 +384,7 @@ namespace VideoPlayer
                 dataGridPlaylists.SelectedIndex = ViewModel.PlaylistsRowIndex;
         }
 
-        private async void DataGridPlaylists_Drop(object sender, DragEventArgs e)
+        private void DataGridPlaylists_Drop(object sender, DragEventArgs e)
         {
             if (ViewModel.PlaylistRowIndex < 0)
                 return;
@@ -386,14 +395,14 @@ namespace VideoPlayer
             Playlist changedPlaylist = ViewModel.Playlists[ViewModel.PlaylistsRowIndex];
             ViewModel.Playlists.RemoveAt(ViewModel.PlaylistsRowIndex);
             ViewModel.Playlists.Insert(index, changedPlaylist);
-            await ViewModel.SavePlaylists();
+            ViewModel.PlaylistsChanged = true;
             ViewModel.PlaylistsPlaylistSelected = false;
         }
 
         private void DataGridPlaylist_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             ViewModel.PlaylistRowIndex = ViewModel.GetCurrentRowIndex(dataGridPlaylist, e.GetPosition);
-            if (ViewModel.PlaylistRowIndex < 0)
+            if (ViewModel.PlaylistRowIndex == -1)
                 return;
             if (!(dataGridPlaylist.Items[ViewModel.PlaylistRowIndex] is Media selectedMedia))
                 return;
@@ -403,7 +412,7 @@ namespace VideoPlayer
                 dataGridPlaylist.SelectedIndex = ViewModel.PlaylistRowIndex;
         }
 
-        private async void DataGridPlaylist_Drop(object sender, DragEventArgs e)
+        private void DataGridPlaylist_Drop(object sender, DragEventArgs e)
         {
             if (ViewModel.PlaylistRowIndex < 0)
                 return;
@@ -414,7 +423,7 @@ namespace VideoPlayer
             Media changedMedia = ViewModel.SelectedPlaylist.Medias[ViewModel.PlaylistRowIndex];
             ViewModel.SelectedPlaylist.Medias.RemoveAt(ViewModel.PlaylistRowIndex);
             ViewModel.SelectedPlaylist.Medias.Insert(index, changedMedia);
-            await ViewModel.SavePlaylists();
+            ViewModel.SelectedPlaylist.MediasChanged = true;
             ViewModel.PlaylistMediaSelected = false;
         }
 
@@ -631,10 +640,18 @@ namespace VideoPlayer
             }
         }
 
-        private void FlyoutPlaylists_IsOpenChanged(object sender, RoutedEventArgs e)
+        private async void FlyoutPlaylists_IsOpenChanged(object sender, RoutedEventArgs e)
         {
             if (flyoutPlaylists.IsOpen)
                 flyoutQueue.IsOpen = false;
+            else
+            {
+                if (ViewModel.PlaylistsChanged)
+                {
+                    await ViewModel.SavePlaylists();
+                    ViewModel.PlaylistsChanged = false;
+                }
+            }
         }
 
         private void DataGridQueue_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)

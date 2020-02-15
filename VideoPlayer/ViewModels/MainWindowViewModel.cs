@@ -48,6 +48,7 @@ namespace VideoPlayer.ViewModels
         public bool QueueOpenedWithEdgeDetection;
         public bool PlaylistsOpenedWithEdgeDetection;
         public bool IsAnyContextOpen;
+        public bool PlaylistsChanged;
 
         public delegate Point GetPosition(IInputElement element);
         public event PropertyChangedEventHandler PropertyChanged;
