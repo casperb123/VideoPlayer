@@ -7,9 +7,22 @@ namespace VideoPlayer.Entities
     [Serializable]
     public class Media
     {
+        private Playlist playlist;
         private string source;
         private string duration;
         private string name;
+
+        public Playlist Playlist
+        {
+            get => playlist;
+            set
+            {
+                if (value is null)
+                    throw new NullReferenceException("The playlist can't be null");
+
+                playlist = value;
+            }
+        }
 
         public Uri Uri { get; private set; }
 
@@ -100,6 +113,20 @@ namespace VideoPlayer.Entities
             }
 
             Duration = mediaInfo.Duration.ToString($"{timeSpanString}ss");
+        }
+
+        public Media(string source, Playlist playlist)
+            : this(source)
+        {
+            Playlist = playlist;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is Media media))
+                return false;
+
+            return Name == media.Name && Duration == media.Duration && Source == media.Source;
         }
     }
 }

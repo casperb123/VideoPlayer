@@ -19,7 +19,6 @@ using VideoPlayer.UserControls;
 using Application = System.Windows.Application;
 using GithubUpdater;
 using MahApps.Metro.Controls;
-using System.Reflection;
 
 namespace VideoPlayer.ViewModels
 {
@@ -252,11 +251,9 @@ namespace VideoPlayer.ViewModels
 
         public async Task<ICollection<Playlist>> GetPlaylists()
         {
-            string runningPath = Directory.GetCurrentDirectory();
-            string file = $@"{runningPath}\Playlists.bin";
             BinaryFormatter formatter = new BinaryFormatter();
             MemoryStream stream = new MemoryStream();
-            byte[] bytes = Unprotect(await File.ReadAllBytesAsync(file));
+            byte[] bytes = Unprotect(await File.ReadAllBytesAsync(Settings.PlaylistsFilePath));
 
             stream.Write(bytes, 0, bytes.Length);
             stream.Position = 0;
@@ -264,18 +261,6 @@ namespace VideoPlayer.ViewModels
             List<Playlist> playlists = new List<Playlist>();
             loadedPlaylists.ToList().ForEach(x => playlists.Add(new Playlist(x.Name, x.Medias)));
             return playlists;
-        }
-
-        public void RenamePlaylist(Playlist playlist, string name)
-        {
-            string runningPath = Directory.GetCurrentDirectory();
-            string playlistsPath = $@"{runningPath}\Playlists";
-            string file = $@"{playlistsPath}\{playlist.Name}.playlist";
-            if (File.Exists(file))
-            {
-                string newFile = $@"{playlistsPath}\{name}.playlist";
-                File.Move(file, newFile);
-            }
         }
 
         private bool GetMouseTargetRow(Visual target, GetPosition position)
@@ -310,12 +295,10 @@ namespace VideoPlayer.ViewModels
 
         public async Task SavePlaylists()
         {
-            string runningPath = Directory.GetCurrentDirectory();
-            string file = $@"{runningPath}\Playlists.bin";
             BinaryFormatter formatter = new BinaryFormatter();
             MemoryStream stream = new MemoryStream();
             formatter.Serialize(stream, Playlists);
-            await File.WriteAllBytesAsync(file, Protect(stream.ToArray()));
+            await File.WriteAllBytesAsync(Settings.PlaylistsFilePath, Protect(stream.ToArray()));
         }
 
         public void OpenSettings()
@@ -338,6 +321,34 @@ namespace VideoPlayer.ViewModels
             mainWindow.flyoutPlaylists.Position = Position.Right;
             mainWindow.flyoutPlaylists.IsOpen = true;
             PlaylistsOpenedWithEdgeDetection = false;
+        }
+
+        public async Task DeletePlaylist(Playlist selectedPlaylist)
+        {
+            bool mediasExistsInPlaylist = false;
+
+            foreach (Playlist playlist in Playlists.Where(x => x.Name != selectedPlaylist.Name))
+            {
+                bool exists = selectedPlaylist.Medias.Any(x => playlist.Medias.Any(y => x.Equals(y)));
+
+                if (!mediasExistsInPlaylist)
+                    mediasExistsInPlaylist = exists;
+            }
+
+            if (!mediasExistsInPlaylist)
+                selectedPlaylist.Medias.ToList().ForEach(x => File.Delete(x.Source));
+
+            await RemovePlaylist(selectedPlaylist);
+        }
+
+        public async Task DeleteMediaFromPlaylist(Playlist playlist, Media media)
+        {
+            bool existsInPlaylist = Playlists.Where(x => x.Name != playlist.Name).Any(x => x.Medias.Any(y => y.Name == media.Name));
+            if (!existsInPlaylist)
+                File.Delete(media.Source);
+
+            playlist.Medias.Remove(media);
+            await SavePlaylists();
         }
     }
 }

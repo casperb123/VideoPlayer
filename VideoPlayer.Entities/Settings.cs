@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -22,6 +21,10 @@ namespace VideoPlayer.Entities
         private double volume;
 
         public static Settings CurrentSettings;
+        public static string SettingsFilePath;
+        public static string PlaylistsFilePath;
+        public static string MediasPath;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool AlwaysOnTop
@@ -141,26 +144,20 @@ namespace VideoPlayer.Entities
 
         public async Task Save()
         {
-            string runningPath = Directory.GetCurrentDirectory();
-            string file = $@"{runningPath}\Settings.json";
             string json = JsonConvert.SerializeObject(this, Formatting.Indented);
-
-            await File.WriteAllTextAsync(file, json);
+            await File.WriteAllTextAsync(SettingsFilePath, json);
         }
 
         public static async Task<Settings> GetSettings()
         {
-            string runningPath = Directory.GetCurrentDirectory();
-            string settingsFile = $@"{runningPath}\Settings.json";
-
-            if (!File.Exists(settingsFile))
+            if (!File.Exists(SettingsFilePath))
             {
                 Settings newSettings = new Settings();
                 await newSettings.Save();
                 return newSettings;
             }
 
-            JObject obj = JsonConvert.DeserializeObject<dynamic>(File.ReadAllText(settingsFile));
+            JObject obj = JsonConvert.DeserializeObject<dynamic>(File.ReadAllText(SettingsFilePath));
             List<JProperty> removedProperties = obj.Properties().Where(x => typeof(Settings).GetProperty(x.Name) is null).ToList();
 
             if (removedProperties != null && removedProperties.Count > 0)

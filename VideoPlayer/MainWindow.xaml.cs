@@ -294,8 +294,16 @@ namespace VideoPlayer
             if (openFileDialog.ShowDialog() == true)
             {
                 List<string> fileNames = openFileDialog.FileNames.ToList();
+                foreach (string file in fileNames)
+                {
+                    string destination = $@"{Settings.MediasPath}\{Path.GetFileName(file)}";
+                    if (!File.Exists(destination))
+                        File.Copy(file, destination);
+                }
+                fileNames.ToList().ForEach(x => fileNames[fileNames.IndexOf(x)] = $@"{Settings.MediasPath}\{Path.GetFileName(x)}");
+
                 List<Media> medias = new List<Media>();
-                fileNames.ForEach(x => medias.Add(new Media(x)));
+                fileNames.ForEach(x => medias.Add(new Media(x, ViewModel.SelectedPlaylist)));
                 ViewModel.AddMediasToPlaylist(medias);
             }
         }
@@ -304,7 +312,9 @@ namespace VideoPlayer
         {
             MessageDialogResult result = await this.ShowMessageAsync("Delete playlist", $"Are you sure that you want to delete the playlist '{ViewModel.SelectedPlaylist.Name}'", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
-                await ViewModel.RemovePlaylist(ViewModel.SelectedPlaylist);
+            {
+                await ViewModel.DeletePlaylist(ViewModel.SelectedPlaylist);
+            }
         }
 
         private void MenuItemPlaylistsEditMedias_Click(object sender, RoutedEventArgs e)
@@ -361,8 +371,7 @@ namespace VideoPlayer
             MessageDialogResult result = await this.ShowMessageAsync("Remove media", $"Are you sure that you want to remove the media '{ViewModel.SelectedPlaylistMedia.Name}' from the playlist '{ViewModel.SelectedPlaylist.Name}'?", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
-                ViewModel.SelectedPlaylist.Medias.Remove(ViewModel.SelectedPlaylistMedia);
-                await ViewModel.SavePlaylists();
+                await ViewModel.DeleteMediaFromPlaylist(ViewModel.SelectedPlaylist, ViewModel.SelectedPlaylistMedia);
             }
         }
 
