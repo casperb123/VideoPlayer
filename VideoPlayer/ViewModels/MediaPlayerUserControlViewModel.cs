@@ -549,6 +549,7 @@ namespace VideoPlayer.ViewModels
             oldState = MainWindow.WindowState;
             if (oldState != WindowState.Maximized)
                 MainWindow.WindowState = WindowState.Maximized;
+            MainWindow.Topmost = true;
             userControl.gridMediaElementBackground.SetValue(Grid.RowSpanProperty, 3);
             userControl.gridControls.Opacity = 0.7;
             MainWindow.flyoutQueue.Opacity = 0.7;
@@ -570,6 +571,7 @@ namespace VideoPlayer.ViewModels
             MainWindow.ShowCloseButton = true;
             MainWindow.ShowMaxRestoreButton = true;
             MainWindow.ShowMinButton = true;
+            MainWindow.Topmost = Settings.CurrentSettings.AlwaysOnTop;
             userControl.gridMediaElementBackground.ClearValue(Grid.RowSpanProperty);
             userControl.gridControls.IsEnabled = true;
             userControl.gridControls.Visibility = Visibility.Visible;
