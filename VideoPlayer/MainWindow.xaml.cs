@@ -70,14 +70,14 @@ namespace VideoPlayer
                 playlists.ToList().ForEach(x => ViewModel.Playlists.Add(x));
             });
 
-            //string[] cmdLine = Environment.GetCommandLineArgs();
-            //List<string> filePaths = cmdLine.Where(x => validExtensions.Contains(Path.GetExtension(x))).ToList();
-            //if (filePaths.Count > 0)
-            //{
-            //    List<Media> medias = new List<Media>();
-            //    filePaths.ForEach(x => medias.Add(new Media(x)));
-            //    ViewModel.AddMediasToQueue(medias).ConfigureAwait(false);
-            //}
+            string[] cmdLine = Environment.GetCommandLineArgs();
+            List<string> filePaths = cmdLine.Where(x => validExtensions.Contains(Path.GetExtension(x))).ToList();
+            if (filePaths.Count > 0)
+            {
+                List<Media> medias = new List<Media>();
+                filePaths.ForEach(x => medias.Add(new Media(x)));
+                ViewModel.AddMediasToQueue(medias).ConfigureAwait(false);
+            }
 
             RegisterCommandBindings();
         }

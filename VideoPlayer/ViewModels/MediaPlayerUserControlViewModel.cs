@@ -545,6 +545,7 @@ namespace VideoPlayer.ViewModels
             MainWindow.ShowCloseButton = false;
             MainWindow.ShowMaxRestoreButton = false;
             MainWindow.ShowMinButton = false;
+            MainWindow.IgnoreTaskbarOnMaximize = true;
             oldState = MainWindow.WindowState;
             if (oldState != WindowState.Maximized)
                 MainWindow.WindowState = WindowState.Maximized;
@@ -563,6 +564,7 @@ namespace VideoPlayer.ViewModels
         {
             IsFullscreen = false;
             ControlsTimer.Stop();
+            MainWindow.IgnoreTaskbarOnMaximize = false;
             MainWindow.WindowState = oldState;
             MainWindow.ShowTitleBar = true;
             MainWindow.ShowCloseButton = true;

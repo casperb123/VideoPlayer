@@ -13,12 +13,6 @@ namespace VideoPlayer
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            if (e.Args.Length > 0)
-            {
-                MessageBox.Show("Please don't open the application with another file", "Video Player", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
             string runningPath = AppDomain.CurrentDomain.BaseDirectory;
 #if DEBUG
             string ffmpegPath = $@"{Path.GetFullPath(Path.Combine(runningPath, @"..\..\..\"))}ffmpeg";
