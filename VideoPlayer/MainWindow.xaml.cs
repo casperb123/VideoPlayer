@@ -303,7 +303,7 @@ namespace VideoPlayer
                 fileNames.ToList().ForEach(x => fileNames[fileNames.IndexOf(x)] = $@"{Settings.MediasPath}\{Path.GetFileName(x)}");
 
                 List<Media> medias = new List<Media>();
-                fileNames.ForEach(x => medias.Add(new Media(x, ViewModel.SelectedPlaylist)));
+                fileNames.ForEach(x => medias.Add(new Media(x)));
                 ViewModel.AddMediasToPlaylist(medias);
             }
         }

@@ -329,7 +329,7 @@ namespace VideoPlayer.ViewModels
 
             foreach (Playlist playlist in Playlists.Where(x => x.Name != selectedPlaylist.Name))
             {
-                bool exists = selectedPlaylist.Medias.Any(x => playlist.Medias.Any(y => x.Equals(y)));
+                bool exists = selectedPlaylist.Medias.Any(x => playlist.Medias.Any(y => x.Name == y.Name && x.Duration == y.Duration && x.Source == y.Source));
 
                 if (!mediasExistsInPlaylist)
                     mediasExistsInPlaylist = exists;
@@ -343,12 +343,12 @@ namespace VideoPlayer.ViewModels
 
         public async Task DeleteMediaFromPlaylist(Playlist playlist, Media media)
         {
-            bool existsInPlaylist = Playlists.Where(x => x.Name != playlist.Name).Any(x => x.Medias.Any(y => y.Name == media.Name));
-            if (!existsInPlaylist)
-                File.Delete(media.Source);
-
             playlist.Medias.Remove(media);
             await SavePlaylists();
+
+            bool existsInPlaylist = Playlists.Any(x => x.Medias.Any(y => y.Name == media.Name));
+            if (!existsInPlaylist)
+                File.Delete(media.Source);
         }
     }
 }
