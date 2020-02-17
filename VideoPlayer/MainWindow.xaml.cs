@@ -112,6 +112,12 @@ namespace VideoPlayer
             ViewModel.OpenPlaylists();
         }
 
+        private void ExitFullscreen_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (ViewModel.UserControl.ViewModel.IsFullscreen)
+                ViewModel.UserControl.ViewModel.ExitFullscreen();
+        }
+
         private void RegisterCommandBindings()
         {
             RoutedCommand PlayPauseCommand = new RoutedCommand();
@@ -120,14 +126,15 @@ namespace VideoPlayer
             RoutedCommand SettingsCommand = new RoutedCommand();
             RoutedCommand QueueCommand = new RoutedCommand();
             RoutedCommand PlaylistsCommand = new RoutedCommand();
+            RoutedCommand ExitFullscreenCommand = new RoutedCommand();
 
             PlayPauseCommand.InputGestures.Add(new KeyGesture(Key.Space));
             SkipForwardCommand.InputGestures.Add(new KeyGesture(Key.Right));
             SkipBackwardsCommand.InputGestures.Add(new KeyGesture(Key.Left));
-            SettingsCommand.InputGestures.Add(new KeyGesture(Key.Escape));
             SettingsCommand.InputGestures.Add(new KeyGesture(Key.S, ModifierKeys.Control));
             QueueCommand.InputGestures.Add(new KeyGesture(Key.Q, ModifierKeys.Control));
             PlaylistsCommand.InputGestures.Add(new KeyGesture(Key.P, ModifierKeys.Control));
+            ExitFullscreenCommand.InputGestures.Add(new KeyGesture(Key.Escape));
 
             CommandBinding PlayPauseBinding = new CommandBinding(PlayPauseCommand, PlayPause_Executed);
             CommandBinding SkipForwardBinding = new CommandBinding(SkipForwardCommand, SkipForward_Executed);
@@ -135,6 +142,7 @@ namespace VideoPlayer
             CommandBinding SettingsBinding = new CommandBinding(SettingsCommand, Settings_Executed);
             CommandBinding QueueBinding = new CommandBinding(QueueCommand, Queue_Executed);
             CommandBinding PlaylistsBinding = new CommandBinding(PlaylistsCommand, Playlists_Executed);
+            CommandBinding ExitFullscreenBinding = new CommandBinding(ExitFullscreenCommand, ExitFullscreen_Executed);
 
             CommandBinding[] commandBindings = new CommandBinding[]
             {
@@ -143,7 +151,8 @@ namespace VideoPlayer
                 SkipBackwardsBinding,
                 SettingsBinding,
                 QueueBinding,
-                PlaylistsBinding
+                PlaylistsBinding,
+                ExitFullscreenBinding
             };
             CommandBindings.AddRange(commandBindings);
         }

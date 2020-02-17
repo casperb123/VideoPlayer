@@ -36,7 +36,7 @@
                     Content="Settings"
                     Cursor="Hand"
                     Focusable="False"
-                    ToolTip="Open/close settings flyout (Escape/Ctrl+S)"
+                    ToolTip="Open/close settings flyout (Ctrl+S)"
                     Click="ButtonWindowSettings_Click" />
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
