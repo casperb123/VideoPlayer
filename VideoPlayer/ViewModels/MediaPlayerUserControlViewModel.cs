@@ -547,6 +547,7 @@ namespace VideoPlayer.ViewModels
             MainWindow.ShowMinButton = false;
             MainWindow.IgnoreTaskbarOnMaximize = true;
             oldState = MainWindow.WindowState;
+            MainWindow.WindowStyle = WindowStyle.None;
             if (oldState != WindowState.Maximized)
                 MainWindow.WindowState = WindowState.Maximized;
             MainWindow.Topmost = true;
@@ -566,12 +567,13 @@ namespace VideoPlayer.ViewModels
             IsFullscreen = false;
             ControlsTimer.Stop();
             MainWindow.IgnoreTaskbarOnMaximize = false;
+            MainWindow.Topmost = Settings.CurrentSettings.AlwaysOnTop;
             MainWindow.WindowState = oldState;
+            MainWindow.WindowStyle = WindowStyle.SingleBorderWindow;
             MainWindow.ShowTitleBar = true;
             MainWindow.ShowCloseButton = true;
             MainWindow.ShowMaxRestoreButton = true;
             MainWindow.ShowMinButton = true;
-            MainWindow.Topmost = Settings.CurrentSettings.AlwaysOnTop;
             userControl.gridMediaElementBackground.ClearValue(Grid.RowSpanProperty);
             userControl.gridControls.IsEnabled = true;
             userControl.gridControls.Visibility = Visibility.Visible;
