@@ -131,8 +131,10 @@ namespace VideoPlayer.Entities
             Color = 1;
             NotifyUpdates = true;
             RightEdgeOpen = EdgeOpen.Queue;
+            LeftEdgeOpen = EdgeOpen.Settings;
             LeftRightEdgeDetection = true;
             LeftRightEdgeDistance = 50;
+            TopEdgeDetection = true;
             Volume = 1;
         }
 
