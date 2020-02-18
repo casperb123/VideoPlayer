@@ -130,6 +130,7 @@ namespace VideoPlayer.Entities
         {
             Color = 1;
             NotifyUpdates = true;
+            CheckForUpdates = true;
             RightEdgeOpen = EdgeOpen.Queue;
             LeftEdgeOpen = EdgeOpen.Settings;
             LeftRightEdgeDetection = true;
