@@ -64,11 +64,21 @@ namespace VideoPlayer
 
             ViewModel.ChangeTheme(comboBoxTheme.SelectedItem.ToString(), comboBoxColor.SelectedItem as ColorScheme).ConfigureAwait(false);
 
-            Task.Run(async () =>
+            if (File.Exists(Settings.PlaylistsFilePath))
             {
-                ICollection<Playlist> playlists = await ViewModel.GetPlaylists();
+                ICollection<Playlist> playlists = ViewModel.GetPlaylists().Result;
                 playlists.ToList().ForEach(x => ViewModel.Playlists.Add(x));
-            });
+            }
+
+            string[] files = Directory.GetFiles(Settings.MediasPath);
+
+            foreach (string file in files)
+            {
+                bool existsInPlaylist = ViewModel.Playlists.Any(x => x.Medias.Any(y => y.Source == file));
+
+                if (!existsInPlaylist)
+                    File.Delete(file);
+            }
 
             string[] cmdLine = Environment.GetCommandLineArgs();
             List<string> filePaths = cmdLine.Where(x => validExtensions.Contains(Path.GetExtension(x))).ToList();
