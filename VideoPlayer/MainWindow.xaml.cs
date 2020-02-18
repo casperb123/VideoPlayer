@@ -66,7 +66,7 @@ namespace VideoPlayer
 
             if (File.Exists(Settings.PlaylistsFilePath))
             {
-                ICollection<Playlist> playlists = ViewModel.GetPlaylists().Result;
+                ICollection<Playlist> playlists = ViewModel.GetPlaylists();
                 playlists.ToList().ForEach(x => ViewModel.Playlists.Add(x));
             }
 

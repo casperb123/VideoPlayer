@@ -249,7 +249,21 @@ namespace VideoPlayer.ViewModels
             await SavePlaylists();
         }
 
-        public async Task<ICollection<Playlist>> GetPlaylists()
+        public ICollection<Playlist> GetPlaylists()
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            MemoryStream stream = new MemoryStream();
+            byte[] bytes = Unprotect(File.ReadAllBytes(Settings.PlaylistsFilePath));
+
+            stream.Write(bytes, 0, bytes.Length);
+            stream.Position = 0;
+            ICollection<Playlist> loadedPlaylists = formatter.Deserialize(stream) as ICollection<Playlist>;
+            List<Playlist> playlists = new List<Playlist>();
+            loadedPlaylists.ToList().ForEach(x => playlists.Add(new Playlist(x.Name, x.Medias)));
+            return playlists;
+        }
+
+        public async Task<ICollection<Playlist>> GetPlaylistsAsync()
         {
             BinaryFormatter formatter = new BinaryFormatter();
             MemoryStream stream = new MemoryStream();
@@ -295,10 +309,17 @@ namespace VideoPlayer.ViewModels
 
         public async Task SavePlaylists()
         {
-            BinaryFormatter formatter = new BinaryFormatter();
-            MemoryStream stream = new MemoryStream();
-            formatter.Serialize(stream, Playlists);
-            await File.WriteAllBytesAsync(Settings.PlaylistsFilePath, Protect(stream.ToArray()));
+            if (Playlists.Count > 0)
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                MemoryStream stream = new MemoryStream();
+                formatter.Serialize(stream, Playlists);
+                await File.WriteAllBytesAsync(Settings.PlaylistsFilePath, Protect(stream.ToArray()));
+            }
+            else if (File.Exists(Settings.PlaylistsFilePath))
+            {
+                File.Delete(Settings.PlaylistsFilePath);
+            }
         }
 
         public void OpenSettings()
