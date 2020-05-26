@@ -150,8 +150,7 @@
                                                    IsEnabled="False"
                                                    Margin="10,0,0,0"
                                                    Focusable="False"
-                                                   Checked="ToggleSwitchLoopTime_Checked"
-                                                   Unchecked="ToggleSwitchLoopTime_Unchecked" />
+                                                   Toggled="ToggleSwitchLoopTime_Toggled" />
 
                             <Label Content="Loop:"
                                    Grid.Row="3"
@@ -162,8 +161,7 @@
                                                    Grid.Column="1"
                                                    Margin="10,0,0,0"
                                                    Focusable="False"
-                                                   Checked="ToggleSwitchLoop_Checked"
-                                                   Unchecked="ToggleSwitchLoop_Unchecked" />
+                                                   Toggled="ToggleSwitchLoop_Toggled" />
 
                         </Grid>
                     </GroupBox>
@@ -192,10 +190,10 @@
                             <Controls:ToggleSwitch x:Name="toggleSwitchAlwaysOnTop"
                                                    Grid.Column="1"
                                                    Margin="10,0,0,5"
-                                                   IsChecked="{Binding Path=AlwaysOnTop, Source={x:Static entities:Settings.CurrentSettings}}"
+                                                   IsOn="{Binding Path=AlwaysOnTop, Source={x:Static entities:Settings.CurrentSettings}}"
                                                    Focusable="False"
                                                    ToolTip="Always keep application on top"
-                                                   IsCheckedChanged="ToggleSwitchAlwaysOnTop_IsCheckedChanged" />
+                                                   Toggled="ToggleSwitchAlwaysOnTop_Toggled" />
 
                             <Label Content="Theme:"
                                    Grid.Row="1"
@@ -205,7 +203,6 @@
                                       Grid.Row="1"
                                       Grid.Column="1"
                                       Margin="5,0,0,5"
-                                      ItemsSource="{x:Static metro:ThemeManager.BaseColors}"
                                       SelectedIndex="{Binding Path=Theme, Source={x:Static entities:Settings.CurrentSettings}}"
                                       Focusable="False"
                                       SelectionChanged="ComboBoxThemeSettings_SelectionChanged" />
@@ -218,8 +215,6 @@
                                       Grid.Row="2"
                                       Grid.Column="1"
                                       Margin="5,5,0,0"
-                                      ItemsSource="{x:Static metro:ThemeManager.ColorSchemes}"
-                                      DisplayMemberPath="Name"
                                       SelectedIndex="{Binding Path=Color, Source={x:Static entities:Settings.CurrentSettings}}"
                                       Focusable="False"
                                       SelectionChanged="ComboBoxThemeSettings_SelectionChanged" />
@@ -232,10 +227,10 @@
                                                    Grid.Row="3"
                                                    Grid.Column="1"
                                                    Margin="10,5,0,0"
-                                                   IsChecked="{Binding Path=CheckForUpdates, Source={x:Static entities:Settings.CurrentSettings}}"
+                                                   IsOn="{Binding Path=CheckForUpdates, Source={x:Static entities:Settings.CurrentSettings}}"
                                                    Focusable="False"
                                                    ToolTip="Check for updates on startup"
-                                                   IsCheckedChanged="ToggleSwitchCheckForUpdates_IsCheckedChanged" />
+                                                   Toggled="ToggleSwitchCheckForUpdates_Toggled" />
 
                             <Label Content="Left/Right Edge Detection:"
                                    VerticalContentAlignment="Center"
@@ -247,8 +242,8 @@
                                                    Margin="10,0,0,0"
                                                    Focusable="False"
                                                    ToolTip="Detect when mouse is near the right/left edge"
-                                                   IsChecked="{Binding Path=LeftRightEdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
-                                                   IsCheckedChanged="ToggleSwitchLeftRightEdgeDetection_IsCheckedChanged" />
+                                                   IsOn="{Binding Path=LeftRightEdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
+                                                   Toggled="ToggleSwitchLeftRightEdgeDetection_Toggled" />
 
                             <Label Content="Left/Right Edge Distance:"
                                    VerticalContentAlignment="Center"
@@ -302,8 +297,8 @@
                                                    Margin="10,0,0,0"
                                                    Focusable="False"
                                                    ToolTip="Show the title bar when the mouse is at the top"
-                                                   IsChecked="{Binding Path=TopEdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
-                                                   IsCheckedChanged="ToggleSwitchTopEdgeDetection_IsCheckedChanged" />
+                                                   IsOn="{Binding Path=TopEdgeDetection, Source={x:Static entities:Settings.CurrentSettings}}"
+                                                   Toggled="ToggleSwitchTopEdgeDetection_Toggled" />
                         </Grid>
                     </GroupBox>
                 </StackPanel>

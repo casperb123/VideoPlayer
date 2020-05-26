@@ -19,6 +19,7 @@ using VideoPlayer.UserControls;
 using Application = System.Windows.Application;
 using GithubUpdater;
 using MahApps.Metro.Controls;
+using ControlzEx.Theming;
 
 namespace VideoPlayer.ViewModels
 {
@@ -193,9 +194,10 @@ namespace VideoPlayer.ViewModels
             }
         }
 
-        public async Task ChangeTheme(string theme, ColorScheme color)
+        public async Task ChangeTheme(string theme, string color)
         {
-            ThemeManager.ChangeTheme(Application.Current, theme, color.Name);
+            ThemeManager.Current.ChangeThemeBaseColor(Application.Current, theme);
+            ThemeManager.Current.ChangeThemeColorScheme(Application.Current, color);
             await Settings.CurrentSettings.Save();
         }
 
@@ -309,17 +311,10 @@ namespace VideoPlayer.ViewModels
 
         public async Task SavePlaylists()
         {
-            if (Playlists.Count > 0)
-            {
-                BinaryFormatter formatter = new BinaryFormatter();
-                MemoryStream stream = new MemoryStream();
-                formatter.Serialize(stream, Playlists);
-                await File.WriteAllBytesAsync(Settings.PlaylistsFilePath, Protect(stream.ToArray()));
-            }
-            else if (File.Exists(Settings.PlaylistsFilePath))
-            {
-                File.Delete(Settings.PlaylistsFilePath);
-            }
+            BinaryFormatter formatter = new BinaryFormatter();
+            MemoryStream stream = new MemoryStream();
+            formatter.Serialize(stream, Playlists);
+            await File.WriteAllBytesAsync(Settings.PlaylistsFilePath, Protect(stream.ToArray()));
         }
 
         public void OpenSettings()

@@ -52,7 +52,7 @@ namespace VideoPlayer.ViewModels
             {
                 loopVideo = value;
                 userControl.menuItemGridPlayerLoop.IsChecked = value;
-                MainWindow.toggleSwitchLoop.IsChecked = value;
+                MainWindow.toggleSwitchLoop.IsOn = value;
             }
         }
 
@@ -247,7 +247,7 @@ namespace VideoPlayer.ViewModels
             MainWindow.textBoxLoopEnd.IsEnabled = false;
             ResetLoop();
             MainWindow.toggleSwitchLoopTime.IsEnabled = false;
-            MainWindow.toggleSwitchLoopTime.IsChecked = false;
+            MainWindow.toggleSwitchLoopTime.IsOn = false;
             userControl.sliderProgress.IsEnabled = false;
         }
 
@@ -395,7 +395,7 @@ namespace VideoPlayer.ViewModels
             {
                 loopEnd = value;
                 MainWindow.textBoxLoopEnd.Text = ConvertSecondsToTime(value);
-                MainWindow.toggleSwitchLoopTime.IsChecked = true;
+                MainWindow.toggleSwitchLoopTime.IsOn = true;
                 setStartLoop = true;
             }
             else if (setStartLoop)
@@ -422,7 +422,7 @@ namespace VideoPlayer.ViewModels
         {
             MainWindow.textBoxLoopStart.Text = "0:00";
             MainWindow.textBoxLoopEnd.Text = "0:00";
-            MainWindow.toggleSwitchLoopTime.IsChecked = false;
+            MainWindow.toggleSwitchLoopTime.IsOn = false;
         }
 
         public async Task PreviousTrack()

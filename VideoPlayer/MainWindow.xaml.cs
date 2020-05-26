@@ -1,4 +1,5 @@
-﻿using MahApps.Metro;
+﻿using ControlzEx.Theming;
+using MahApps.Metro;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
@@ -51,6 +52,9 @@ namespace VideoPlayer
             comboBoxRightEdgeOpen.ItemsSource = edgeOpens;
             comboBoxLeftEdgeOpen.ItemsSource = edgeOpens;
 
+            comboBoxTheme.ItemsSource = ThemeManager.Current.BaseColors;
+            comboBoxColor.ItemsSource = ThemeManager.Current.ColorSchemes;
+
             Binding rightEdgeBinding = new Binding("RightEdgeOpen")
             {
                 Source = Settings.CurrentSettings
@@ -62,7 +66,7 @@ namespace VideoPlayer
             };
             comboBoxLeftEdgeOpen.SetBinding(Selector.SelectedItemProperty, leftEdgeBinding);
 
-            ViewModel.ChangeTheme(comboBoxTheme.SelectedItem.ToString(), comboBoxColor.SelectedItem as ColorScheme).ConfigureAwait(false);
+            ViewModel.ChangeTheme(comboBoxTheme.SelectedItem.ToString(), comboBoxColor.SelectedItem.ToString()).ConfigureAwait(false);
 
             if (File.Exists(Settings.PlaylistsFilePath))
             {
@@ -204,8 +208,9 @@ namespace VideoPlayer
             if (!IsLoaded) return;
 
             string theme = comboBoxTheme.SelectedItem.ToString();
-            ColorScheme color = comboBoxColor.SelectedItem as ColorScheme;
-            ThemeManager.ChangeTheme(Application.Current, theme, color.Name);
+            string color = comboBoxColor.SelectedItem.ToString();
+            ThemeManager.Current.ChangeThemeBaseColor(Application.Current, theme);
+            ThemeManager.Current.ChangeThemeColorScheme(Application.Current, color);
             ViewModel.SettingsChanged = true;
         }
 
@@ -246,22 +251,6 @@ namespace VideoPlayer
         private void ToggleSwitchLoop_Unchecked(object sender, RoutedEventArgs e)
         {
             ViewModel.UserControl.ViewModel.LoopVideo = false;
-        }
-
-        private void ToggleSwitchLoopTime_Checked(object sender, RoutedEventArgs e)
-        {
-            if (!IsLoaded) return;
-
-            ViewModel.UserControl.ViewModel.SetLoopTime(textBoxLoopStart.Text, textBoxLoopEnd.Text);
-            ViewModel.UserControl.ViewModel.LoopSpecificTime = true;
-        }
-
-        private void ToggleSwitchLoopTime_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (!IsLoaded) return;
-
-            ViewModel.UserControl.ViewModel.LoopSpecificTime = false;
-            ViewModel.UserControl.ViewModel.SetSelection(0, 0);
         }
 
         private async void GridFlyoutQueue_Drop(object sender, DragEventArgs e)
@@ -562,11 +551,17 @@ namespace VideoPlayer
 
         private void ComboBoxRightEdgeOpen_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (!IsLoaded)
+                return;
+
             ViewModel.SettingsChanged = true;
         }
 
-        private void ToggleSwitchLeftRightEdgeDetection_IsCheckedChanged(object sender, EventArgs e)
+        private void ToggleSwitchLeftRightEdgeDetection_Toggled(object sender, RoutedEventArgs e)
         {
+            if (!IsLoaded)
+                return;
+
             ViewModel.SettingsChanged = true;
         }
 
@@ -731,6 +726,9 @@ namespace VideoPlayer
 
         private void ToggleSwitchAlwaysOnTop_IsCheckedChanged(object sender, EventArgs e)
         {
+            if (!IsLoaded)
+                return;
+
             ViewModel.SettingsChanged = true;
         }
 
@@ -742,8 +740,11 @@ namespace VideoPlayer
                 e.Handled = true;
         }
 
-        private void ToggleSwitchTopEdgeDetection_IsCheckedChanged(object sender, EventArgs e)
+        private void ToggleSwitchTopEdgeDetection_Toggled(object sender, RoutedEventArgs e)
         {
+            if (!IsLoaded)
+                return;
+
             ViewModel.SettingsChanged = true;
         }
 
@@ -754,6 +755,43 @@ namespace VideoPlayer
                 ShowCloseButton = false;
                 ShowTitleBar = false;
             }
+        }
+
+        private void ToggleSwitchLoopTime_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded) return;
+
+            if (toggleSwitchLoopTime.IsOn)
+            {
+                ViewModel.UserControl.ViewModel.SetLoopTime(textBoxLoopStart.Text, textBoxLoopEnd.Text);
+                ViewModel.UserControl.ViewModel.LoopSpecificTime = true;
+            }
+            else
+            {
+                ViewModel.UserControl.ViewModel.LoopSpecificTime = false;
+                ViewModel.UserControl.ViewModel.SetSelection(0, 0);
+            }
+        }
+
+        private void ToggleSwitchLoop_Toggled(object sender, RoutedEventArgs e)
+        {
+            ViewModel.UserControl.ViewModel.LoopVideo = toggleSwitchLoop.IsOn;
+        }
+
+        private void ToggleSwitchAlwaysOnTop_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+
+            ViewModel.SettingsChanged = true;
+        }
+
+        private void ToggleSwitchCheckForUpdates_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+
+            ViewModel.SettingsChanged = true;
         }
     }
 }
