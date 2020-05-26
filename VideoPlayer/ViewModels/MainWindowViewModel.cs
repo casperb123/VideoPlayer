@@ -1,5 +1,4 @@
-﻿using MahApps.Metro;
-using MahApps.Metro.Controls.Dialogs;
+﻿using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
