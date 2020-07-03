@@ -125,26 +125,10 @@ namespace VideoPlayer.UserControls
 
         private void SliderVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (!IsLoaded) return;
+            if (!IsLoaded)
+                return;
 
-            player.Volume = sliderVolume.Value;
-
-            if (sliderVolume.Value == 0)
-            {
-                iconVolume.Kind = PackIconKind.VolumeMute;
-            }
-            else if (sliderVolume.Value <= .3)
-            {
-                iconVolume.Kind = PackIconKind.VolumeLow;
-            }
-            else if (sliderVolume.Value <= .6)
-            {
-                iconVolume.Kind = PackIconKind.VolumeMedium;
-            }
-            else
-            {
-                iconVolume.Kind = PackIconKind.VolumeHigh;
-            }
+            ViewModel.SetPlayerVolume(sliderVolume.Value);
         }
 
         private void SliderVolume_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

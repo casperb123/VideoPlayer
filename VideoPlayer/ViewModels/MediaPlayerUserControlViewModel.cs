@@ -65,7 +65,7 @@ namespace VideoPlayer.ViewModels
         public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl, MainWindow mainWindow)
         {
             userControl = mediaPlayerUserControl;
-            userControl.player.Volume = Settings.CurrentSettings.Volume;
+            SetPlayerVolume(Settings.CurrentSettings.Volume);
             MainWindow = mainWindow;
             DoubleClickTimer = new DispatcherTimer
             {
@@ -593,6 +593,20 @@ namespace VideoPlayer.ViewModels
             ControlsTimer.Stop();
             ControlsTimer.Start();
             Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        public void SetPlayerVolume(double volume)
+        {
+            userControl.player.Volume = volume;
+
+            if (volume == 0)
+                userControl.iconVolume.Kind = PackIconKind.VolumeMute;
+            else if (volume <= .3)
+                userControl.iconVolume.Kind = PackIconKind.VolumeLow;
+            else if (volume <= .6)
+                userControl.iconVolume.Kind = PackIconKind.VolumeMedium;
+            else
+                userControl.iconVolume.Kind = PackIconKind.VolumeHigh;
         }
     }
 }
