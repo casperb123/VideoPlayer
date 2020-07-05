@@ -265,7 +265,7 @@
                         Focusable="False"
                         Controls:SliderHelper.EnableMouseWheel="MouseHover"
                         Controls:SliderHelper.ChangeValueBy="SmallChange"
-                        SmallChange=".1"
+                        SmallChange=".02"
                         Value="{Binding Path=Volume, Source={x:Static entities:Settings.CurrentSettings}}"
                         PreviewMouseLeftButtonDown="SliderVolume_PreviewMouseLeftButtonDown"
                         PreviewMouseLeftButtonUp="SliderVolume_PreviewMouseLeftButtonUp"

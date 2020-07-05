@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -393,6 +394,7 @@ namespace VideoPlayer
                 return;
             if (!(dataGridPlaylists.Items[ViewModel.PlaylistsRowIndex] is Playlist selectedPlaylist))
                 return;
+
             ViewModel.PlaylistsPlaylistSelected = true;
             DragDrop.DoDragDrop(dataGridPlaylists, selectedPlaylist, DragDropEffects.Move);
             if (ViewModel.PlaylistsPlaylistSelected)
