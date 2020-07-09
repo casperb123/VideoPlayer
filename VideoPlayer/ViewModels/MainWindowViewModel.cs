@@ -128,10 +128,10 @@ namespace VideoPlayer.ViewModels
             get
             {
                 return mainWindow.flyoutCredits.IsOpen ||
-                    mainWindow.flyoutPlaylist.IsOpen ||
-                    mainWindow.flyoutPlaylists.IsOpen ||
-                    mainWindow.flyoutQueue.IsOpen ||
-                    mainWindow.flyoutSettings.IsOpen;
+                       mainWindow.flyoutPlaylist.IsOpen ||
+                       mainWindow.flyoutPlaylists.IsOpen ||
+                       mainWindow.flyoutQueue.IsOpen ||
+                       mainWindow.flyoutSettings.IsOpen;
             }
         }
 
@@ -242,6 +242,7 @@ namespace VideoPlayer.ViewModels
             OldQueue.Clear();
             await UserControl.ViewModel.Stop(true);
             await AddMediasToQueue(SelectedPlaylist.Medias);
+            mainWindow.dataGridPlaylists.SelectedItem = null;
         }
 
         public async Task RemovePlaylist(Playlist playlist)
