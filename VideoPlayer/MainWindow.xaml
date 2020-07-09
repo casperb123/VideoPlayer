@@ -186,8 +186,6 @@
                                    VerticalContentAlignment="Center"
                                    Margin="0,0,5,0" />
                             <Controls:ToggleSwitch x:Name="toggleSwitchAlwaysOnTop"
-                                                   OnContent="Enabled"
-                                                   OffContent="Disabled"
                                                    Grid.Column="1"
                                                    Margin="10,0,0,5"
                                                    IsOn="{Binding Path=AlwaysOnTop, Source={x:Static entities:Settings.CurrentSettings}}"
@@ -224,8 +222,6 @@
                                    Grid.Row="3"
                                    Margin="0,0,5,0" />
                             <Controls:ToggleSwitch x:Name="toggleSwitchCheckForUpdates"
-                                                   OnContent="Enabled"
-                                                   OffContent="Disabled"
                                                    Grid.Row="3"
                                                    Grid.Column="1"
                                                    Margin="10,5,0,0"
@@ -239,8 +235,6 @@
                                    Grid.Row="4"
                                    Margin="0,0,5,0" />
                             <Controls:ToggleSwitch x:Name="toggleSwitchLeftRightEdgeDetection"
-                                                   OnContent="Enabled"
-                                                   OffContent="Disabled"
                                                    Grid.Row="4"
                                                    Grid.Column="1"
                                                    Margin="10,0,0,0"
@@ -296,8 +290,6 @@
                                    Grid.Row="8"
                                    Margin="0,0,5,0" />
                             <Controls:ToggleSwitch x:Name="toggleSwitchTopEdgeDetection"
-                                                   OnContent="Enabled"
-                                                   OffContent="Disabled"
                                                    Grid.Row="9"
                                                    Grid.Column="1"
                                                    Margin="10,0,0,0"
