@@ -84,7 +84,7 @@
                              IsOpenChanged="FlyoutSettings_IsOpenChanged">
                 <StackPanel x:Name="stackPanelFlyoutSettings">
                     <GroupBox Header="Player Settings">
-                        <Grid Margin="10,10,10,5">
+                        <Grid Margin="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="1*" />
@@ -165,7 +165,7 @@
                     </GroupBox>
 
                     <GroupBox Header="Application Settings">
-                        <Grid Margin="10,5,10,5">
+                        <Grid Margin="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="1*" />
