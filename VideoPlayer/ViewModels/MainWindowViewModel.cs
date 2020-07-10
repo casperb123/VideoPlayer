@@ -19,6 +19,7 @@ using Application = System.Windows.Application;
 using GithubUpdater;
 using MahApps.Metro.Controls;
 using ControlzEx.Theming;
+using System.Net;
 
 namespace VideoPlayer.ViewModels
 {
@@ -162,7 +163,19 @@ namespace VideoPlayer.ViewModels
             Updater = new Updater("casperb123", "VideoPlayer");
             Updater.UpdateAvailable += Updater_UpdateAvailable;
             if (Settings.CurrentSettings.CheckForUpdates)
-                Updater.CheckForUpdate();
+            {
+                try
+                {
+                    Updater.CheckForUpdate();
+                }
+                catch (WebException e)
+                {
+                    if (e.InnerException is null)
+                        mainWindow.ShowMessageAsync("Checking for updates failed", e.Message).ConfigureAwait(false);
+                    else
+                        mainWindow.ShowMessageAsync("Checking for updates failed", e.InnerException.Message).ConfigureAwait(false);
+                }
+            }
         }
 
         private async void Updater_UpdateAvailable(object sender, VersionEventArgs e)

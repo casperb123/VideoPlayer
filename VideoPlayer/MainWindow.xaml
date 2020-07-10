@@ -353,6 +353,8 @@
                                                 Value="CharacterEllipsis" />
                                         <Setter Property="Margin"
                                                 Value="10,0,0,0" />
+                                        <Setter Property="ToolTip"
+                                                Value="{Binding Path=Name}" />
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
@@ -435,6 +437,8 @@
                                                 Value="CharacterEllipsis" />
                                         <Setter Property="Margin"
                                                 Value="10,0,0,0" />
+                                        <Setter Property="ToolTip"
+                                                Value="{Binding Path=Name}" />
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
@@ -525,6 +529,8 @@
                                                 Value="CharacterEllipsis" />
                                         <Setter Property="Margin"
                                                 Value="10,0,0,0" />
+                                        <Setter Property="ToolTip"
+                                                Value="{Binding Path=Name}" />
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>

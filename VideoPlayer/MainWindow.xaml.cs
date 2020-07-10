@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -479,10 +480,20 @@ namespace VideoPlayer
 
         private async void ButtonUpdate_Click(object sender, RoutedEventArgs e)
         {
-            bool update = await ViewModel.Updater.CheckForUpdateAsync();
+            try
+            {
+                bool update = await ViewModel.Updater.CheckForUpdateAsync();
 
-            if (!update)
-                await this.ShowMessageAsync("Up to date", "You're already using the latest version of the application");
+                if (!update)
+                    await this.ShowMessageAsync("Up to date", "You're already using the latest version of the application");
+            }
+            catch (WebException ex)
+            {
+                if (ex.InnerException is null)
+                    await this.ShowMessageAsync("Checking for updates failed", ex.Message);
+                else
+                    await this.ShowMessageAsync("Checking for updates failed", ex.InnerException.Message);
+            }
         }
 
         private void Flyout_MouseEnter(object sender, MouseEventArgs e)
