@@ -9,8 +9,8 @@
                       Title="Video Player"
                       Width="875"
                       MinWidth="875"
-                      Height="634"
-                      MinHeight="634"
+                      Height="641"
+                      MinHeight="641"
                       Closing="MetroWindow_Closing"
                       MouseMove="MetroWindow_MouseMove"
                       PreviewMouseLeftButtonDown="MetroWindow_PreviewMouseLeftButtonDown">
