@@ -102,7 +102,7 @@
                             <Controls:NumericUpDown x:Name="numericPlaybackSpeed"
                                                     Grid.Column="1"
                                                     Maximum="3"
-                                                    Minimum="0.2"
+                                                    Minimum="0.25"
                                                     Value="1"
                                                     Speedup="True"
                                                     Interval="0.05"
