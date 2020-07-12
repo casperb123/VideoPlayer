@@ -119,9 +119,11 @@ namespace VideoPlayer.ViewModels
             processor.Stop();
         }
 
-        public void Seek(TimeSpan timeSpan)
+        public void Seek(TimeSpan timeSpan, bool play = false)
         {
             processor.ProcessorStream.CurrentTime = timeSpan;
+            if (play)
+                Play();
         }
 
         public void Set<T>(ref T storage, T value, [CallerMemberName] string? propertyName = null)

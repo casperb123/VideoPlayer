@@ -142,13 +142,12 @@ namespace VideoPlayer.ViewModels
         public async Task Seek(TimeSpan timeSpan)
         {
             await userControl.player.Seek(timeSpan);
-            MainWindow.ViewModel.SoundProcessor.Seek(timeSpan);
             Seeking = false;
             if (IsPlaying)
             {
                 ProgressTimer.Start();
                 await userControl.player.Play();
-                MainWindow.ViewModel.SoundProcessor.Play();
+                MainWindow.ViewModel.SoundProcessor.Seek(userControl.player.Position, true);
             }
         }
 
