@@ -223,6 +223,7 @@ namespace VideoPlayer.ViewModels
             IsPlaying = true;
             ProgressTimer.Start();
             await userControl.player.Play();
+            MainWindow.ViewModel.SoundProcessor.Seek(userControl.player.Position);
             MainWindow.ViewModel.SoundProcessor.Play();
             userControl.iconPlayPause.Kind = PackIconKind.Pause;
             EnablePlayPause();

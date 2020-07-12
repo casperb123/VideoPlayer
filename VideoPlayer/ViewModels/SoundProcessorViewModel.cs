@@ -84,6 +84,11 @@ namespace VideoPlayer.ViewModels
             set => Set(ref fileName, value);
         }
 
+        public TimeSpan CurrentTime
+        {
+            get => processor.ProcessorStream.CurrentTime;
+        }
+
         public void Dispose()
         {
             processor.Dispose();
