@@ -94,6 +94,7 @@
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
 
                             <Label Content="Playback Speed:"
@@ -106,16 +107,31 @@
                                                     Speedup="True"
                                                     Interval="0.05"
                                                     StringFormat="0.00"
-                                                    Margin="5,0,0,5"
+                                                    Margin="5,0,0,10"
                                                     InterceptManualEnter="False"
                                                     ValueChanged="NumericPlaybackSpeed_ValueChanged" />
 
+                            <Label Content="Pitch:"
+                                   Margin="0,0,5,0"
+                                   Grid.Row="1" />
+                            <Controls:NumericUpDown x:Name="numericPitch"
+                                                    Grid.Column="1"
+                                                    Grid.Row="1"
+                                                    Maximum="12"
+                                                    Minimum="-12"
+                                                    Value="0"
+                                                    Speedup="True"
+                                                    Interval="1"
+                                                    Margin="5,0,0,5"
+                                                    InterceptManualEnter="False"
+                                                    ValueChanged="NumericPitch_ValueChanged" />
+
                             <Label Content="Loop specific time:"
-                                   Grid.Row="1"
+                                   Grid.Row="2"
                                    VerticalContentAlignment="Center"
                                    Margin="0,0,5,0" />
                             <Grid Grid.Column="1"
-                                  Grid.Row="1"
+                                  Grid.Row="2"
                                   Margin="5,5,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="1*" />
@@ -143,7 +159,7 @@
                                          TextChanged="TextBoxLoop_TextChanged" />
                             </Grid>
                             <Controls:ToggleSwitch x:Name="toggleSwitchLoopTime"
-                                                   Grid.Row="2"
+                                                   Grid.Row="3"
                                                    Grid.Column="1"
                                                    IsEnabled="False"
                                                    Margin="10,0,0,0"
@@ -151,11 +167,11 @@
                                                    Toggled="ToggleSwitchLoopTime_Toggled" />
 
                             <Label Content="Loop:"
-                                   Grid.Row="3"
+                                   Grid.Row="4"
                                    VerticalAlignment="Center"
                                    Margin="0,0,5,0" />
                             <Controls:ToggleSwitch x:Name="toggleSwitchLoop"
-                                                   Grid.Row="3"
+                                                   Grid.Row="4"
                                                    Grid.Column="1"
                                                    Margin="10,0,0,0"
                                                    Focusable="False"

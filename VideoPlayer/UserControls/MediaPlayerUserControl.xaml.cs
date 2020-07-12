@@ -9,6 +9,7 @@ using VideoPlayer.Entities;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using SoundTouch;
 
 namespace VideoPlayer.UserControls
 {
@@ -93,6 +94,7 @@ namespace VideoPlayer.UserControls
             ViewModel.Seeking = true;
             ViewModel.ProgressTimer.Stop();
             player.Pause();
+            ViewModel.MainWindow.ViewModel.SoundProcessor.Pause();
         }
 
         private async void SliderProgress_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -112,12 +114,12 @@ namespace VideoPlayer.UserControls
             ViewModel.SetLoopValue(point);
         }
 
-        private void SliderProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private async void SliderProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (ViewModel.Seeking)
             {
                 int pos = Convert.ToInt32(sliderProgress.Value);
-                player.Seek(new TimeSpan(0, 0, 0, pos, 0));
+                await player.Seek(new TimeSpan(0, 0, 0, pos));
             }
 
             ViewModel.ShowTime();

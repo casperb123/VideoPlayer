@@ -49,6 +49,7 @@ namespace VideoPlayer.ViewModels
         public bool PlaylistsOpenedWithEdgeDetection;
         public bool IsAnyContextOpen;
         public bool PlaylistsChanged;
+        public readonly SoundProcessorViewModel SoundProcessor;
 
         public delegate Point GetPosition(IInputElement element);
         public event PropertyChangedEventHandler PropertyChanged;
@@ -149,6 +150,7 @@ namespace VideoPlayer.ViewModels
             queue = new ObservableCollection<Media>();
             oldQueue = new ObservableCollection<Media>();
             playlists = new ObservableCollection<Playlist>();
+            SoundProcessor = new SoundProcessorViewModel();
 
             Hotkey nextTrackHotkey = new Hotkey(Key.MediaNextTrack, KeyModifier.None, OnHotkeyHandler);
             Hotkey previousTrackHotkey = new Hotkey(Key.MediaPreviousTrack, KeyModifier.None, OnHotkeyHandler);

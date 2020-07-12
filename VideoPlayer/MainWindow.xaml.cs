@@ -191,9 +191,18 @@ namespace VideoPlayer
 
         private void NumericPlaybackSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            if (!IsLoaded || !e.NewValue.HasValue) return;
+            if (!IsLoaded || !e.NewValue.HasValue)
+                return;
 
             ViewModel.UserControl.ViewModel.ChangeSpeed(e.NewValue.Value);
+        }
+
+        private void NumericPitch_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            if (!IsLoaded || !e.NewValue.HasValue)
+                return;
+
+            ViewModel.UserControl.ViewModel.ChangePitch((int)e.NewValue.Value);
         }
 
         private void TextBoxLoop_TextChanged(object sender, TextChangedEventArgs e)

@@ -14,6 +14,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Controls;
 using System.ComponentModel;
 using Microsoft.Win32;
+using System.Threading;
 
 namespace VideoPlayer.ViewModels
 {
@@ -65,7 +66,6 @@ namespace VideoPlayer.ViewModels
         public MediaPlayerUserControlViewModel(MediaPlayerUserControl mediaPlayerUserControl, MainWindow mainWindow)
         {
             userControl = mediaPlayerUserControl;
-            SetPlayerVolume(Settings.CurrentSettings.Volume);
             MainWindow = mainWindow;
             DoubleClickTimer = new DispatcherTimer
             {
@@ -84,6 +84,13 @@ namespace VideoPlayer.ViewModels
                 Interval = TimeSpan.FromSeconds(1.5)
             };
             ControlsTimer.Tick += ControlsTimer_Tick;
+
+            Thread thread = new Thread(() =>
+            {
+                while (MainWindow is null) { }
+                Dispatcher.CurrentDispatcher.Invoke(() => SetPlayerVolume(Settings.CurrentSettings.Volume));
+            });
+            thread.Start();
         }
 
         private async void ProgressTimer_Tick(object sender, EventArgs e)
@@ -135,11 +142,13 @@ namespace VideoPlayer.ViewModels
         public async Task Seek(TimeSpan timeSpan)
         {
             await userControl.player.Seek(timeSpan);
+            MainWindow.ViewModel.SoundProcessor.Seek(timeSpan);
             Seeking = false;
             if (IsPlaying)
             {
                 ProgressTimer.Start();
                 await userControl.player.Play();
+                MainWindow.ViewModel.SoundProcessor.Play();
             }
         }
 
@@ -203,8 +212,10 @@ namespace VideoPlayer.ViewModels
             }
 
             await userControl.player.Open(media.Uri);
+            MainWindow.ViewModel.SoundProcessor.OpenFile(media);
             await Play();
             ChangeSpeed(MainWindow.numericPlaybackSpeed.Value.GetValueOrDefault());
+            ChangePitch((int)MainWindow.numericPitch.Value.GetValueOrDefault());
         }
 
         public async Task Play()
@@ -212,6 +223,7 @@ namespace VideoPlayer.ViewModels
             IsPlaying = true;
             ProgressTimer.Start();
             await userControl.player.Play();
+            MainWindow.ViewModel.SoundProcessor.Play();
             userControl.iconPlayPause.Kind = PackIconKind.Pause;
             EnablePlayPause();
             EnableStop();
@@ -222,6 +234,7 @@ namespace VideoPlayer.ViewModels
             IsPlaying = false;
             ProgressTimer.Stop();
             await userControl.player.Pause();
+            MainWindow.ViewModel.SoundProcessor.Pause();
             userControl.iconPlayPause.Kind = PackIconKind.Play;
         }
 
@@ -239,6 +252,8 @@ namespace VideoPlayer.ViewModels
             }
             else
                 await userControl.player.Stop();
+
+            MainWindow.ViewModel.SoundProcessor.Stop();
         }
 
         public void ResetControls()
@@ -259,20 +274,20 @@ namespace VideoPlayer.ViewModels
 
         public async Task MuteToggle()
         {
-            if (userControl.player.Volume > 0)
+            if (MainWindow.ViewModel.SoundProcessor.Volume > 0)
             {
-                OldVolume = userControl.player.Volume;
+                OldVolume = MainWindow.ViewModel.SoundProcessor.Volume;
                 Settings.CurrentSettings.Volume = 0;
             }
             else if (OldVolume == 0)
             {
                 Settings.CurrentSettings.Volume = 1;
-                OldVolume = userControl.player.Volume;
+                OldVolume = MainWindow.ViewModel.SoundProcessor.Volume;
             }
             else
             {
                 Settings.CurrentSettings.Volume = OldVolume;
-                OldVolume = userControl.player.Volume;
+                OldVolume = MainWindow.ViewModel.SoundProcessor.Volume;
             }
 
             await Settings.CurrentSettings.Save();
@@ -281,6 +296,19 @@ namespace VideoPlayer.ViewModels
         public void ChangeSpeed(double speed)
         {
             userControl.player.SpeedRatio = speed;
+            int newSpeed;
+
+            if (speed < 1)
+                newSpeed = (int)(0 - ((1 - speed) * 100));
+            else
+                newSpeed = (int)(0 + (((1 - speed) * 100) * -1));
+
+            MainWindow.ViewModel.SoundProcessor.Tempo = newSpeed;
+        }
+
+        public void ChangePitch(int pitch)
+        {
+            MainWindow.ViewModel.SoundProcessor.Pitch = pitch;
         }
 
         private double ConvertTimeToSeconds(string time)
@@ -597,16 +625,20 @@ namespace VideoPlayer.ViewModels
 
         public void SetPlayerVolume(double volume)
         {
-            userControl.player.Volume = volume;
+            //userControl.player.Volume = volume;
+            MainWindow.ViewModel.SoundProcessor.Volume = volume;
 
-            if (volume == 0)
-                userControl.iconVolume.Kind = PackIconKind.VolumeMute;
-            else if (volume <= .3)
-                userControl.iconVolume.Kind = PackIconKind.VolumeLow;
-            else if (volume <= .6)
-                userControl.iconVolume.Kind = PackIconKind.VolumeMedium;
-            else
-                userControl.iconVolume.Kind = PackIconKind.VolumeHigh;
+            userControl.Dispatcher.Invoke(() =>
+            {
+                if (volume == 0)
+                    userControl.iconVolume.Kind = PackIconKind.VolumeMute;
+                else if (volume <= .3)
+                    userControl.iconVolume.Kind = PackIconKind.VolumeLow;
+                else if (volume <= .6)
+                    userControl.iconVolume.Kind = PackIconKind.VolumeMedium;
+                else
+                    userControl.iconVolume.Kind = PackIconKind.VolumeHigh;
+            });
         }
     }
 }

@@ -30,6 +30,7 @@
                                UnloadedBehavior="Manual"
                                ScrubbingEnabled="True"
                                Panel.ZIndex="1"
+                               Volume="0"
                                MediaEnded="Player_MediaEnded"
                                MediaOpened="Player_MediaOpened" />
             <Grid.ContextMenu>
