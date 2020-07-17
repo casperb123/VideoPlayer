@@ -19,6 +19,7 @@ namespace VideoPlayer.Entities
         private bool alwaysOnTop;
         private bool topEdgeDetection;
         private double volume;
+        private int skipAmount;
 
         public static Settings CurrentSettings;
         public static string SettingsFilePath;
@@ -26,6 +27,42 @@ namespace VideoPlayer.Entities
         public static string MediasPath;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public int SkipAmount
+        {
+            get => skipAmount;
+            set
+            {
+                if (value < 5 || value > 30)
+                    throw new ArgumentOutOfRangeException(nameof(SkipAmount), "The skip amount must be between 5 and 30");
+
+                skipAmount = value;
+                OnPropertyChanged(nameof(SkipAmount));
+            }
+        }
+
+        public double Volume
+        {
+            get => volume;
+            set
+            {
+                if (value < 0 || volume > 1)
+                    throw new ArgumentOutOfRangeException(nameof(Volume), "The volume must be between 0 and 1");
+
+                volume = value;
+                OnPropertyChanged(nameof(Volume));
+            }
+        }
+
+        public bool TopEdgeDetection
+        {
+            get => topEdgeDetection;
+            set
+            {
+                topEdgeDetection = value;
+                OnPropertyChanged(nameof(TopEdgeDetection));
+            }
+        }
 
         public bool AlwaysOnTop
         {
@@ -37,6 +74,28 @@ namespace VideoPlayer.Entities
 
                 if (Application.Current.MainWindow != null && Application.Current.MainWindow.IsLoaded)
                     Application.Current.MainWindow.Topmost = value;
+            }
+        }
+
+        public int LeftRightEdgeDistance
+        {
+            get => leftRightedgeDistance;
+            set
+            {
+                if (value < 5 || value > 200)
+                    throw new ArgumentOutOfRangeException(nameof(LeftRightEdgeDistance), "The left/right edge distance must be between 5 and 200");
+
+                leftRightedgeDistance = value;
+            }
+        }
+
+        public bool LeftRightEdgeDetection
+        {
+            get => leftRightedgeDetection;
+            set
+            {
+                leftRightedgeDetection = value;
+                OnPropertyChanged(nameof(LeftRightEdgeDetection));
             }
         }
 
@@ -70,16 +129,6 @@ namespace VideoPlayer.Entities
 
         public bool NotifyUpdates { get; set; }
 
-        public bool LeftRightEdgeDetection
-        {
-            get => leftRightedgeDetection;
-            set
-            {
-                leftRightedgeDetection = value;
-                OnPropertyChanged(nameof(LeftRightEdgeDetection));
-            }
-        }
-
         public enum EdgeOpen
         {
             Queue,
@@ -90,41 +139,6 @@ namespace VideoPlayer.Entities
         public EdgeOpen RightEdgeOpen { get; set; }
 
         public EdgeOpen LeftEdgeOpen { get; set; }
-
-        public int LeftRightEdgeDistance
-        {
-            get => leftRightedgeDistance;
-            set
-            {
-                if (value < 5 || value > 200)
-                    throw new ArgumentOutOfRangeException(nameof(LeftRightEdgeDistance), "The left/right edge distance must be between 5 and 200");
-
-                leftRightedgeDistance = value;
-            }
-        }
-
-        public bool TopEdgeDetection
-        {
-            get => topEdgeDetection;
-            set
-            {
-                topEdgeDetection = value;
-                OnPropertyChanged(nameof(TopEdgeDetection));
-            }
-        }
-
-        public double Volume
-        {
-            get => volume;
-            set
-            {
-                if (value < 0 || volume > 1)
-                    throw new ArgumentOutOfRangeException(nameof(Volume), "The volume must be between 0 and 1");
-
-                volume = value;
-                OnPropertyChanged(nameof(Volume));
-            }
-        }
 
         public Settings()
         {
@@ -137,6 +151,7 @@ namespace VideoPlayer.Entities
             LeftRightEdgeDistance = 50;
             TopEdgeDetection = true;
             Volume = 1;
+            SkipAmount = 10;
         }
 
         private void OnPropertyChanged(string prop)

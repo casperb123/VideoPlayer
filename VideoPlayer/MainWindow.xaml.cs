@@ -103,12 +103,12 @@ namespace VideoPlayer
 
         private async void SkipForward_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            await ViewModel.UserControl.ViewModel.SkipForward(5);
+            await ViewModel.UserControl.ViewModel.SkipForward(Settings.CurrentSettings.SkipAmount);
         }
 
         private async void SkipBackwards_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            await ViewModel.UserControl.ViewModel.SkipBackwards(5);
+            await ViewModel.UserControl.ViewModel.SkipBackwards(Settings.CurrentSettings.SkipAmount);
         }
 
         private void Settings_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -807,6 +807,14 @@ namespace VideoPlayer
         }
 
         private void ToggleSwitchCheckForUpdates_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+
+            ViewModel.SettingsChanged = true;
+        }
+
+        private void NumericSkipAmount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             if (!IsLoaded)
                 return;
