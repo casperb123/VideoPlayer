@@ -29,6 +29,7 @@
     <Compile Remove="Commands\**" />
     <EmbeddedResource Remove="Commands\**" />
     <None Remove="Commands\**" />
+    <None Include="..\.editorconfig" Link=".editorconfig" />
     <None Include="video_icon.ico">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
