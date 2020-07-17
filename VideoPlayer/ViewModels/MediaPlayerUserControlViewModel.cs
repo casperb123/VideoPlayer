@@ -141,14 +141,15 @@ namespace VideoPlayer.ViewModels
 
         public async Task Seek(TimeSpan timeSpan)
         {
+            Seeking = true;
             await userControl.player.Seek(timeSpan);
-            Seeking = false;
             if (IsPlaying)
             {
                 ProgressTimer.Start();
                 await userControl.player.Play();
                 MainWindow.ViewModel.SoundProcessor.Seek(userControl.player.Position, true);
             }
+            Seeking = false;
         }
 
         public void ShowTime()
@@ -535,21 +536,23 @@ namespace VideoPlayer.ViewModels
 
         public async Task SkipForward(int value)
         {
+            if (Seeking)
+                return;
             if (IsFullscreen)
                 ShowControlsInFullscreen();
 
-            int pos = Convert.ToInt32(userControl.sliderProgress.Value + value);
-            await userControl.player.Seek(new TimeSpan(0, 0, 0, pos, 0));
+            await Seek(userControl.player.Position + new TimeSpan(0, 0, value));
             userControl.sliderProgress.Value = userControl.player.Position.TotalSeconds;
         }
 
         public async Task SkipBackwards(int value)
         {
+            if (Seeking)
+                return;
             if (IsFullscreen)
                 ShowControlsInFullscreen();
 
-            int pos = Convert.ToInt32(userControl.sliderProgress.Value - value);
-            await userControl.player.Seek(new TimeSpan(0, 0, 0, pos, 0));
+            await Seek(userControl.player.Position - new TimeSpan(0, 0, value));
             userControl.sliderProgress.Value = userControl.player.Position.TotalSeconds;
         }
 
