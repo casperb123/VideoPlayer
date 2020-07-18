@@ -44,7 +44,7 @@ namespace VideoPlayer.ViewModels
         public bool PlaylistsPlaylistSelected;
         public bool PlaylistMediaSelected;
         public bool SettingsChanged;
-        public bool UpdateAvailable;
+        public bool UpdateAvailable = false;
         public readonly GitHubClient Client;
         public bool SettingsOpenedWithEdgeDetection;
         public bool QueueOpenedWithEdgeDetection;
