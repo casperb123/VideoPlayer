@@ -21,6 +21,7 @@ using ControlzEx.Theming;
 using System.Net;
 using Octokit;
 using System.Reflection;
+using System.Globalization;
 
 namespace VideoPlayer.ViewModels
 {
@@ -240,8 +241,11 @@ namespace VideoPlayer.ViewModels
 
         private void WebClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
+            string received = string.Format(CultureInfo.InvariantCulture, "{0:n0}", e.BytesReceived / 1000);
+            string toReceive = string.Format(CultureInfo.InvariantCulture, "{0:n0}", e.TotalBytesToReceive / 1000);
+
             progressDialog.SetProgress(e.ProgressPercentage);
-            progressDialog.SetMessage($"Downloading: {e.BytesReceived / 1000}/{e.TotalBytesToReceive / 1000} kb");
+            progressDialog.SetMessage($"Downloading: {received}/{toReceive} kb");
         }
 
         private void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
