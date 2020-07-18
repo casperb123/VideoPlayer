@@ -21,14 +21,19 @@ namespace VideoPlayer
 
             string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string settingsPath = $@"{appDataPath}\VideoPlayer";
+            string tempPath = $@"{settingsPath}\Temp";
+
             Settings.MediasPath = $@"{settingsPath}\Medias";
             Settings.SettingsFilePath = $@"{settingsPath}\Settings.json";
             Settings.PlaylistsFilePath = $@"{settingsPath}\Playlists.bin";
+            Settings.TempDownloadPath = $@"{settingsPath}\Temp\VideoPlayer.tmp";
 
             if (!Directory.Exists(settingsPath))
                 Directory.CreateDirectory(settingsPath);
             if (!Directory.Exists(Settings.MediasPath))
                 Directory.CreateDirectory(Settings.MediasPath);
+            if (!Directory.Exists(tempPath))
+                Directory.CreateDirectory(tempPath);
 
             Unosquare.FFME.Library.FFmpegDirectory = ffmpegPath;
             Settings.CurrentSettings = Settings.GetSettings().Result;

@@ -25,6 +25,7 @@ namespace VideoPlayer.Entities
         public static string SettingsFilePath;
         public static string PlaylistsFilePath;
         public static string MediasPath;
+        public static string TempDownloadPath;
 
         public event PropertyChangedEventHandler PropertyChanged;
 

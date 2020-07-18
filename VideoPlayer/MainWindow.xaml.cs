@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -491,7 +490,7 @@ namespace VideoPlayer
         {
             try
             {
-                bool update = await ViewModel.Updater.CheckForUpdateAsync();
+                bool update = await ViewModel.CheckForUpdates();
 
                 if (!update)
                     await this.ShowMessageAsync("Up to date", "You're already using the latest version of the application");

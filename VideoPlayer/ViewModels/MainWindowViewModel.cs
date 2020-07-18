@@ -16,10 +16,11 @@ using System.Windows.Media;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
 using Application = System.Windows.Application;
-using GithubUpdater;
 using MahApps.Metro.Controls;
 using ControlzEx.Theming;
 using System.Net;
+using Octokit;
+using System.Reflection;
 
 namespace VideoPlayer.ViewModels
 {
@@ -32,6 +33,7 @@ namespace VideoPlayer.ViewModels
         private ObservableCollection<Playlist> playlists;
         private Playlist selectedPlaylist;
         private Media selectedPlaylistMedia;
+        private ProgressDialogController progressDialog;
 
         public MediaPlayerUserControl UserControl;
         public List<Hotkey> Hotkeys;
@@ -43,7 +45,7 @@ namespace VideoPlayer.ViewModels
         public bool PlaylistMediaSelected;
         public bool SettingsChanged;
         public bool UpdateAvailable;
-        public readonly Updater Updater;
+        public readonly GitHubClient Client;
         public bool SettingsOpenedWithEdgeDetection;
         public bool QueueOpenedWithEdgeDetection;
         public bool PlaylistsOpenedWithEdgeDetection;
@@ -145,6 +147,12 @@ namespace VideoPlayer.ViewModels
 
         public MainWindowViewModel(MainWindow mainWindow)
         {
+            string currentDir = Directory.GetCurrentDirectory();
+            string oldFile = $@"{currentDir}\VideoPlayer.exe.old";
+
+            if (File.Exists(oldFile))
+                File.Delete(oldFile);
+
             this.mainWindow = mainWindow;
             mainWindow.Topmost = Settings.CurrentSettings.AlwaysOnTop;
             queue = new ObservableCollection<Media>();
@@ -162,41 +170,33 @@ namespace VideoPlayer.ViewModels
                 mediaPlayPauseHotkey
             };
 
-            Updater = new Updater("casperb123", "VideoPlayer");
-            Updater.UpdateAvailable += Updater_UpdateAvailable;
-            if (Settings.CurrentSettings.CheckForUpdates)
-            {
-                try
-                {
-                    Updater.CheckForUpdate();
-                }
-                catch (WebException e)
-                {
-                    if (e.InnerException is null)
-                        mainWindow.ShowMessageAsync("Checking for updates failed", e.Message).ConfigureAwait(false);
-                    else
-                        mainWindow.ShowMessageAsync("Checking for updates failed", e.InnerException.Message).ConfigureAwait(false);
-                }
-            }
+            Client = new GitHubClient(new ProductHeaderValue("VideoPlayer"));
+            CheckForUpdates().ConfigureAwait(false);
         }
 
-        private async void Updater_UpdateAvailable(object sender, VersionEventArgs e)
+        public async Task<bool> CheckForUpdates()
         {
-            if (Settings.CurrentSettings.NotifyUpdates || UpdateAvailable)
+            var releases = await Client.Repository.Release.GetAll("casperb123", "VideoPlayer");
+            Release release = releases[0];
+            string newestVersion = release.TagName.Replace("v", "");
+            Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+
+            int newestMajor = int.Parse(newestVersion.Substring(0, 1));
+            int newestMinor = int.Parse(newestVersion.Substring(2, 1));
+            int newestRevision = int.Parse(newestVersion.Substring(4, 1));
+
+            if (newestMajor > currentVersion.Major ||
+                newestMinor > currentVersion.Minor ||
+                newestRevision > currentVersion.Revision)
             {
-                MessageDialogResult result = await mainWindow.ShowMessageAsync($"Update available", $"An update is available. Would you like to update now?", MessageDialogStyle.AffirmativeAndNegative);
+                MessageDialogResult result = await mainWindow.ShowMessageAsync("Update available", "An update is available. Would you like to update now?", MessageDialogStyle.AffirmativeAndNegative);
 
                 if (result == MessageDialogResult.Affirmative)
                 {
-                    ProcessStartInfo ps = new ProcessStartInfo(Updater.LatestReleaseLink)
-                    {
-                        UseShellExecute = true,
-                        Verb = "open"
-                    };
-                    Process.Start(ps);
+                    Settings.CurrentSettings.NotifyUpdates = true;
+                    await Settings.CurrentSettings.Save();
 
-                    UpdateAvailable = false;
-                    mainWindow.buttonUpdate.Content = "Check for updates";
+                    DownloadUpdate(release);
                 }
                 else
                 {
@@ -206,6 +206,43 @@ namespace VideoPlayer.ViewModels
                     await Settings.CurrentSettings.Save();
                 }
             }
+            else
+                return false;
+
+            return true;
+        }
+
+        private async void DownloadUpdate(Release release)
+        {
+            progressDialog = await mainWindow.ShowProgressAsync("Downloading update", "Downloading: 0/0 kb");
+            progressDialog.Minimum = 0;
+            progressDialog.Maximum = 100;
+
+            WebClient webClient = new WebClient();
+            Uri uri = new Uri(release.Assets[0].BrowserDownloadUrl);
+
+            webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
+            webClient.DownloadProgressChanged += WebClient_DownloadProgressChanged;
+            webClient.DownloadFileAsync(uri, Settings.TempDownloadPath);
+        }
+
+        private void WebClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            progressDialog.SetProgress(e.ProgressPercentage);
+            progressDialog.SetMessage($"Downloading: {e.BytesReceived / 1000}/{e.TotalBytesToReceive / 1000} kb");
+        }
+
+        private void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            string currentDir = Directory.GetCurrentDirectory();
+            string currentFile = $@"{currentDir}\VideoPlayer.exe";
+            string oldFile = $@"{currentDir}\VideoPlayer.exe.old";
+
+            File.Move(currentFile, oldFile);
+            File.Move(Settings.TempDownloadPath, currentFile);
+
+            Process.Start(currentFile);
+            Environment.Exit(0);
         }
 
         public async Task ChangeTheme(string theme, string color)
