@@ -188,7 +188,7 @@ namespace VideoPlayer.ViewModels
 
             if (newestMajor > currentVersion.Major ||
                 newestMinor > currentVersion.Minor ||
-                newestRevision > currentVersion.Revision ||
+                newestRevision > currentVersion.Build ||
                 UpdateAvailable)
             {
                 if (Settings.CurrentSettings.NotifyUpdates || UpdateAvailable)
