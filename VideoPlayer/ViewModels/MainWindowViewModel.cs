@@ -188,9 +188,10 @@ namespace VideoPlayer.ViewModels
 
             if (newestMajor > currentVersion.Major ||
                 newestMinor > currentVersion.Minor ||
-                newestRevision > currentVersion.Revision)
+                newestRevision > currentVersion.Revision ||
+                UpdateAvailable)
             {
-                if (Settings.CurrentSettings.NotifyUpdates)
+                if (Settings.CurrentSettings.NotifyUpdates || UpdateAvailable)
                 {
                     MessageDialogResult result = await mainWindow.ShowMessageAsync("Update available", "An update is available. Would you like to update now?", MessageDialogStyle.AffirmativeAndNegative);
 
