@@ -171,7 +171,8 @@ namespace VideoPlayer.ViewModels
             };
 
             Client = new GitHubClient(new ProductHeaderValue("VideoPlayer"));
-            CheckForUpdates().ConfigureAwait(false);
+            if (Settings.CurrentSettings.CheckForUpdates)
+                CheckForUpdates().ConfigureAwait(false);
         }
 
         public async Task<bool> CheckForUpdates()
@@ -189,14 +190,24 @@ namespace VideoPlayer.ViewModels
                 newestMinor > currentVersion.Minor ||
                 newestRevision > currentVersion.Revision)
             {
-                MessageDialogResult result = await mainWindow.ShowMessageAsync("Update available", "An update is available. Would you like to update now?", MessageDialogStyle.AffirmativeAndNegative);
-
-                if (result == MessageDialogResult.Affirmative)
+                if (Settings.CurrentSettings.NotifyUpdates)
                 {
-                    Settings.CurrentSettings.NotifyUpdates = true;
-                    await Settings.CurrentSettings.Save();
+                    MessageDialogResult result = await mainWindow.ShowMessageAsync("Update available", "An update is available. Would you like to update now?", MessageDialogStyle.AffirmativeAndNegative);
 
-                    DownloadUpdate(release);
+                    if (result == MessageDialogResult.Affirmative)
+                    {
+                        Settings.CurrentSettings.NotifyUpdates = true;
+                        await Settings.CurrentSettings.Save();
+
+                        DownloadUpdate(release);
+                    }
+                    else
+                    {
+                        Settings.CurrentSettings.NotifyUpdates = false;
+                        UpdateAvailable = true;
+                        mainWindow.buttonUpdate.Content = "Update available";
+                        await Settings.CurrentSettings.Save();
+                    }
                 }
                 else
                 {
