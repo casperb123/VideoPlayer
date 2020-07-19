@@ -180,21 +180,25 @@ namespace VideoPlayer.ViewModels
         {
             var releases = await Client.Repository.Release.GetAll("casperb123", "VideoPlayer");
             Release release = releases[0];
-            string newestVersion = release.TagName.Replace("v", "");
+            string latestVersion = release.TagName.Replace("v", "");
             Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
 
-            int newestMajor = int.Parse(newestVersion.Substring(0, 1));
-            int newestMinor = int.Parse(newestVersion.Substring(2, 1));
-            int newestRevision = int.Parse(newestVersion.Substring(4, 1));
+            int latestMajor = int.Parse(latestVersion.Substring(0, 1));
+            int latestMinor = int.Parse(latestVersion.Substring(2, 1));
+            int latestRevision = int.Parse(latestVersion.Substring(4, 1));
 
-            if (newestMajor > currentVersion.Major ||
-                newestMinor > currentVersion.Minor ||
-                newestRevision > currentVersion.Build ||
+            if (latestMajor > currentVersion.Major ||
+                latestMinor > currentVersion.Minor ||
+                latestRevision > currentVersion.Build ||
                 UpdateAvailable)
             {
                 if (Settings.CurrentSettings.NotifyUpdates || UpdateAvailable)
                 {
-                    MessageDialogResult result = await mainWindow.ShowMessageAsync("Update available", "An update is available. Would you like to update now?", MessageDialogStyle.AffirmativeAndNegative);
+                    string message = $"An update is available, would you like to update now?\n\n" +
+                                     $"Changelog:\n" +
+                                     $"{release.Body}";
+
+                    MessageDialogResult result = await mainWindow.ShowMessageAsync("Update available", message, MessageDialogStyle.AffirmativeAndNegative);
 
                     if (result == MessageDialogResult.Affirmative)
                     {
