@@ -194,7 +194,9 @@ namespace VideoPlayer.ViewModels
             {
                 if (Settings.CurrentSettings.NotifyUpdates || UpdateAvailable)
                 {
-                    string message = $"An update is available, would you like to update now?\n\n" +
+                    string message = $"An update is available, would you like to update now?\n" +
+                                     $"Current version: {currentVersion.Major}.{currentVersion.Minor}.{currentVersion.Build}\n" +
+                                     $"Latest version: {latestVersion}\n\n" +
                                      $"Changelog:\n" +
                                      $"{release.Body}";
 
