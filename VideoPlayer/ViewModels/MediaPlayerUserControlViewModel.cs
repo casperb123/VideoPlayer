@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using System.ComponentModel;
 using Microsoft.Win32;
 using System.Threading;
+using Octokit;
 
 namespace VideoPlayer.ViewModels
 {
@@ -33,6 +34,7 @@ namespace VideoPlayer.ViewModels
         public readonly MainWindow MainWindow;
         public bool DarkTheme;
         public bool Seeking;
+        public bool Skipping;
         public TimeSpan position;
         public double OldVolume;
         public bool LoopSpecificTime;
@@ -157,7 +159,7 @@ namespace VideoPlayer.ViewModels
             if (userControl.player.IsOpen)
             {
                 TimeSpan currentTime = TimeSpan.FromSeconds(userControl.sliderProgress.Value);
-                userControl.textBlockDuration.Text = $"{currentTime.ToString(@"m\:ss")} / {userControl.player.NaturalDuration.Value.ToString(@"m\:ss")}";
+                userControl.textBlockDuration.Text = $"{currentTime:m\\:ss} / {userControl.player.NaturalDuration.Value:m\\:ss}";
             }
         }
 
@@ -541,8 +543,10 @@ namespace VideoPlayer.ViewModels
             if (IsFullscreen)
                 ShowControlsInFullscreen();
 
-            await Seek(userControl.player.Position + new TimeSpan(0, 0, value));
-            userControl.sliderProgress.Value = userControl.player.Position.TotalSeconds;
+            TimeSpan timeSpan = userControl.player.Position + new TimeSpan(0, 0, value);
+            userControl.sliderProgress.Value = timeSpan.TotalSeconds;
+            ShowTime();
+            await Seek(timeSpan);
         }
 
         public async Task SkipBackwards(int value)
@@ -552,8 +556,10 @@ namespace VideoPlayer.ViewModels
             if (IsFullscreen)
                 ShowControlsInFullscreen();
 
-            await Seek(userControl.player.Position - new TimeSpan(0, 0, value));
-            userControl.sliderProgress.Value = userControl.player.Position.TotalSeconds;
+            TimeSpan timeSpan = userControl.player.Position - new TimeSpan(0, 0, value);
+            userControl.sliderProgress.Value = timeSpan.TotalSeconds;
+            ShowTime();
+            await Seek(timeSpan);
         }
 
         public async Task PlayPause()

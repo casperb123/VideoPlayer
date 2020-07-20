@@ -171,9 +171,17 @@ namespace VideoPlayer.ViewModels
                 mediaPlayPauseHotkey
             };
 
-            Client = new GitHubClient(new ProductHeaderValue("VideoPlayer"));
-            if (Settings.CurrentSettings.CheckForUpdates)
-                CheckForUpdates().ConfigureAwait(false);
+            try
+            {
+                Client = new GitHubClient(new ProductHeaderValue("VideoPlayer"));
+                if (Settings.CurrentSettings.CheckForUpdates)
+                    CheckForUpdates().ConfigureAwait(false);
+            }
+            catch (WebException e)
+            {
+                mainWindow.ShowMessageAsync("Can't check for updates", $"Checking for updates failed.\n\n" +
+                                                                       $"{e.Message}");
+            }
         }
 
         public async Task<bool> CheckForUpdates()
@@ -233,7 +241,7 @@ namespace VideoPlayer.ViewModels
 
         private async void DownloadUpdate(Release release)
         {
-            progressDialog = await mainWindow.ShowProgressAsync("Downloading update", "Downloading: 0/0 kb");
+            progressDialog = await mainWindow.ShowProgressAsync($"Downloading update - {release.TagName.Replace("v", "")}", "Downloading: 0/0 kb");
             progressDialog.Minimum = 0;
             progressDialog.Maximum = 100;
 
