@@ -276,36 +276,16 @@ namespace VideoPlayer.ViewModels
             if (timeLeft.Hours > 0)
                 timeLeftString += string.Format("{0} hours", timeLeft.Hours);
             if (timeLeft.Minutes > 0)
-            {
-                if (timeLeftString == string.Empty)
-                    timeLeftString += string.Format("{0} min", timeLeft.Minutes);
-                else
-                    timeLeftString += string.Format(" {0} min", timeLeft.Minutes);
-            }
+                timeLeftString += timeLeftString == string.Empty ? string.Format("{0} min", timeLeft.Minutes) : string.Format(" {0} min", timeLeft.Minutes);
             if (timeLeft.Seconds >= 0)
-            {
-                if (timeLeftString == string.Empty)
-                    timeLeftString += string.Format("{0} sec", timeLeft.Seconds);
-                else
-                    timeLeftString += string.Format(" {0} sec", timeLeft.Seconds);
-            }
+                timeLeftString += timeLeftString == string.Empty ? string.Format("{0} sec", timeLeft.Seconds) : string.Format(" {0} sec", timeLeft.Seconds);
 
             if (timeSpent.Hours > 0)
                 timeSpentString = string.Format("{0} hours", timeSpent.Hours);
             if (timeSpent.Minutes > 0)
-            {
-                if (timeSpentString == string.Empty)
-                    timeSpentString += string.Format("{0} min", timeSpent.Minutes);
-                else
-                    timeSpentString += string.Format(" {0} min", timeSpent.Minutes);
-            }
+                timeSpentString += timeSpentString == string.Empty ? string.Format("{0} min", timeSpent.Minutes) : string.Format(" {0} min", timeSpent.Minutes);
             if (timeSpent.Seconds >= 0)
-            {
-                if (timeSpentString == string.Empty)
-                    timeSpentString += string.Format("{0} sec", timeSpent.Seconds);
-                else
-                    timeSpentString += string.Format(" {0} sec", timeSpent.Seconds);
-            }
+                timeSpentString += timeSpentString == string.Empty ? string.Format("{0} sec", timeSpent.Seconds) : string.Format(" {0} sec", timeSpent.Seconds);
 
             progressDialog.SetProgress(e.ProgressPercentage);
             progressDialog.SetMessage($"Estimated time left: {timeLeftString} ({received} of {toReceive} downloaded)\n" +
