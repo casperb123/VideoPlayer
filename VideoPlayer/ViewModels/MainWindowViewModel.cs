@@ -242,7 +242,7 @@ namespace VideoPlayer.ViewModels
 
         private async void DownloadUpdate(Release release)
         {
-            progressDialog = await mainWindow.ShowProgressAsync($"Downloading update - {release.TagName.Replace("v", "")}", "Estimated time left: 0 sec (0 of 0 kb downloaded)\n" +
+            progressDialog = await mainWindow.ShowProgressAsync($"Downloading update - {release.TagName.Replace("v", "")}", "Estimated time left: 0 sec (0 kb of 0 kb downloaded)\n" +
                                                                                                                             "Time spent: 0 sec");
             progressDialog.Minimum = 0;
             progressDialog.Maximum = 100;
