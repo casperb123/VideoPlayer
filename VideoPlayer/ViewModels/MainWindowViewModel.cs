@@ -35,6 +35,7 @@ namespace VideoPlayer.ViewModels
         private Playlist selectedPlaylist;
         private Media selectedPlaylistMedia;
         private ProgressDialogController progressDialog;
+        private DateTime updateStartTime;
 
         public MediaPlayerUserControl UserControl;
         public List<Hotkey> Hotkeys;
@@ -241,7 +242,8 @@ namespace VideoPlayer.ViewModels
 
         private async void DownloadUpdate(Release release)
         {
-            progressDialog = await mainWindow.ShowProgressAsync($"Downloading update - {release.TagName.Replace("v", "")}", "Downloading: 0/0 kb");
+            progressDialog = await mainWindow.ShowProgressAsync($"Downloading update - {release.TagName.Replace("v", "")}", "Estimated time left: 0 sec (0 of 0 kb downloaded)\n" +
+                                                                                                                            "Time spent: 0 sec");
             progressDialog.Minimum = 0;
             progressDialog.Maximum = 100;
 
@@ -250,16 +252,64 @@ namespace VideoPlayer.ViewModels
 
             webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
             webClient.DownloadProgressChanged += WebClient_DownloadProgressChanged;
+
+            updateStartTime = DateTime.Now;
             webClient.DownloadFileAsync(uri, Settings.TempDownloadPath);
         }
 
         private void WebClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            string received = string.Format(CultureInfo.InvariantCulture, "{0:n0}", e.BytesReceived / 1000);
-            string toReceive = string.Format(CultureInfo.InvariantCulture, "{0:n0}", e.TotalBytesToReceive / 1000);
+            string received = string.Format(CultureInfo.InvariantCulture, "{0:n0} kb", e.BytesReceived / 1000);
+            string toReceive = string.Format(CultureInfo.InvariantCulture, "{0:n0} kb", e.TotalBytesToReceive / 1000);
+
+            if (e.BytesReceived / 1000000 >= 1)
+                received = string.Format("{0:.#0} MB", Math.Round((decimal)e.BytesReceived / 1000000, 2));
+            if (e.TotalBytesToReceive / 1000000 >= 1)
+                toReceive = string.Format("{0:.#0} MB", Math.Round((decimal)e.TotalBytesToReceive / 1000000, 2));
+
+            TimeSpan timeSpent = DateTime.Now - updateStartTime;
+            int secondsRemaining = (int)(timeSpent.TotalSeconds / e.ProgressPercentage * (100 - e.ProgressPercentage));
+            TimeSpan timeLeft = new TimeSpan(0, 0, secondsRemaining);
+            string timeLeftString = string.Empty;
+            string timeSpentString = string.Empty;
+
+            if (timeLeft.Hours > 0)
+                timeLeftString += string.Format("{0} hours", timeLeft.Hours);
+            if (timeLeft.Minutes > 0)
+            {
+                if (timeLeftString == string.Empty)
+                    timeLeftString += string.Format("{0} min", timeLeft.Minutes);
+                else
+                    timeLeftString += string.Format(" {0} min", timeLeft.Minutes);
+            }
+            if (timeLeft.Seconds >= 0)
+            {
+                if (timeLeftString == string.Empty)
+                    timeLeftString += string.Format("{0} sec", timeLeft.Seconds);
+                else
+                    timeLeftString += string.Format(" {0} sec", timeLeft.Seconds);
+            }
+
+            if (timeSpent.Hours > 0)
+                timeSpentString = string.Format("{0} hours", timeSpent.Hours);
+            if (timeSpent.Minutes > 0)
+            {
+                if (timeSpentString == string.Empty)
+                    timeSpentString += string.Format("{0} min", timeSpent.Minutes);
+                else
+                    timeSpentString += string.Format(" {0} min", timeSpent.Minutes);
+            }
+            if (timeSpent.Seconds >= 0)
+            {
+                if (timeSpentString == string.Empty)
+                    timeSpentString += string.Format("{0} sec", timeSpent.Seconds);
+                else
+                    timeSpentString += string.Format(" {0} sec", timeSpent.Seconds);
+            }
 
             progressDialog.SetProgress(e.ProgressPercentage);
-            progressDialog.SetMessage($"Downloading: {received}/{toReceive} kb");
+            progressDialog.SetMessage($"Estimated time left: {timeLeftString} ({received} of {toReceive} downloaded)\n" +
+                                      $"Time spent: {timeSpentString}");
         }
 
         private void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
