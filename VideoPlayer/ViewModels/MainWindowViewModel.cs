@@ -54,6 +54,7 @@ namespace VideoPlayer.ViewModels
         public bool IsAnyContextOpen;
         public bool PlaylistsChanged;
         public readonly SoundProcessorViewModel SoundProcessor;
+        public bool UpdateDownloaded;
 
         public delegate Point GetPosition(IInputElement element);
         public event PropertyChangedEventHandler PropertyChanged;
@@ -153,7 +154,7 @@ namespace VideoPlayer.ViewModels
             string oldFile = $@"{currentDir}\VideoPlayer.exe.old";
 
             if (File.Exists(oldFile))
-                File.Delete(oldFile);
+                File.Delete(oldFile); 
 
             this.mainWindow = mainWindow;
             mainWindow.Topmost = Settings.CurrentSettings.AlwaysOnTop;
@@ -172,16 +173,24 @@ namespace VideoPlayer.ViewModels
                 mediaPlayPauseHotkey
             };
 
-            try
+            if (File.Exists(Settings.TempDownloadPath))
             {
-                Client = new GitHubClient(new ProductHeaderValue("VideoPlayer"));
-                if (Settings.CurrentSettings.CheckForUpdates)
-                    CheckForUpdates().ConfigureAwait(false);
+                UpdateDownloaded = true;
+                mainWindow.buttonUpdate.Content = "Update downloaded";
             }
-            catch (WebException e)
+            else
             {
-                mainWindow.ShowMessageAsync("Can't check for updates", $"Checking for updates failed.\n\n" +
-                                                                       $"{e.Message}");
+                try
+                {
+                    Client = new GitHubClient(new ProductHeaderValue("VideoPlayer"));
+                    if (Settings.CurrentSettings.CheckForUpdates)
+                        CheckForUpdates().ConfigureAwait(false);
+                }
+                catch (WebException e)
+                {
+                    mainWindow.ShowMessageAsync("Can't check for updates", $"Checking for updates failed.\n\n" +
+                                                                           $"{e.Message}");
+                }
             }
         }
 
@@ -292,17 +301,38 @@ namespace VideoPlayer.ViewModels
                                       $"Time spent: {timeSpentString}");
         }
 
-        private void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        private async void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            string currentDir = Directory.GetCurrentDirectory();
-            string currentFile = $@"{currentDir}\VideoPlayer.exe";
-            string oldFile = $@"{currentDir}\VideoPlayer.exe.old";
+            Settings.CurrentSettings.NotifyUpdates = true;
+            await Settings.CurrentSettings.Save();
+            await progressDialog.CloseAsync();
 
-            File.Move(currentFile, oldFile);
-            File.Move(Settings.TempDownloadPath, currentFile);
+            MessageDialogResult result = await mainWindow.ShowMessageAsync("Update downloaded", "An update has been downloaded. Would you like to install it now?", MessageDialogStyle.AffirmativeAndNegative);
 
-            Process.Start(currentFile);
-            Environment.Exit(0);
+            if (result == MessageDialogResult.Affirmative)
+                InstallUpdate();
+            else
+            {
+                UpdateDownloaded = true;
+                UpdateAvailable = false;
+                mainWindow.buttonUpdate.Content = "Update downloaded";
+            }
+        }
+
+        public void InstallUpdate()
+        {
+            if (File.Exists(Settings.TempDownloadPath))
+            {
+                string currentDir = Directory.GetCurrentDirectory();
+                string currentFile = $@"{currentDir}\VideoPlayer.exe";
+                string oldFile = $@"{currentDir}\VideoPlayer.exe.old";
+
+                File.Move(currentFile, oldFile);
+                File.Move(Settings.TempDownloadPath, currentFile);
+
+                Process.Start(currentFile);
+                Environment.Exit(0);
+            }
         }
 
         public async Task ChangeTheme(string theme, string color)

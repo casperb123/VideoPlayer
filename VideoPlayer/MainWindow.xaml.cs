@@ -490,10 +490,20 @@ namespace VideoPlayer
         {
             try
             {
-                bool update = await ViewModel.CheckForUpdates();
+                if (ViewModel.UpdateDownloaded)
+                {
+                    MessageDialogResult result = await this.ShowMessageAsync("Update downloaded", "An update has been downloaded. Would you like to install it now?", MessageDialogStyle.AffirmativeAndNegative);
 
-                if (!update)
-                    await this.ShowMessageAsync("Up to date", "You're already using the latest version of the application");
+                    if (result == MessageDialogResult.Affirmative)
+                        ViewModel.InstallUpdate();
+                }
+                else
+                {
+                    bool update = await ViewModel.CheckForUpdates();
+
+                    if (!update)
+                        await this.ShowMessageAsync("Up to date", "You're already using the latest version of the application");
+                }
             }
             catch (WebException ex)
             {
