@@ -6,7 +6,7 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>video_icon.ico</ApplicationIcon>
     <NoWin32Manifest>true</NoWin32Manifest>
-    <Version>0.4.3</Version>
+    <Version>0.5</Version>
     <Authors>Casper Bastholm</Authors>
     <Product>Video Player</Product>
     <Description>This is just a little video player i made for fun.</Description>
