@@ -203,18 +203,41 @@ namespace VideoPlayer.ViewModels
 
             int latestMajor = int.Parse(latestVersion.Substring(0, 1));
             int latestMinor = int.Parse(latestVersion.Substring(2, 1));
-            int latestRevision = int.Parse(latestVersion.Substring(4, 1));
+            int latestBuild = 0;
+            int latestRevision = 0;
+
+            string currentVersionTxt = $"{currentVersion.Major}.{currentVersion.Minor}";
+            string latestVersionTxt = $"{latestMajor}.{latestMinor}";
+
+            if (currentVersion.Build > 0)
+            {
+                currentVersionTxt += $".{currentVersion.Build}";
+                if (latestVersion.Length == 7)
+                    currentVersionTxt += $".{currentVersion.Revision}";
+            }
+            if (latestVersion.Length >= 5)
+            {
+                latestBuild = int.Parse(latestVersion.Substring(4, 1));
+                latestVersionTxt += $".{latestBuild}";
+
+                if (latestVersion.Length == 7)
+                {
+                    latestRevision = int.Parse(latestVersion.Substring(6, 1));
+                    latestVersionTxt += $".{latestRevision}";
+                }
+            }
 
             if (latestMajor > currentVersion.Major ||
                 latestMinor > currentVersion.Minor ||
-                latestRevision > currentVersion.Build ||
+                latestBuild > currentVersion.Build ||
+                latestRevision > currentVersion.Revision ||
                 UpdateAvailable)
             {
                 if (Settings.CurrentSettings.NotifyUpdates || UpdateAvailable)
                 {
                     string message = $"An update is available, would you like to update now?\n" +
-                                     $"Current version: {currentVersion.Major}.{currentVersion.Minor}.{currentVersion.Build}\n" +
-                                     $"Latest version: {latestVersion}\n\n" +
+                                     $"Current version: {currentVersionTxt}\n" +
+                                     $"Latest version: {latestVersionTxt}\n\n" +
                                      $"Changelog:\n" +
                                      $"{release.Body}";
 
@@ -303,20 +326,12 @@ namespace VideoPlayer.ViewModels
 
         private async void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
+            FileVersionInfo downloadedVersion = FileVersionInfo.GetVersionInfo(Settings.TempDownloadPath);
+
             Settings.CurrentSettings.NotifyUpdates = true;
             await Settings.CurrentSettings.Save();
             await progressDialog.CloseAsync();
-
-            MessageDialogResult result = await mainWindow.ShowMessageAsync("Update downloaded", "An update has been downloaded. Would you like to install it now?", MessageDialogStyle.AffirmativeAndNegative);
-
-            if (result == MessageDialogResult.Affirmative)
-                InstallUpdate();
-            else
-            {
-                UpdateDownloaded = true;
-                UpdateAvailable = false;
-                mainWindow.buttonUpdate.Content = "Update downloaded";
-            }
+            await NotifyDownloaded(downloadedVersion);
         }
 
         public void InstallUpdate()
@@ -332,6 +347,41 @@ namespace VideoPlayer.ViewModels
 
                 Process.Start(currentFile);
                 Environment.Exit(0);
+            }
+        }
+
+        public async Task NotifyDownloaded(FileVersionInfo version)
+        {
+            Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            string currentVersionTxt = $"{currentVersion.Major}.{currentVersion.Minor}";
+            string downloadedVersionTxt = $"{version.FileMajorPart}.{version.FileMinorPart}";
+
+            if (currentVersion.Build > 0)
+            {
+                currentVersionTxt += $".{currentVersion.Build}";
+                if (currentVersion.Revision > 0)
+                    currentVersionTxt += $".{currentVersion.Revision}";
+            }
+            if (version.FileBuildPart > 0)
+            {
+                downloadedVersionTxt += $".{version.FileBuildPart}";
+                if (version.FilePrivatePart > 0)
+                    downloadedVersionTxt += $".{version.FilePrivatePart}";
+            }
+
+            string message = $"An update has been downloaded. Would you like to install it now?\n\n" +
+                             $"Current version: {currentVersionTxt}\n" +
+                             $"Downloaded version: {downloadedVersionTxt}";
+
+            MessageDialogResult result = await mainWindow.ShowMessageAsync($"Update downloaded", message, MessageDialogStyle.AffirmativeAndNegative);
+
+            if (result == MessageDialogResult.Affirmative)
+                InstallUpdate();
+            else
+            {
+                UpdateDownloaded = true;
+                UpdateAvailable = false;
+                mainWindow.buttonUpdate.Content = "Update downloaded";
             }
         }
 

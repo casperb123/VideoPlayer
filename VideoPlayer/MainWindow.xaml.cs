@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -492,10 +493,8 @@ namespace VideoPlayer
             {
                 if (ViewModel.UpdateDownloaded)
                 {
-                    MessageDialogResult result = await this.ShowMessageAsync("Update downloaded", "An update has been downloaded. Would you like to install it now?", MessageDialogStyle.AffirmativeAndNegative);
-
-                    if (result == MessageDialogResult.Affirmative)
-                        ViewModel.InstallUpdate();
+                    FileVersionInfo downloadedVersion = FileVersionInfo.GetVersionInfo(Settings.TempDownloadPath);
+                    await ViewModel.NotifyDownloaded(downloadedVersion);
                 }
                 else
                 {
