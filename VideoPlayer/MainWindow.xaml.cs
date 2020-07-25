@@ -501,9 +501,7 @@ namespace VideoPlayer
                     var (updateAvailable, currentVersion, latestVersion) = await ViewModel.CheckForUpdates();
 
                     if (!updateAvailable)
-                        await this.ShowMessageAsync("Up to date", "You're already using the latest version of the application.\n\n" +
-                                                                  $"Current version: {currentVersion}\n" +
-                                                                  $"Latest version: {latestVersion}");
+                        await this.ShowMessageAsync($"Up to date - {currentVersion}", "You're already using the latest version of the application");
                 }
             }
             catch (WebException ex)
