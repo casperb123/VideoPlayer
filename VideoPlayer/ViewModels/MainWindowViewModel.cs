@@ -207,7 +207,6 @@ namespace VideoPlayer.ViewModels
             int latestRevision = 0;
 
             string currentVersionTxt = $"{currentVersion.Major}.{currentVersion.Minor}";
-            string latestVersionTxt = $"{latestMajor}.{latestMinor}";
 
             if (currentVersion.Build > 0)
             {
@@ -218,13 +217,8 @@ namespace VideoPlayer.ViewModels
             if (latestVersion.Length >= 5)
             {
                 latestBuild = int.Parse(latestVersion.Substring(4, 1));
-                latestVersionTxt += $".{latestBuild}";
-
                 if (latestVersion.Length == 7)
-                {
                     latestRevision = int.Parse(latestVersion.Substring(6, 1));
-                    latestVersionTxt += $".{latestRevision}";
-                }
             }
 
             if (latestMajor > currentVersion.Major ||
@@ -237,7 +231,7 @@ namespace VideoPlayer.ViewModels
                 {
                     string message = $"An update is available, would you like to update now?\n" +
                                      $"Current version: {currentVersionTxt}\n" +
-                                     $"Latest version: {latestVersionTxt}\n\n" +
+                                     $"Latest version: {latestVersion}\n\n" +
                                      $"Changelog:\n" +
                                      $"{release.Body}";
 
@@ -267,9 +261,9 @@ namespace VideoPlayer.ViewModels
                 }
             }
             else
-                return (false, currentVersionTxt, latestVersionTxt);
+                return (false, currentVersionTxt, latestVersion);
 
-            return (true, currentVersionTxt, latestVersionTxt);
+            return (true, currentVersionTxt, latestVersion);
         }
 
         private async void DownloadUpdate(Release release)
