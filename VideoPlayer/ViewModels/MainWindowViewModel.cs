@@ -194,7 +194,7 @@ namespace VideoPlayer.ViewModels
             }
         }
 
-        public async Task<bool> CheckForUpdates()
+        public async Task<(bool updateAvailable, string currentVersion, string latestVersion)> CheckForUpdates()
         {
             var releases = await Client.Repository.Release.GetAll("casperb123", "VideoPlayer");
             Release release = releases[0];
@@ -267,9 +267,9 @@ namespace VideoPlayer.ViewModels
                 }
             }
             else
-                return false;
+                return (false, currentVersionTxt, latestVersionTxt);
 
-            return true;
+            return (true, currentVersionTxt, latestVersionTxt);
         }
 
         private async void DownloadUpdate(Release release)

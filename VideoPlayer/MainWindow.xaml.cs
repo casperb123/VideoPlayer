@@ -498,10 +498,12 @@ namespace VideoPlayer
                 }
                 else
                 {
-                    bool update = await ViewModel.CheckForUpdates();
+                    var (updateAvailable, currentVersion, latestVersion) = await ViewModel.CheckForUpdates();
 
-                    if (!update)
-                        await this.ShowMessageAsync("Up to date", "You're already using the latest version of the application");
+                    if (!updateAvailable)
+                        await this.ShowMessageAsync("Up to date", "You're already using the latest version of the application.\n\n" +
+                                                                  $"Current version: {currentVersion}\n" +
+                                                                  $"Latest version: {latestVersion}");
                 }
             }
             catch (WebException ex)
