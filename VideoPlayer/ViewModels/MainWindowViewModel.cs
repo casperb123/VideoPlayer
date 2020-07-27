@@ -179,12 +179,18 @@ namespace VideoPlayer.ViewModels
             Updater.InstallationFailed += Updater_InstallationFailed;
 
             if (Settings.CurrentSettings.CheckForUpdates)
-                Updater.CheckForUpdatesAsync().ConfigureAwait(false);
+            {
+                var (updateAvailable, latestVersion) = Updater.CheckForUpdatesAsync().Result;
+                if (!updateAvailable)
+                    Updater.DeleteUpdateFiles();
+            }
             else if (Updater.IsUpdateDownloaded())
             {
                 UpdateDownloaded = true;
                 mainWindow.buttonUpdate.Content = "Update downloaded";
             }
+            else
+                Updater.DeleteUpdateFiles();
         }
 
         private async void Updater_InstallationFailed(object sender, ExceptionEventArgs<Exception> e)
@@ -196,7 +202,6 @@ namespace VideoPlayer.ViewModels
 
         private void Updater_InstallationCompleted(object sender, VersionEventArgs e)
         {
-            Updater.DeleteUpdateFiles();
             Updater.Restart();
         }
 
