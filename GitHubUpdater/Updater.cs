@@ -26,7 +26,7 @@ namespace GitHubUpdater
         private readonly GitHubClient gitHubClient;
         private readonly string downloadPath;
         private readonly string originalFilePath;
-        private readonly string oldFilePath;
+        private readonly string backupFilePath;
         private Release release;
         private Version currentVersion;
         private Version latestVersion;
@@ -68,22 +68,26 @@ namespace GitHubUpdater
             string mainProjectName = Assembly.GetEntryAssembly().GetName().Name;
             string appDataPath = $@"{appData}\{mainProjectName}";
 
+            if (!Directory.Exists(appDataPath))
+                Directory.CreateDirectory(appDataPath);
+
             gitHubClient = new GitHubClient(new ProductHeaderValue(mainProjectName));
             webClient = new WebClient();
             webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
             webClient.DownloadProgressChanged += WebClient_DownloadProgressChanged;
 
             originalFilePath = Process.GetCurrentProcess().MainModule.FileName;
-            oldFilePath = $"{originalFilePath}.old";
-            downloadPath = $@"{appDataPath}\{Path.GetFileNameWithoutExtension(originalFilePath)}.tmp";
+            string appDataFilePath = $@"{appDataPath}\{Path.GetFileNameWithoutExtension(originalFilePath)}";
+
+            backupFilePath = $"{appDataFilePath}.backup";
+            downloadPath = $"{appDataFilePath}.update";
 
             if (!Directory.Exists(appDataPath))
                 Directory.CreateDirectory(appDataPath);
+            if (File.Exists(backupFilePath))
+                File.Delete(backupFilePath);
 
             currentVersion = Version.ConvertToVersion(Assembly.GetEntryAssembly().GetName().Version.ToString());
-
-            if (File.Exists(oldFilePath))
-                File.Delete(oldFilePath);
         }
 
         public Updater(string gitHubUsername, string gitHubRepositoryName, bool rollBackOnFail) : this(gitHubUsername, gitHubRepositoryName)
@@ -178,6 +182,9 @@ namespace GitHubUpdater
                 throw new FileLoadException($"The downloaded file is a {extension} file, which is not supported");
             }
 
+            if (File.Exists(downloadPath))
+                File.Delete(downloadPath);
+
             DownloadingStarted?.Invoke(this, new DownloadStartedEventArgs(latestVersion));
             State = UpdaterState.Downloading;
 
@@ -192,10 +199,10 @@ namespace GitHubUpdater
 
             try
             {
-                if (File.Exists(oldFilePath))
-                    File.Delete(oldFilePath);
+                if (File.Exists(backupFilePath))
+                    File.Delete(backupFilePath);
 
-                File.Move(originalFilePath, oldFilePath);
+                File.Move(originalFilePath, backupFilePath);
                 File.Move(downloadPath, originalFilePath);
             }
             catch (Exception ex)
@@ -216,10 +223,10 @@ namespace GitHubUpdater
 
         public void Rollback()
         {
-            if (File.Exists(oldFilePath))
+            if (File.Exists(backupFilePath))
             {
                 State = UpdaterState.RollingBack;
-                File.Move(oldFilePath, originalFilePath, true);
+                File.Move(backupFilePath, originalFilePath, true);
                 State = UpdaterState.Idle;
             }
             else
