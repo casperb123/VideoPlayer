@@ -222,7 +222,7 @@ namespace VideoPlayer.ViewModels
             if (e.UpdateDownloaded)
             {
                 if (Settings.CurrentSettings.NotifyUpdates || UpdateDownloaded)
-                    await NotifyDownloaded(e.CurrentVersion, e.LatestVersion);
+                    await NotifyDownloaded(e.CurrentVersion, e.LatestVersion, e.Changelog);
                 else
                 {
                     UpdateDownloaded = true;

@@ -27,8 +27,9 @@ namespace GitHubUpdater
         private readonly string downloadPath;
         private readonly string originalFilePath;
         private readonly string backupFilePath;
+        private readonly string changelogFilePath;
         private Release release;
-        private Version currentVersion;
+        private readonly Version currentVersion;
         private Version latestVersion;
         private string changelog;
         private DateTime updateStartTime;
@@ -81,6 +82,7 @@ namespace GitHubUpdater
 
             backupFilePath = $"{appDataFilePath}.backup";
             downloadPath = $"{appDataFilePath}.update";
+            changelogFilePath = $"{appDataFilePath}.changelog";
 
             if (!Directory.Exists(appDataPath))
                 Directory.CreateDirectory(appDataPath);
@@ -132,6 +134,8 @@ namespace GitHubUpdater
         private void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             State = UpdaterState.Idle;
+
+            File.WriteAllText(changelogFilePath, changelog);
             DownloadingCompleted?.Invoke(this, new VersionEventArgs(currentVersion, latestVersion, false, changelog));
         }
 
@@ -147,7 +151,11 @@ namespace GitHubUpdater
 
                 if (latestVersion > currentVersion)
                 {
-                    UpdateAvailable?.Invoke(this, new VersionEventArgs(currentVersion, latestVersion, true));
+                    if (File.Exists(changelogFilePath))
+                        UpdateAvailable?.Invoke(this, new VersionEventArgs(currentVersion, latestVersion, true, File.ReadAllText(changelogFilePath)));
+                    else
+                        UpdateAvailable?.Invoke(this, new VersionEventArgs(currentVersion, latestVersion, true));
+
                     State = UpdaterState.Idle;
                     return (true, latestVersion);
                 }
