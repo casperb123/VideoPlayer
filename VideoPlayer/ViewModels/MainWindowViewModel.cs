@@ -178,9 +178,14 @@ namespace VideoPlayer.ViewModels
             Updater.InstallationCompleted += Updater_InstallationCompleted;
             Updater.InstallationFailed += Updater_InstallationFailed;
 
+            CheckForUpdates();
+        }
+
+        private async void CheckForUpdates()
+        {
             if (Settings.CurrentSettings.CheckForUpdates)
             {
-                var (updateAvailable, latestVersion) = Updater.CheckForUpdatesAsync().Result;
+                var (updateAvailable, latestVersion) = await Updater.CheckForUpdatesAsync();
                 if (!updateAvailable)
                     Updater.DeleteUpdateFiles();
             }
