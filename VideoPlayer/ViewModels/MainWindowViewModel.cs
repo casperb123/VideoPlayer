@@ -180,6 +180,11 @@ namespace VideoPlayer.ViewModels
 
             if (Settings.CurrentSettings.CheckForUpdates)
                 Updater.CheckForUpdatesAsync().ConfigureAwait(false);
+            else if (Updater.IsUpdateDownloaded())
+            {
+                UpdateDownloaded = true;
+                mainWindow.buttonUpdate.Content = "Update downloaded";
+            }
         }
 
         private async void Updater_InstallationFailed(object sender, ExceptionEventArgs<Exception> e)

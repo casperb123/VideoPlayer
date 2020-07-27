@@ -180,6 +180,14 @@ namespace GitHubUpdater
             return (false, currentVersion);
         }
 
+        public bool IsUpdateDownloaded()
+        {
+            if (File.Exists(downloadPath))
+                return true;
+
+            return false;
+        }
+
         public void DownloadUpdate()
         {
             if (release is null)
