@@ -18,10 +18,8 @@ using VideoPlayer.UserControls;
 using Application = System.Windows.Application;
 using MahApps.Metro.Controls;
 using ControlzEx.Theming;
-using System.Net;
-using Octokit;
-using System.Reflection;
-using System.Globalization;
+using GitHubUpdater;
+using Version = GitHubUpdater.Version;
 
 namespace VideoPlayer.ViewModels
 {
@@ -35,7 +33,6 @@ namespace VideoPlayer.ViewModels
         private Playlist selectedPlaylist;
         private Media selectedPlaylistMedia;
         private ProgressDialogController progressDialog;
-        private DateTime updateStartTime;
 
         public MediaPlayerUserControl UserControl;
         public List<Hotkey> Hotkeys;
@@ -47,7 +44,6 @@ namespace VideoPlayer.ViewModels
         public bool PlaylistMediaSelected;
         public bool SettingsChanged;
         public bool UpdateAvailable = false;
-        public readonly GitHubClient Client;
         public bool SettingsOpenedWithEdgeDetection;
         public bool QueueOpenedWithEdgeDetection;
         public bool PlaylistsOpenedWithEdgeDetection;
@@ -55,6 +51,7 @@ namespace VideoPlayer.ViewModels
         public bool PlaylistsChanged;
         public readonly SoundProcessorViewModel SoundProcessor;
         public bool UpdateDownloaded;
+        public readonly Updater Updater;
 
         public delegate Point GetPosition(IInputElement element);
         public event PropertyChangedEventHandler PropertyChanged;
@@ -154,7 +151,7 @@ namespace VideoPlayer.ViewModels
             string oldFile = $@"{currentDir}\VideoPlayer.exe.old";
 
             if (File.Exists(oldFile))
-                File.Delete(oldFile); 
+                File.Delete(oldFile);
 
             this.mainWindow = mainWindow;
             mainWindow.Topmost = Settings.CurrentSettings.AlwaysOnTop;
@@ -173,67 +170,74 @@ namespace VideoPlayer.ViewModels
                 mediaPlayPauseHotkey
             };
 
-            if (File.Exists(Settings.TempDownloadPath))
-            {
-                UpdateDownloaded = true;
-                mainWindow.buttonUpdate.Content = "Update downloaded";
-            }
-            else
-            {
-                try
-                {
-                    Client = new GitHubClient(new ProductHeaderValue("VideoPlayer"));
-                    if (Settings.CurrentSettings.CheckForUpdates)
-                        CheckForUpdates().ConfigureAwait(false);
-                }
-                catch (WebException e)
-                {
-                    mainWindow.ShowMessageAsync("Can't check for updates", $"Checking for updates failed.\n\n" +
-                                                                           $"{e.Message}");
-                }
-            }
+            Updater = new Updater("casperb123", "VideoPlayer");
+            Updater.UpdateAvailable += Updater_UpdateAvailable;
+            Updater.DownloadingStarted += Updater_DownloadingStarted;
+            Updater.DownloadingProgressed += Updater_DownloadingProgressed;
+            Updater.DownloadingCompleted += Updater_DownloadingCompleted;
+            Updater.InstallationCompleted += Updater_InstallationCompleted;
+            Updater.InstallationFailed += Updater_InstallationFailed;
+
+            if (Settings.CurrentSettings.CheckForUpdates)
+                Updater.CheckForUpdatesAsync().ConfigureAwait(false);
         }
 
-        public async Task<(bool updateAvailable, string currentVersion, string latestVersion)> CheckForUpdates()
+        private async void Updater_InstallationFailed(object sender, ExceptionEventArgs<Exception> e)
         {
-            var releases = await Client.Repository.Release.GetAll("casperb123", "VideoPlayer");
-            Release release = releases[0];
-            string latestVersion = release.TagName.Replace("v", "");
-            Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            await mainWindow.ShowMessageAsync("Installation failed", "Installing the update failed.\n\n" +
+                                                                     "Error:\n" +
+                                                                     $"{e.Message}");
+        }
 
-            int latestMajor = int.Parse(latestVersion.Substring(0, 1));
-            int latestMinor = int.Parse(latestVersion.Substring(2, 1));
-            int latestBuild = 0;
-            int latestRevision = 0;
+        private void Updater_InstallationCompleted(object sender, VersionEventArgs e)
+        {
+            Updater.Restart();
+        }
 
-            string currentVersionTxt = $"{currentVersion.Major}.{currentVersion.Minor}";
+        private void Updater_DownloadingProgressed(object sender, DownloadProgressEventArgs e)
+        {
+            progressDialog.SetProgress(e.ProgressPercent);
+            progressDialog.SetMessage($"Estimated time left: {e.TimeLeft} ({e.Downloaded} of {e.ToDownload} downloaded)\n" +
+                                      $"Time spent: {e.TimeSpent}");
+        }
 
-            if (currentVersion.Build > 0)
+        private async void Updater_DownloadingCompleted(object sender, VersionEventArgs e)
+        {
+            Settings.CurrentSettings.NotifyUpdates = true;
+            await Settings.CurrentSettings.Save();
+            await progressDialog.CloseAsync();
+            await NotifyDownloaded(e.CurrentVersion, e.LatestVersion, e.Changelog);
+        }
+
+        private async void Updater_DownloadingStarted(object sender, DownloadStartedEventArgs e)
+        {
+            progressDialog = await mainWindow.ShowProgressAsync($"Downloading update - {e.Version}", "Estimated time left: 0 sec (0 kb of 0 kb downloaded)\n" +
+                                                                                                                            "Time spent: 0 sec");
+            progressDialog.Minimum = 0;
+            progressDialog.Maximum = 100;
+        }
+
+        private async void Updater_UpdateAvailable(object sender, VersionEventArgs e)
+        {
+            if (e.UpdateDownloaded)
             {
-                currentVersionTxt += $".{currentVersion.Build}";
-                if (latestVersion.Length == 7)
-                    currentVersionTxt += $".{currentVersion.Revision}";
+                if (Settings.CurrentSettings.NotifyUpdates || UpdateDownloaded)
+                    await NotifyDownloaded(e.CurrentVersion, e.LatestVersion);
+                else
+                {
+                    UpdateDownloaded = true;
+                    mainWindow.buttonUpdate.Content = "Update downloaded";
+                }
             }
-            if (latestVersion.Length >= 5)
-            {
-                latestBuild = int.Parse(latestVersion.Substring(4, 1));
-                if (latestVersion.Length == 7)
-                    latestRevision = int.Parse(latestVersion.Substring(6, 1));
-            }
-
-            if (latestMajor > currentVersion.Major ||
-                latestMinor > currentVersion.Minor ||
-                latestBuild > currentVersion.Build ||
-                latestRevision > currentVersion.Revision ||
-                UpdateAvailable)
+            else
             {
                 if (Settings.CurrentSettings.NotifyUpdates || UpdateAvailable)
                 {
                     string message = $"An update is available, would you like to update now?\n" +
-                                     $"Current version: {currentVersionTxt}\n" +
-                                     $"Latest version: {latestVersion}\n\n" +
+                                     $"Current version: {e.CurrentVersion}\n" +
+                                     $"Latest version: {e.LatestVersion}\n\n" +
                                      $"Changelog:\n" +
-                                     $"{release.Body}";
+                                     $"{e.Changelog}";
 
                     MessageDialogResult result = await mainWindow.ShowMessageAsync("Update available", message, MessageDialogStyle.AffirmativeAndNegative);
 
@@ -242,139 +246,57 @@ namespace VideoPlayer.ViewModels
                         Settings.CurrentSettings.NotifyUpdates = true;
                         await Settings.CurrentSettings.Save();
 
-                        DownloadUpdate(release);
+                        Updater.DownloadUpdate();
                     }
                     else
                     {
                         Settings.CurrentSettings.NotifyUpdates = false;
+                        await Settings.CurrentSettings.Save();
                         UpdateAvailable = true;
                         mainWindow.buttonUpdate.Content = "Update available";
-                        await Settings.CurrentSettings.Save();
                     }
                 }
                 else
                 {
-                    Settings.CurrentSettings.NotifyUpdates = false;
+                    if (Settings.CurrentSettings.NotifyUpdates)
+                    {
+                        Settings.CurrentSettings.NotifyUpdates = false;
+                        await Settings.CurrentSettings.Save();
+                    }
+
                     UpdateAvailable = true;
+                    UpdateDownloaded = false;
                     mainWindow.buttonUpdate.Content = "Update available";
-                    await Settings.CurrentSettings.Save();
                 }
             }
-            else
-                return (false, currentVersionTxt, latestVersion);
-
-            return (true, currentVersionTxt, latestVersion);
         }
 
-        private async void DownloadUpdate(Release release)
+        public async Task NotifyDownloaded(Version currentVersion, Version latestVersion, string changelog = null)
         {
-            progressDialog = await mainWindow.ShowProgressAsync($"Downloading update - {release.TagName.Replace("v", "")}", "Estimated time left: 0 sec (0 kb of 0 kb downloaded)\n" +
-                                                                                                                            "Time spent: 0 sec");
-            progressDialog.Minimum = 0;
-            progressDialog.Maximum = 100;
-
-            WebClient webClient = new WebClient();
-            Uri uri = new Uri(release.Assets[0].BrowserDownloadUrl);
-
-            webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
-            webClient.DownloadProgressChanged += WebClient_DownloadProgressChanged;
-
-            updateStartTime = DateTime.Now;
-            webClient.DownloadFileAsync(uri, Settings.TempDownloadPath);
-        }
-
-        private void WebClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
-        {
-            string received = string.Format(CultureInfo.InvariantCulture, "{0:n0} kb", e.BytesReceived / 1000);
-            string toReceive = string.Format(CultureInfo.InvariantCulture, "{0:n0} kb", e.TotalBytesToReceive / 1000);
-
-            if (e.BytesReceived / 1000000 >= 1)
-                received = string.Format("{0:.#0} MB", Math.Round((decimal)e.BytesReceived / 1000000, 2));
-            if (e.TotalBytesToReceive / 1000000 >= 1)
-                toReceive = string.Format("{0:.#0} MB", Math.Round((decimal)e.TotalBytesToReceive / 1000000, 2));
-
-            TimeSpan timeSpent = DateTime.Now - updateStartTime;
-            int secondsRemaining = (int)(timeSpent.TotalSeconds / e.ProgressPercentage * (100 - e.ProgressPercentage));
-            TimeSpan timeLeft = new TimeSpan(0, 0, secondsRemaining);
-            string timeLeftString = string.Empty;
-            string timeSpentString = string.Empty;
-
-            if (timeLeft.Hours > 0)
-                timeLeftString += string.Format("{0} hours", timeLeft.Hours);
-            if (timeLeft.Minutes > 0)
-                timeLeftString += timeLeftString == string.Empty ? string.Format("{0} min", timeLeft.Minutes) : string.Format(" {0} min", timeLeft.Minutes);
-            if (timeLeft.Seconds >= 0)
-                timeLeftString += timeLeftString == string.Empty ? string.Format("{0} sec", timeLeft.Seconds) : string.Format(" {0} sec", timeLeft.Seconds);
-
-            if (timeSpent.Hours > 0)
-                timeSpentString = string.Format("{0} hours", timeSpent.Hours);
-            if (timeSpent.Minutes > 0)
-                timeSpentString += timeSpentString == string.Empty ? string.Format("{0} min", timeSpent.Minutes) : string.Format(" {0} min", timeSpent.Minutes);
-            if (timeSpent.Seconds >= 0)
-                timeSpentString += timeSpentString == string.Empty ? string.Format("{0} sec", timeSpent.Seconds) : string.Format(" {0} sec", timeSpent.Seconds);
-
-            progressDialog.SetProgress(e.ProgressPercentage);
-            progressDialog.SetMessage($"Estimated time left: {timeLeftString} ({received} of {toReceive} downloaded)\n" +
-                                      $"Time spent: {timeSpentString}");
-        }
-
-        private async void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            FileVersionInfo downloadedVersion = FileVersionInfo.GetVersionInfo(Settings.TempDownloadPath);
-
-            Settings.CurrentSettings.NotifyUpdates = true;
-            await Settings.CurrentSettings.Save();
-            await progressDialog.CloseAsync();
-            await NotifyDownloaded(downloadedVersion);
-        }
-
-        public void InstallUpdate()
-        {
-            if (File.Exists(Settings.TempDownloadPath))
-            {
-                string currentDir = Directory.GetCurrentDirectory();
-                string currentFile = $@"{currentDir}\VideoPlayer.exe";
-                string oldFile = $@"{currentDir}\VideoPlayer.exe.old";
-
-                File.Move(currentFile, oldFile);
-                File.Move(Settings.TempDownloadPath, currentFile);
-
-                Process.Start(currentFile);
-                Environment.Exit(0);
-            }
-        }
-
-        public async Task NotifyDownloaded(FileVersionInfo version)
-        {
-            Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            string currentVersionTxt = $"{currentVersion.Major}.{currentVersion.Minor}";
-            string downloadedVersionTxt = $"{version.FileMajorPart}.{version.FileMinorPart}";
-
-            if (currentVersion.Build > 0)
-            {
-                currentVersionTxt += $".{currentVersion.Build}";
-                if (currentVersion.Revision > 0)
-                    currentVersionTxt += $".{currentVersion.Revision}";
-            }
-            if (version.FileBuildPart > 0)
-            {
-                downloadedVersionTxt += $".{version.FileBuildPart}";
-                if (version.FilePrivatePart > 0)
-                    downloadedVersionTxt += $".{version.FilePrivatePart}";
-            }
-
             string message = $"An update has been downloaded. Would you like to install it now?\n\n" +
-                             $"Current version: {currentVersionTxt}\n" +
-                             $"Downloaded version: {downloadedVersionTxt}";
+                             $"Current version: {currentVersion}\n" +
+                             $"Downloaded version: {latestVersion}";
+
+            if (changelog != null)
+                message += $"\n\nChangelog:\n" +
+                           $"{changelog}";
 
             MessageDialogResult result = await mainWindow.ShowMessageAsync($"Update downloaded", message, MessageDialogStyle.AffirmativeAndNegative);
 
             if (result == MessageDialogResult.Affirmative)
-                InstallUpdate();
+            {
+                Settings.CurrentSettings.NotifyUpdates = true;
+                await Settings.CurrentSettings.Save();
+
+                Updater.InstallUpdate();
+            }
             else
             {
+                Settings.CurrentSettings.NotifyUpdates = false;
+                await Settings.CurrentSettings.Save();
                 UpdateDownloaded = true;
                 UpdateAvailable = false;
+
                 mainWindow.buttonUpdate.Content = "Update downloaded";
             }
         }

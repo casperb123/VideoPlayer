@@ -15,7 +15,6 @@ using System.Windows.Controls;
 using System.ComponentModel;
 using Microsoft.Win32;
 using System.Threading;
-using Octokit;
 
 namespace VideoPlayer.ViewModels
 {

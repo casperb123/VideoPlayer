@@ -491,18 +491,10 @@ namespace VideoPlayer
         {
             try
             {
-                if (ViewModel.UpdateDownloaded)
-                {
-                    FileVersionInfo downloadedVersion = FileVersionInfo.GetVersionInfo(Settings.TempDownloadPath);
-                    await ViewModel.NotifyDownloaded(downloadedVersion);
-                }
-                else
-                {
-                    var (updateAvailable, currentVersion, latestVersion) = await ViewModel.CheckForUpdates();
+                var (updateAvailable, latestVersion) = await ViewModel.Updater.CheckForUpdatesAsync();
 
-                    if (!updateAvailable)
-                        await this.ShowMessageAsync($"Up to date - {currentVersion}", "You're already using the latest version of the application");
-                }
+                if (!updateAvailable)
+                    await this.ShowMessageAsync($"Up to date - {latestVersion}", "You're already using the latest version of the application");
             }
             catch (WebException ex)
             {
