@@ -196,7 +196,6 @@ namespace VideoPlayer.ViewModels
 
         private void Updater_InstallationCompleted(object sender, VersionEventArgs e)
         {
-            Updater.DeleteUpdateFiles();
             Updater.Restart();
         }
 
