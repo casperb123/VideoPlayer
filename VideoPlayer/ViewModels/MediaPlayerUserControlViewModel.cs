@@ -276,20 +276,20 @@ namespace VideoPlayer.ViewModels
 
         public async Task MuteToggle()
         {
-            if (MainWindow.ViewModel.SoundProcessor.Volume > 0)
+            if (Settings.CurrentSettings.Volume > 0)
             {
-                OldVolume = MainWindow.ViewModel.SoundProcessor.Volume;
+                OldVolume = Settings.CurrentSettings.Volume;
                 Settings.CurrentSettings.Volume = 0;
             }
             else if (OldVolume == 0)
             {
                 Settings.CurrentSettings.Volume = 1;
-                OldVolume = MainWindow.ViewModel.SoundProcessor.Volume;
+                OldVolume = Settings.CurrentSettings.Volume;
             }
             else
             {
                 Settings.CurrentSettings.Volume = OldVolume;
-                OldVolume = MainWindow.ViewModel.SoundProcessor.Volume;
+                OldVolume = Settings.CurrentSettings.Volume;
             }
 
             await Settings.CurrentSettings.Save();

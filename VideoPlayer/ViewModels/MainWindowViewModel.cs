@@ -20,6 +20,7 @@ using MahApps.Metro.Controls;
 using ControlzEx.Theming;
 using GitHubUpdater;
 using Version = GitHubUpdater.Version;
+using Octokit;
 
 namespace VideoPlayer.ViewModels
 {
@@ -170,15 +171,29 @@ namespace VideoPlayer.ViewModels
                 mediaPlayPauseHotkey
             };
 
-            Updater = new Updater("casperb123", "VideoPlayer");
-            Updater.UpdateAvailable += Updater_UpdateAvailable;
-            Updater.DownloadingStarted += Updater_DownloadingStarted;
-            Updater.DownloadingProgressed += Updater_DownloadingProgressed;
-            Updater.DownloadingCompleted += Updater_DownloadingCompleted;
-            Updater.InstallationCompleted += Updater_InstallationCompleted;
-            Updater.InstallationFailed += Updater_InstallationFailed;
+            try
+            {
+                Updater = new Updater("casperb123", "VideoPlayer");
+                Updater.UpdateAvailable += Updater_UpdateAvailable;
+                Updater.DownloadingStarted += Updater_DownloadingStarted;
+                Updater.DownloadingProgressed += Updater_DownloadingProgressed;
+                Updater.DownloadingCompleted += Updater_DownloadingCompleted;
+                Updater.InstallationCompleted += Updater_InstallationCompleted;
+                Updater.InstallationFailed += Updater_InstallationFailed;
 
-            CheckForUpdates();
+                CheckForUpdates();
+            }
+            catch (ApiException e)
+            {
+                if (e.InnerException is null)
+                    mainWindow.ShowMessageAsync("Checking for updates failed", $"There was an error while checking for updates.\n\n" +
+                                                                               $"Error:\n" +
+                                                                               $"{e.Message}").ConfigureAwait(false);
+                else
+                    mainWindow.ShowMessageAsync("Checking for updates failed", $"There was an error while checking for updates.\n\n" +
+                                                                               $"Error:\n" +
+                                                                               $"{e.InnerException.Message}").ConfigureAwait(false);
+            }
         }
 
         private async void CheckForUpdates()

@@ -2,6 +2,7 @@
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
+using Octokit;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,6 +20,7 @@ using System.Windows.Navigation;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
 using VideoPlayer.ViewModels;
+using Application = System.Windows.Application;
 
 namespace VideoPlayer
 {
@@ -496,12 +498,16 @@ namespace VideoPlayer
                 if (!updateAvailable)
                     await this.ShowMessageAsync($"Up to date - {latestVersion}", "You're already using the latest version of the application");
             }
-            catch (WebException ex)
+            catch (ApiException ex)
             {
                 if (ex.InnerException is null)
-                    await this.ShowMessageAsync("Checking for updates failed", ex.Message);
+                    await this.ShowMessageAsync("Checking for updates failed", $"There was an error while checking for updates.\n\n" +
+                                                                               $"Error:\n" +
+                                                                               $"{ex.Message}");
                 else
-                    await this.ShowMessageAsync("Checking for updates failed", ex.InnerException.Message);
+                    await this.ShowMessageAsync("Checking for updates failed", $"There was an error while checking for updates.\n\n" +
+                                                                               $"Error:\n" +
+                                                                               $"{ex.InnerException.Message}");
             }
         }
 
