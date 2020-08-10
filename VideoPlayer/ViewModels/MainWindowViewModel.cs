@@ -171,29 +171,43 @@ namespace VideoPlayer.ViewModels
                 mediaPlayPauseHotkey
             };
 
-            try
-            {
-                Updater = new Updater("casperb123", "VideoPlayer", "f99daf935e5da33f46002c439f259ef47c7e26bb", true);
-                Updater.UpdateAvailable += Updater_UpdateAvailable;
-                Updater.DownloadingStarted += Updater_DownloadingStarted;
-                Updater.DownloadingProgressed += Updater_DownloadingProgressed;
-                Updater.DownloadingCompleted += Updater_DownloadingCompleted;
-                Updater.InstallationCompleted += Updater_InstallationCompleted;
-                Updater.InstallationFailed += Updater_InstallationFailed;
+            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
+#if DEBUG
+            string tokenPath = $@"{Path.GetFullPath(Path.Combine(runningPath, @"..\..\..\"))}GitHubToken.txt";
+#else
+            string tokenPath = $@"{runningPath}\GitHubToken.txt";
+#endif
 
-                CheckForUpdates();
-            }
-            catch (Exception e)
+            if (File.Exists(tokenPath))
             {
-                if (e.InnerException is null)
-                    mainWindow.ShowMessageAsync("Checking for updates failed", $"There was an error while checking for updates.\n\n" +
-                                                                               $"Error:\n" +
-                                                                               $"{e.Message}").ConfigureAwait(false);
-                else
-                    mainWindow.ShowMessageAsync("Checking for updates failed", $"There was an error while checking for updates.\n\n" +
-                                                                               $"Error:\n" +
-                                                                               $"{e.InnerException.Message}").ConfigureAwait(false);
+                try
+                {
+                    Updater = new Updater("casperb123", "VideoPlayer", File.ReadAllText(tokenPath), true);
+                    Updater.UpdateAvailable += Updater_UpdateAvailable;
+                    Updater.DownloadingStarted += Updater_DownloadingStarted;
+                    Updater.DownloadingProgressed += Updater_DownloadingProgressed;
+                    Updater.DownloadingCompleted += Updater_DownloadingCompleted;
+                    Updater.InstallationCompleted += Updater_InstallationCompleted;
+                    Updater.InstallationFailed += Updater_InstallationFailed;
+
+                    CheckForUpdates();
+                }
+                catch (Exception e)
+                {
+                    if (e.InnerException is null)
+                        mainWindow.ShowMessageAsync("Checking for updates failed", $"There was an error while checking for updates.\n\n" +
+                                                                                   $"Error:\n" +
+                                                                                   $"{e.Message}").ConfigureAwait(false);
+                    else
+                        mainWindow.ShowMessageAsync("Checking for updates failed", $"There was an error while checking for updates.\n\n" +
+                                                                                   $"Error:\n" +
+                                                                                   $"{e.InnerException.Message}").ConfigureAwait(false);
+                }
             }
+            else
+                mainWindow.ShowMessageAsync("Checking for updates failed", "There was an error while checking for updates.\n\n" +
+                                                                           "Error:\n" +
+                                                                           "GitHub personal access token not found. Please contact the creator of this application.");
         }
 
         private async void CheckForUpdates()
