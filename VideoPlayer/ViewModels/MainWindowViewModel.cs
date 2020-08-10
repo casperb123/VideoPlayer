@@ -21,6 +21,7 @@ using ControlzEx.Theming;
 using GitHubUpdater;
 using Version = GitHubUpdater.Version;
 using Octokit;
+using VideoPlayer.Properties;
 
 namespace VideoPlayer.ViewModels
 {
@@ -171,16 +172,9 @@ namespace VideoPlayer.ViewModels
                 mediaPlayPauseHotkey
             };
 
-            string runningPath = AppDomain.CurrentDomain.BaseDirectory;
-#if DEBUG
-            string tokenPath = $@"{Path.GetFullPath(Path.Combine(runningPath, @"..\..\..\"))}GitHubToken.txt";
-#else
-            string tokenPath = $@"{runningPath}\GitHubToken.txt";
-#endif
-
             try
             {
-                Updater = new Updater("casperb123", "VideoPlayer", File.ReadAllText(tokenPath), true);
+                Updater = new Updater("casperb123", "VideoPlayer", Resources.GitHubToken, true);
                 Updater.UpdateAvailable += Updater_UpdateAvailable;
                 Updater.DownloadingStarted += Updater_DownloadingStarted;
                 Updater.DownloadingProgressed += Updater_DownloadingProgressed;
