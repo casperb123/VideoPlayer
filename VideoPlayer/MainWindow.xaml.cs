@@ -500,7 +500,7 @@ namespace VideoPlayer
                 if (version.IsCurrentVersion)
                     await this.ShowMessageAsync($"Up to date - {version}", "You're already using the latest version of the application");
             }
-            catch (Exception ex)
+            catch (ApiException ex)
             {
                 if (ex.InnerException is null)
                     await this.ShowMessageAsync("Checking for updates failed", $"There was an error while checking for updates.\n\n" +

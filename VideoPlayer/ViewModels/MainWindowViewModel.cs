@@ -178,36 +178,29 @@ namespace VideoPlayer.ViewModels
             string tokenPath = $@"{runningPath}\GitHubToken.txt";
 #endif
 
-            if (File.Exists(tokenPath))
+            try
             {
-                try
-                {
-                    Updater = new Updater("casperb123", "VideoPlayer", File.ReadAllText(tokenPath), true);
-                    Updater.UpdateAvailable += Updater_UpdateAvailable;
-                    Updater.DownloadingStarted += Updater_DownloadingStarted;
-                    Updater.DownloadingProgressed += Updater_DownloadingProgressed;
-                    Updater.DownloadingCompleted += Updater_DownloadingCompleted;
-                    Updater.InstallationCompleted += Updater_InstallationCompleted;
-                    Updater.InstallationFailed += Updater_InstallationFailed;
+                Updater = new Updater("casperb123", "VideoPlayer", File.ReadAllText(tokenPath), true);
+                Updater.UpdateAvailable += Updater_UpdateAvailable;
+                Updater.DownloadingStarted += Updater_DownloadingStarted;
+                Updater.DownloadingProgressed += Updater_DownloadingProgressed;
+                Updater.DownloadingCompleted += Updater_DownloadingCompleted;
+                Updater.InstallationCompleted += Updater_InstallationCompleted;
+                Updater.InstallationFailed += Updater_InstallationFailed;
 
-                    CheckForUpdates();
-                }
-                catch (Exception e)
-                {
-                    if (e.InnerException is null)
-                        mainWindow.ShowMessageAsync("Checking for updates failed", $"There was an error while checking for updates.\n\n" +
-                                                                                   $"Error:\n" +
-                                                                                   $"{e.Message}").ConfigureAwait(false);
-                    else
-                        mainWindow.ShowMessageAsync("Checking for updates failed", $"There was an error while checking for updates.\n\n" +
-                                                                                   $"Error:\n" +
-                                                                                   $"{e.InnerException.Message}").ConfigureAwait(false);
-                }
+                CheckForUpdates();
             }
-            else
-                mainWindow.ShowMessageAsync("Checking for updates failed", "There was an error while checking for updates.\n\n" +
-                                                                           "Error:\n" +
-                                                                           "GitHub personal access token not found. Please contact the creator of this application.");
+            catch (Exception e)
+            {
+                if (e.InnerException is null)
+                    mainWindow.ShowMessageAsync("Checking for updates failed", $"There was an error while checking for updates.\n\n" +
+                                                                               $"Error:\n" +
+                                                                               $"{e.Message}").ConfigureAwait(false);
+                else
+                    mainWindow.ShowMessageAsync("Checking for updates failed", $"There was an error while checking for updates.\n\n" +
+                                                                               $"Error:\n" +
+                                                                               $"{e.InnerException.Message}").ConfigureAwait(false);
+            }
         }
 
         private async void CheckForUpdates()
