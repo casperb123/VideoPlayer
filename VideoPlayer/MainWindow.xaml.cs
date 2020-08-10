@@ -20,7 +20,9 @@ using System.Windows.Navigation;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
 using VideoPlayer.ViewModels;
+using GitHubUpdater;
 using Application = System.Windows.Application;
+using Version = GitHubUpdater.Version;
 
 namespace VideoPlayer
 {
@@ -493,12 +495,12 @@ namespace VideoPlayer
         {
             try
             {
-                var (updateAvailable, latestVersion) = await ViewModel.Updater.CheckForUpdatesAsync();
+                Version version = await ViewModel.Updater.CheckForUpdatesAsync();
 
-                if (!updateAvailable)
-                    await this.ShowMessageAsync($"Up to date - {latestVersion}", "You're already using the latest version of the application");
+                if (version.IsCurrentVersion)
+                    await this.ShowMessageAsync($"Up to date - {version}", "You're already using the latest version of the application");
             }
-            catch (ApiException ex)
+            catch (Exception ex)
             {
                 if (ex.InnerException is null)
                     await this.ShowMessageAsync("Checking for updates failed", $"There was an error while checking for updates.\n\n" +

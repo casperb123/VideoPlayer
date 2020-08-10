@@ -173,7 +173,7 @@ namespace VideoPlayer.ViewModels
 
             try
             {
-                Updater = new Updater("casperb123", "VideoPlayer");
+                Updater = new Updater("casperb123", "VideoPlayer", "f99daf935e5da33f46002c439f259ef47c7e26bb", true);
                 Updater.UpdateAvailable += Updater_UpdateAvailable;
                 Updater.DownloadingStarted += Updater_DownloadingStarted;
                 Updater.DownloadingProgressed += Updater_DownloadingProgressed;
@@ -183,7 +183,7 @@ namespace VideoPlayer.ViewModels
 
                 CheckForUpdates();
             }
-            catch (ApiException e)
+            catch (Exception e)
             {
                 if (e.InnerException is null)
                     mainWindow.ShowMessageAsync("Checking for updates failed", $"There was an error while checking for updates.\n\n" +
@@ -200,8 +200,8 @@ namespace VideoPlayer.ViewModels
         {
             if (Settings.CurrentSettings.CheckForUpdates)
             {
-                var (updateAvailable, latestVersion) = await Updater.CheckForUpdatesAsync();
-                if (!updateAvailable)
+                Version version = await Updater.CheckForUpdatesAsync();
+                if (version.IsCurrentVersion)
                     Updater.DeleteUpdateFiles();
             }
             else if (Updater.IsUpdateDownloaded())
