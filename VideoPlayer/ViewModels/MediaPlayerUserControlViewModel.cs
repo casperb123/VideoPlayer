@@ -545,6 +545,7 @@ namespace VideoPlayer.ViewModels
             TimeSpan timeSpan = userControl.player.Position + new TimeSpan(0, 0, value);
             userControl.sliderProgress.Value = timeSpan.TotalSeconds;
             ShowTime();
+            MainWindow.ViewModel.SoundProcessor.Pause();
             await Seek(timeSpan);
         }
 
