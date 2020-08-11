@@ -4,12 +4,10 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Unosquare.FFME.Common;
 using VideoPlayer.ViewModels;
-using MaterialDesignThemes.Wpf;
 using VideoPlayer.Entities;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
-using SoundTouch;
 
 namespace VideoPlayer.UserControls
 {

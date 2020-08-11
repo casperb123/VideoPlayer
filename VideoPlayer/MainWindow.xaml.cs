@@ -9,8 +9,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -20,7 +18,6 @@ using System.Windows.Navigation;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
 using VideoPlayer.ViewModels;
-using GitHubUpdater;
 using Application = System.Windows.Application;
 using Version = GitHubUpdater.Version;
 
