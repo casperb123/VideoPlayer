@@ -313,7 +313,7 @@ namespace VideoPlayer.ViewModels
                 message += $"\n\nChangelog:\n" +
                            $"{changelog}";
 
-            MessageDialogResult result = await mainWindow.ShowMessageAsync($"Update downloaded", message, MessageDialogStyle.AffirmativeAndNegative);
+            MessageDialogResult result = await mainWindow.ShowMessageAsync("Update downloaded", message, MessageDialogStyle.AffirmativeAndNegative);
 
             if (result == MessageDialogResult.Affirmative)
             {
