@@ -94,10 +94,15 @@ namespace VideoPlayer
             {
                 List<Media> medias = new List<Media>();
                 filePaths.ForEach(x => medias.Add(new Media(x)));
-                ViewModel.AddMediasToQueue(medias);
+                OpenMedias(medias);
             }
 
             RegisterCommandBindings();
+        }
+
+        private async void OpenMedias(List<Media> medias)
+        {
+            await ViewModel.AddMediasToQueue(medias);
         }
 
         private async void PlayPause_Executed(object sender, ExecutedRoutedEventArgs e)

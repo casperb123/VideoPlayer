@@ -353,9 +353,10 @@ namespace VideoPlayer.ViewModels
             }
         }
 
-        public void AddMediasToQueue(ICollection<Media> medias)
+        public async Task AddMediasToQueue(ICollection<Media> medias)
         {
-            medias.ToList().ForEach(async x => await AddToQueue(x));
+            foreach (Media media in medias)
+                await AddToQueue(media);
         }
 
         public async void AddMediasToPlaylist(ICollection<Media> medias)
@@ -379,7 +380,7 @@ namespace VideoPlayer.ViewModels
             Queue.Clear();
             OldQueue.Clear();
             await UserControl.ViewModel.Stop(true);
-            AddMediasToQueue(SelectedPlaylist.Medias);
+            await AddMediasToQueue(SelectedPlaylist.Medias);
             mainWindow.dataGridPlaylists.SelectedItem = null;
         }
 

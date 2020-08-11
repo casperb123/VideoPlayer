@@ -12,7 +12,7 @@
              mc:Ignorable="d"
              d:DesignHeight="535"
              d:DesignWidth="980"
-             MouseMove="UserControl_MouseMove"> 
+             MouseMove="UserControl_MouseMove">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />

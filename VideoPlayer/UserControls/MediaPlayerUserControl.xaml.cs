@@ -56,13 +56,9 @@ namespace VideoPlayer.UserControls
             else
             {
                 if (ViewModel.MainWindow.ViewModel.Queue.Count > 0)
-                {
                     ViewModel.MainWindow.dataGridQueue.SelectedIndex++;
-                }
                 else
-                {
                     await ViewModel.Stop(false);
-                }
             }
         }
 
