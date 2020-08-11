@@ -94,7 +94,7 @@ namespace VideoPlayer
             {
                 List<Media> medias = new List<Media>();
                 filePaths.ForEach(x => medias.Add(new Media(x)));
-                ViewModel.AddMediasToQueue(medias).ConfigureAwait(false);
+                ViewModel.AddMediasToQueue(medias);
             }
 
             RegisterCommandBindings();
@@ -274,7 +274,7 @@ namespace VideoPlayer
                 List<Media> medias = new List<Media>();
                 files.ToList().Where(x => validExtensions.Contains(Path.GetExtension(x))).ToList().ForEach(x => medias.Add(new Media(x)));
 
-                await ViewModel.AddMediasToQueue(medias);
+                ViewModel.AddMediasToQueue(medias);
             }
         }
 
@@ -398,7 +398,7 @@ namespace VideoPlayer
 
         private async void MenuItemPlaylistsAddToQueue_Click(object sender, RoutedEventArgs e)
         {
-            await ViewModel.AddMediasToQueue(ViewModel.SelectedPlaylist.Medias);
+            ViewModel.AddMediasToQueue(ViewModel.SelectedPlaylist.Medias);
         }
 
         private void DataGridPlaylists_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

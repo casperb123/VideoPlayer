@@ -65,5 +65,15 @@ namespace VideoPlayer.Properties {
                 return ResourceManager.GetString("GitHubToken", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] GitHubUpdater {
+            get {
+                object obj = ResourceManager.GetObject("GitHubUpdater", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

@@ -335,8 +335,7 @@ namespace VideoPlayer.ViewModels
 
         public async Task ChangeTheme(string theme, string color)
         {
-            ThemeManager.Current.ChangeThemeBaseColor(Application.Current, theme);
-            ThemeManager.Current.ChangeThemeColorScheme(Application.Current, color);
+            ThemeManager.Current.ChangeTheme(Application.Current, $"{theme}.{color}");
             await Settings.CurrentSettings.Save();
         }
 
@@ -354,10 +353,9 @@ namespace VideoPlayer.ViewModels
             }
         }
 
-        public async Task AddMediasToQueue(ICollection<Media> medias)
+        public void AddMediasToQueue(ICollection<Media> medias)
         {
-            foreach (Media media in medias)
-                await AddToQueue(media);
+            medias.ToList().ForEach(async x => await AddToQueue(x));
         }
 
         public async void AddMediasToPlaylist(ICollection<Media> medias)
@@ -381,7 +379,7 @@ namespace VideoPlayer.ViewModels
             Queue.Clear();
             OldQueue.Clear();
             await UserControl.ViewModel.Stop(true);
-            await AddMediasToQueue(SelectedPlaylist.Medias);
+            AddMediasToQueue(SelectedPlaylist.Medias);
             mainWindow.dataGridPlaylists.SelectedItem = null;
         }
 

@@ -121,4 +121,7 @@
   <data name="GitHubToken" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\GitHubToken.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="GitHubUpdater" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\GitHubUpdater.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

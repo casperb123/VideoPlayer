@@ -43,7 +43,6 @@
 
   <ItemGroup>
     <PackageReference Include="FFME.Windows" Version="4.2.330" />
-    <PackageReference Include="GitHubUpdater" Version="1.1.0" />
     <PackageReference Include="MahApps.Metro" Version="2.0.0" />
     <PackageReference Include="MaterialDesignThemes" Version="3.1.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
@@ -54,6 +53,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VideoPlayer.Entities\VideoPlayer.Entities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="GitHubUpdater">
+      <HintPath>Resources\GitHubUpdater.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

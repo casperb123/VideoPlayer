@@ -201,14 +201,14 @@ namespace VideoPlayer.UserControls
                     Playlist playlist = ViewModel.GetPlaylist(name, filePaths);
                     ViewModel.MainWindow.ViewModel.SelectedPlaylist = playlist;
 
-                    await ViewModel.MainWindow.ViewModel.AddMediasToQueue(playlist.Medias);
+                    ViewModel.MainWindow.ViewModel.AddMediasToQueue(playlist.Medias);
                 }
                 else
                 {
                     List<Media> medias = new List<Media>();
                     files.ToList().ForEach(x => medias.Add(new Media(x)));
 
-                    await ViewModel.MainWindow.ViewModel.AddMediasToQueue(medias);
+                    ViewModel.MainWindow.ViewModel.AddMediasToQueue(medias);
                 }
             }
         }
