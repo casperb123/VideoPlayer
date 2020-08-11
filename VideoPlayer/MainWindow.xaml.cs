@@ -279,7 +279,7 @@ namespace VideoPlayer
                 List<Media> medias = new List<Media>();
                 files.ToList().Where(x => validExtensions.Contains(Path.GetExtension(x))).ToList().ForEach(x => medias.Add(new Media(x)));
 
-                ViewModel.AddMediasToQueue(medias);
+                await ViewModel.AddMediasToQueue(medias);
             }
         }
 
@@ -403,7 +403,7 @@ namespace VideoPlayer
 
         private async void MenuItemPlaylistsAddToQueue_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.AddMediasToQueue(ViewModel.SelectedPlaylist.Medias);
+            await ViewModel.AddMediasToQueue(ViewModel.SelectedPlaylist.Medias);
         }
 
         private void DataGridPlaylists_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

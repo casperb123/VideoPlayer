@@ -197,14 +197,14 @@ namespace VideoPlayer.UserControls
                     Playlist playlist = ViewModel.GetPlaylist(name, filePaths);
                     ViewModel.MainWindow.ViewModel.SelectedPlaylist = playlist;
 
-                    ViewModel.MainWindow.ViewModel.AddMediasToQueue(playlist.Medias);
+                    await ViewModel.MainWindow.ViewModel.AddMediasToQueue(playlist.Medias);
                 }
                 else
                 {
                     List<Media> medias = new List<Media>();
                     files.ToList().ForEach(x => medias.Add(new Media(x)));
 
-                    ViewModel.MainWindow.ViewModel.AddMediasToQueue(medias);
+                    await ViewModel.MainWindow.ViewModel.AddMediasToQueue(medias);
                 }
             }
         }
