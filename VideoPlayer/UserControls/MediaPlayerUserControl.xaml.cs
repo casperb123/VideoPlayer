@@ -4,12 +4,10 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Unosquare.FFME.Common;
 using VideoPlayer.ViewModels;
-using MaterialDesignThemes.Wpf;
 using VideoPlayer.Entities;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
-using SoundTouch;
 
 namespace VideoPlayer.UserControls
 {
@@ -197,14 +195,14 @@ namespace VideoPlayer.UserControls
                     Playlist playlist = ViewModel.GetPlaylist(name, filePaths);
                     ViewModel.MainWindow.ViewModel.SelectedPlaylist = playlist;
 
-                    ViewModel.MainWindow.ViewModel.AddMediasToQueue(playlist.Medias);
+                    await ViewModel.MainWindow.ViewModel.AddMediasToQueue(playlist.Medias);
                 }
                 else
                 {
                     List<Media> medias = new List<Media>();
                     files.ToList().ForEach(x => medias.Add(new Media(x)));
 
-                    ViewModel.MainWindow.ViewModel.AddMediasToQueue(medias);
+                    await ViewModel.MainWindow.ViewModel.AddMediasToQueue(medias);
                 }
             }
         }

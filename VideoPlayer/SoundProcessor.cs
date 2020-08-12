@@ -1,9 +1,6 @@
 ﻿using NAudio.Wave;
 using SoundTouch.Net.NAudioSupport;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
 namespace VideoPlayer
 {

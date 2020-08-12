@@ -9,8 +9,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -20,7 +18,6 @@ using System.Windows.Navigation;
 using VideoPlayer.Entities;
 using VideoPlayer.UserControls;
 using VideoPlayer.ViewModels;
-using GitHubUpdater;
 using Application = System.Windows.Application;
 using Version = GitHubUpdater.Version;
 
@@ -279,7 +276,7 @@ namespace VideoPlayer
                 List<Media> medias = new List<Media>();
                 files.ToList().Where(x => validExtensions.Contains(Path.GetExtension(x))).ToList().ForEach(x => medias.Add(new Media(x)));
 
-                ViewModel.AddMediasToQueue(medias);
+                await ViewModel.AddMediasToQueue(medias);
             }
         }
 
@@ -403,7 +400,7 @@ namespace VideoPlayer
 
         private async void MenuItemPlaylistsAddToQueue_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.AddMediasToQueue(ViewModel.SelectedPlaylist.Medias);
+            await ViewModel.AddMediasToQueue(ViewModel.SelectedPlaylist.Medias);
         }
 
         private void DataGridPlaylists_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

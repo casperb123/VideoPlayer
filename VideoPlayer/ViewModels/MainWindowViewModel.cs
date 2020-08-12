@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -20,7 +19,6 @@ using MahApps.Metro.Controls;
 using ControlzEx.Theming;
 using GitHubUpdater;
 using Version = GitHubUpdater.Version;
-using Octokit;
 using VideoPlayer.Properties;
 
 namespace VideoPlayer.ViewModels

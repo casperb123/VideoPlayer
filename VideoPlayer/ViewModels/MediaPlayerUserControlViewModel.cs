@@ -199,7 +199,7 @@ namespace VideoPlayer.ViewModels
                 List<Media> medias = new List<Media>();
                 fileNames.ForEach(x => medias.Add(new Media(x)));
 
-                MainWindow.ViewModel.AddMediasToQueue(medias);
+                await MainWindow.ViewModel.AddMediasToQueue(medias);
             }
         }
 
