@@ -6,7 +6,7 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>video_icon.ico</ApplicationIcon>
     <NoWin32Manifest>true</NoWin32Manifest>
-    <Version>0.5.5</Version>
+    <Version>0.5</Version>
     <Authors>Casper Bastholm</Authors>
     <Product>Video Player</Product>
     <Description>This is just a little video player i made for fun.</Description>
@@ -52,13 +52,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\GitHubUpdater\GitHubUpdater\GitHubUpdater.csproj" />
     <ProjectReference Include="..\VideoPlayer.Entities\VideoPlayer.Entities.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="GitHubUpdater">
-      <HintPath>Resources\GitHubUpdater.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>

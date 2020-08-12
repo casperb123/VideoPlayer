@@ -174,12 +174,11 @@ namespace VideoPlayer.ViewModels
 
             try
             {
-                Updater = new Updater("casperb123", "VideoPlayer", Resources.GitHubToken, true);
+                Updater = new Updater("casperb123", "VideoPlayer", Resources.GitHubToken);
                 Updater.UpdateAvailable += Updater_UpdateAvailable;
                 Updater.DownloadingStarted += Updater_DownloadingStarted;
                 Updater.DownloadingProgressed += Updater_DownloadingProgressed;
                 Updater.DownloadingCompleted += Updater_DownloadingCompleted;
-                Updater.InstallationCompleted += Updater_InstallationCompleted;
                 Updater.InstallationFailed += Updater_InstallationFailed;
 
                 CheckForUpdates();
@@ -219,11 +218,6 @@ namespace VideoPlayer.ViewModels
             await mainWindow.ShowMessageAsync("Installation failed", "Installing the update failed.\n\n" +
                                                                      "Error:\n" +
                                                                      $"{e.Message}");
-        }
-
-        private void Updater_InstallationCompleted(object sender, VersionEventArgs e)
-        {
-            Updater.Restart();
         }
 
         private void Updater_DownloadingProgressed(object sender, DownloadProgressEventArgs e)

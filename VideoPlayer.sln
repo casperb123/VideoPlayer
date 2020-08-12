@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitHubUpdater", "..\GitHubUpdater\GitHubUpdater\GitHubUpdater.csproj", "{A83B60F4-0FCD-45AC-B7E4-96922CFE0154}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{EDDB2AEA-0E90-4DA9-97C1-3B29B4BE361A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDDB2AEA-0E90-4DA9-97C1-3B29B4BE361A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDDB2AEA-0E90-4DA9-97C1-3B29B4BE361A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A83B60F4-0FCD-45AC-B7E4-96922CFE0154}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A83B60F4-0FCD-45AC-B7E4-96922CFE0154}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A83B60F4-0FCD-45AC-B7E4-96922CFE0154}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A83B60F4-0FCD-45AC-B7E4-96922CFE0154}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
