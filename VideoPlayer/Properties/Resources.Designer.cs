@@ -59,10 +59,7 @@ namespace VideoPlayer.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 82a54cc95c7f1185275c7ef7446b28fc2460a371.
-        /// </summary>
+
         internal static string GitHubToken {
             get {
                 return ResourceManager.GetString("GitHubToken", resourceCulture);
