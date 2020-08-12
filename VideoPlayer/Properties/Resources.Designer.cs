@@ -59,7 +59,7 @@ namespace VideoPlayer.Properties {
                 resourceCulture = value;
             }
         }
-
+        
         internal static string GitHubToken {
             get {
                 return ResourceManager.GetString("GitHubToken", resourceCulture);
