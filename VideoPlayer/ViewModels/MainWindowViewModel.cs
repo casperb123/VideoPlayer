@@ -312,9 +312,6 @@ namespace VideoPlayer.ViewModels
                 Settings.CurrentSettings.NotifyUpdates = true;
                 await Settings.CurrentSettings.Save();
 
-                mainWindow.Title = $"Video Player - Installing update";
-                mainWindow.UpdateLayout();
-
                 Updater.InstallUpdate();
             }
             else
