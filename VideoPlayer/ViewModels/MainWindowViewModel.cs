@@ -312,6 +312,9 @@ namespace VideoPlayer.ViewModels
                 Settings.CurrentSettings.NotifyUpdates = true;
                 await Settings.CurrentSettings.Save();
 
+                ProgressDialogController progressDialog = await mainWindow.ShowProgressAsync($"Installing update - {latestVersion}", "The application will restart when the installation is completed");
+                progressDialog.SetProgress(100);
+
                 Updater.InstallUpdate();
             }
             else
