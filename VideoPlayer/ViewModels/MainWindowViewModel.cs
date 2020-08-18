@@ -147,12 +147,6 @@ namespace VideoPlayer.ViewModels
 
         public MainWindowViewModel(MainWindow mainWindow)
         {
-            string currentDir = Directory.GetCurrentDirectory();
-            string oldFile = $@"{currentDir}\VideoPlayer.exe.old";
-
-            if (File.Exists(oldFile))
-                File.Delete(oldFile);
-
             this.mainWindow = mainWindow;
             mainWindow.Topmost = Settings.CurrentSettings.AlwaysOnTop;
             queue = new ObservableCollection<Media>();
