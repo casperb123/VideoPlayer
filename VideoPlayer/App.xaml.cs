@@ -25,7 +25,6 @@ namespace VideoPlayer
             Settings.MediasPath = $@"{settingsPath}\Medias";
             Settings.SettingsFilePath = $@"{settingsPath}\Settings.json";
             Settings.PlaylistsFilePath = $@"{settingsPath}\Playlists.bin";
-            Settings.TempDownloadPath = $@"{settingsPath}\VideoPlayer.tmp";
 
             if (!Directory.Exists(settingsPath))
                 Directory.CreateDirectory(settingsPath);
