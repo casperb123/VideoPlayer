@@ -28,9 +28,8 @@
             <ffme:MediaElement x:Name="player"
                                LoadedBehavior="Manual"
                                UnloadedBehavior="Manual"
-                               ScrubbingEnabled="True"
-                               Panel.ZIndex="1"
                                Volume="0"
+                               Panel.ZIndex="1"
                                MediaEnded="Player_MediaEnded"
                                MediaOpened="Player_MediaOpened" />
             <Grid.ContextMenu>

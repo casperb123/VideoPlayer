@@ -171,6 +171,7 @@ namespace VideoPlayer.ViewModels
                 Updater.DownloadingStarted += Updater_DownloadingStarted;
                 Updater.DownloadingProgressed += Updater_DownloadingProgressed;
                 Updater.DownloadingCompleted += Updater_DownloadingCompleted;
+                Updater.DownloadingFailed += Updater_DownloadingFailed;
                 Updater.InstallationFailed += Updater_InstallationFailed;
 
                 CheckForUpdates();
@@ -210,6 +211,13 @@ namespace VideoPlayer.ViewModels
             await mainWindow.ShowMessageAsync("Installation failed", "Installing the update failed.\n\n" +
                                                                      "Error:\n" +
                                                                      $"{e.Message}");
+        }
+
+        private async void Updater_DownloadingFailed(object sender, ExceptionEventArgs<Exception> e)
+        {
+            await mainWindow.ShowMessageAsync("Downloading failed", "Downloading the update failed.\n\n" +
+                                                                    "Error:\n" +
+                                                                    $"{e.Message}");
         }
 
         private void Updater_DownloadingProgressed(object sender, DownloadProgressEventArgs e)
